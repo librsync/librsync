@@ -14,17 +14,14 @@ AM_INIT_AUTOMAKE([foreign])
 # library versioning
 librsync_libversion=2:0:0
 
-# Disable shared libs by default.
-AC_DISABLE_SHARED
-
 # Checks for programs.
-AC_GNU_SOURCE
+AC_USE_SYSTEM_EXTENSIONS
 AC_PROG_CC
-AC_ISC_POSIX
 AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
-AC_PROG_LIBTOOL
+# Disable shared libs by default.
+LT_INIT([disable-shared])
 
 # Checks for popt.
 AC_CHECK_LIB(popt, poptGetContext, [], AC_MSG_WARN([cannot find libpopt: won't be able to run tests or build rdiff]))
@@ -118,11 +115,11 @@ fi
 # TODO: Similar conditions for other known compilers.  For SUNWspro, use `-v'.
 
 AC_ARG_ENABLE(ccmalloc,
-  AC_HELP_STRING([--enable-ccmalloc],[use ccmalloc debugger (default no)]),
+  AS_HELP_STRING([--enable-ccmalloc],[use ccmalloc debugger (default no)]),
   [ LIBS="$LIBS -lccmalloc -ldl" ])
 
 AC_ARG_ENABLE(trace,
-  AC_HELP_STRING([--disable-trace],[turn off library tracing]),
+  AS_HELP_STRING([--disable-trace],[turn off library tracing]),
   [enable_trace=$enableval],[enable_trace=yes])
 if test "$enable_trace" = "yes"; then
   AC_DEFINE(DO_RS_TRACE,,[Define this to enable trace code])

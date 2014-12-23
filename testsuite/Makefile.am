@@ -17,13 +17,11 @@
 # License along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-MAINTAINERCLEANFILES = Makefile.in
-
 check_PROGRAMS = isprefix.driver
 
-INCLUDES = -I $(srcdir)/..
-isprefix_driver_SOURCES = isprefix.driver.c
-isprefix_driver_LDADD = ../isprefix.o # XXX: should link replaced functions
+isprefix_driver_CPPFLAGS = -I$(srcdir)/..
+isprefix_driver_SOURCES  = isprefix.driver.c
+isprefix_driver_LDADD    = ../isprefix.o # XXX: should link replaced functions
 
 # NB: tests should exit with code 77 if they can't be run but haven't
 # failed.  Generally these tests should be ordered so that more basic

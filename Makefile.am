@@ -21,10 +21,7 @@ AUTOMAKE_OPTIONS = foreign
 SUBDIRS = . doc testsuite
 ACLOCAL_AMFLAGS = -I m4
 
-MAINTAINERCLEANFILES = Makefile.in \
-	aclocal.m4 config.guess config.h.in config.sub configure \
-	depcomp install-sh ltmain.sh missing mkinstalldirs \
-	prototab.c prototab.h
+MAINTAINERCLEANFILES = prototab.c prototab.h
 
 EXTRA_DIST = autogen.sh configure.msc $(noinst_SCRIPTS) rdiff.magic \
 	librsync.spec README.RPM libversions.txt \
@@ -60,8 +57,6 @@ rdiff_SOURCES = rdiff.c isprefix.c isprefix.h librsync.h librsync-config.h \
 	trace.h
 
 rdiff_LDADD = librsync.la
-
-rdiff_DEPENDENCIES = librsync.la
 
 # this script is used to build prototab.[ch]
 noinst_SCRIPTS = mkprototab.pl

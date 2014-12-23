@@ -35,7 +35,8 @@ AM_CONDITIONAL([HAVE_LIBPOPT], [test x"$HAVE_LIBPOPT" == xyes])
 AC_FUNC_ALLOCA
 AC_HEADER_STDC
 AC_CHECK_HEADERS([mcheck.h])
-AC_CHECK_HEADERS([fcntl.h inttypes.h libintl.h limits.h malloc.h stdint.h stdlib.h string.h sys/file.h unistd.h])
+AC_CHECK_HEADERS([fcntl.h inttypes.h libintl.h limits.h malloc.h stdint.h])
+AC_CHECK_HEADERS([stdlib.h string.h sys/file.h unistd.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -46,7 +47,7 @@ AC_SYS_LARGEFILE
 
 AC_CHECK_SIZEOF([unsigned char], 1)
 if test "$ac_cv_sizeof_unsigned_char" -ne 1; then
-  AC_MSG_WARN(unsigned char seems to be $ac_cv_sizeof_unsigned_char bytes.  Expect trouble.)
+  AC_MSG_WARN(unsigned char seems to be $ac_cv_sizeof_unsigned_char bytes.)
 fi
 AC_CHECK_SIZEOF(short)
 AC_CHECK_SIZEOF([unsigned short])
@@ -116,7 +117,9 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
   [ AC_MSG_RESULT(no) ])
 
 if test "$GCC" = "yes"; then # GCC
-  CFLAGS="-Wall -Wshadow -Wundef -Wwrite-strings -Wmissing-prototypes -Wmissing-declarations -Wstrict-prototypes -Wpointer-arith -Wcast-qual -Wcast-align $CFLAGS"
+  CFLAGS="$CFLAGS -Wall -Wshadow -Wundef -Wwrite-strings -Wmissing-prototypes"
+  CFLAGS="$CFLAGS -Wmissing-declarations -Wstrict-prototypes -Wpointer-arith"
+  CFLAGS="$CFLAGS -Wcast-qual -Wcast-align"
 fi
 # TODO: Similar conditions for other known compilers.  For SUNWspro, use `-v'.
 
@@ -131,8 +134,10 @@ if test "$enable_trace" = "yes"; then
   AC_DEFINE(DO_RS_TRACE,,[Define this to enable trace code])
 fi
 
-AC_DEFINE_UNQUOTED(RS_LIBVERSION, "$librsync_libversion",[Version of the libtool interface.])
-AC_DEFINE_UNQUOTED(RS_CANONICAL_HOST, "$host",[Canonical GNU hostname])
+AC_DEFINE_UNQUOTED(RS_LIBVERSION,
+  "$librsync_libversion",
+  [Version of the libtool interface.])
+AC_DEFINE_UNQUOTED(RS_CANONICAL_HOST, "$host", [Canonical GNU hostname])
 
 AC_SUBST(librsync_libversion)
 

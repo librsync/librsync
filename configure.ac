@@ -14,28 +14,29 @@ AM_INIT_AUTOMAKE([foreign])
 # library versioning
 librsync_libversion=2:0:0
 
-# Disable shared libs by default.
-AC_DISABLE_SHARED
-
 # Checks for programs.
-AC_GNU_SOURCE
+AC_USE_SYSTEM_EXTENSIONS
 AC_PROG_CC
-AC_ISC_POSIX
 AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_MAKE_SET
-AC_PROG_LIBTOOL
+# Disable shared libs by default.
+LT_INIT([disable-shared])
 
-# Checks for libraries.
-AC_CHECK_LIB(z, deflate)
-AC_CHECK_LIB(bz2, BZ2_bzCompress)
-AC_CHECK_LIB(popt, poptGetContext, [], AC_MSG_WARN([cannot find libpopt: won't be able to run tests or build rdiff]))
+# Checks for popt.
+AC_CHECK_LIB(popt, poptGetContext,
+  [HAVE_LIBPOPT=yes],
+  [AC_MSG_WARN(
+    [cannot find libpopt: won't be able to run tests or build rdiff]
+    )])
+AM_CONDITIONAL([HAVE_LIBPOPT], [test x"$HAVE_LIBPOPT" == xyes])
 
 # Checks for header files.
 AC_FUNC_ALLOCA
 AC_HEADER_STDC
-AC_CHECK_HEADERS([mcheck.h bzlib.h zlib.h])
-AC_CHECK_HEADERS([fcntl.h inttypes.h libintl.h limits.h malloc.h stdint.h stdlib.h string.h sys/file.h unistd.h])
+AC_CHECK_HEADERS([mcheck.h])
+AC_CHECK_HEADERS([fcntl.h inttypes.h libintl.h limits.h malloc.h stdint.h])
+AC_CHECK_HEADERS([stdlib.h string.h sys/file.h unistd.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -46,7 +47,7 @@ AC_SYS_LARGEFILE
 
 AC_CHECK_SIZEOF([unsigned char], 1)
 if test "$ac_cv_sizeof_unsigned_char" -ne 1; then
-  AC_MSG_WARN(unsigned char seems to be $ac_cv_sizeof_unsigned_char bytes.  Expect trouble.)
+  AC_MSG_WARN(unsigned char seems to be $ac_cv_sizeof_unsigned_char bytes.)
 fi
 AC_CHECK_SIZEOF(short)
 AC_CHECK_SIZEOF([unsigned short])
@@ -93,6 +94,9 @@ AC_CHECK_FUNC(setreuid, [],
 AC_CHECK_FUNCS(snprintf,,[AC_CHECK_FUNCS(_snprintf)])
 AC_CHECK_FUNCS(vsnprintf,,[AC_CHECK_FUNCS(_vsnprintf,,[AC_LIBOBJ(snprintf)])])
 
+AC_PATH_PROG(PERL, perl, [NOTFOUND])
+AS_IF([test x"$PERL" == xNOTFOUND], [AC_MSG_ERROR([perl not found])])
+
 # Test if the compiler has the GNU feature of putting argv[0] into a global
 AC_MSG_CHECKING([for program_invocation_short_name])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
@@ -113,28 +117,29 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
   [ AC_MSG_RESULT(no) ])
 
 if test "$GCC" = "yes"; then # GCC
-  CFLAGS="-Wall -Wshadow -Wundef -Wwrite-strings -Wmissing-prototypes -Wmissing-declarations -Wstrict-prototypes -Wpointer-arith -Wcast-qual -Wcast-align $CFLAGS"
-elif test "$CC" = "cl"; then # MSVC
-  CFLAGS="-Z7 -Od -MD $CFLAGS"
+  CFLAGS="$CFLAGS -Wall -Wshadow -Wundef -Wwrite-strings -Wmissing-prototypes"
+  CFLAGS="$CFLAGS -Wmissing-declarations -Wstrict-prototypes -Wpointer-arith"
+  CFLAGS="$CFLAGS -Wcast-qual -Wcast-align"
 fi
 # TODO: Similar conditions for other known compilers.  For SUNWspro, use `-v'.
 
 AC_ARG_ENABLE(ccmalloc,
-  AC_HELP_STRING([--enable-ccmalloc],[use ccmalloc debugger (default no)]),
+  AS_HELP_STRING([--enable-ccmalloc],[use ccmalloc debugger (default no)]),
   [ LIBS="$LIBS -lccmalloc -ldl" ])
 
 AC_ARG_ENABLE(trace,
-  AC_HELP_STRING([--disable-trace],[turn off library tracing]),
+  AS_HELP_STRING([--disable-trace],[turn off library tracing]),
   [enable_trace=$enableval],[enable_trace=yes])
 if test "$enable_trace" = "yes"; then
   AC_DEFINE(DO_RS_TRACE,,[Define this to enable trace code])
 fi
 
-AC_DEFINE_UNQUOTED(RS_LIBVERSION, "$librsync_libversion",[Version of the libtool interface.])
-AC_DEFINE_UNQUOTED(RS_CANONICAL_HOST, "$host",[Canonical GNU hostname])
+AC_DEFINE_UNQUOTED(RS_LIBVERSION,
+  "$librsync_libversion",
+  [Version of the libtool interface.])
+AC_DEFINE_UNQUOTED(RS_CANONICAL_HOST, "$host", [Canonical GNU hostname])
 
 AC_SUBST(librsync_libversion)
-AC_SUBST(BUILD_POPT)
 
 AC_CONFIG_FILES([ 
   Makefile 

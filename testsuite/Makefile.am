@@ -23,6 +23,7 @@ isprefix_driver_CPPFLAGS = -I$(srcdir)/..
 isprefix_driver_SOURCES  = isprefix.driver.c
 isprefix_driver_LDADD    = ../isprefix.o # XXX: should link replaced functions
 
+if HAVE_LIBPOPT
 # NB: tests should exit with code 77 if they can't be run but haven't
 # failed.  Generally these tests should be ordered so that more basic
 # tests are run first.
@@ -33,6 +34,7 @@ TESTS = \
 	delta.test triple.test changes.test
 
 noinst_SCRIPTS = testcommon.sh mutate.pl $(TESTS)
+endif
 
 test_data = dot \
 	changes.input/01.in changes.input/02.in \

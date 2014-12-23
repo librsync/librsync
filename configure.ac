@@ -24,7 +24,12 @@ AC_PROG_MAKE_SET
 LT_INIT([disable-shared])
 
 # Checks for popt.
-AC_CHECK_LIB(popt, poptGetContext, [], AC_MSG_WARN([cannot find libpopt: won't be able to run tests or build rdiff]))
+AC_CHECK_LIB(popt, poptGetContext,
+  [HAVE_LIBPOPT=yes],
+  [AC_MSG_WARN(
+    [cannot find libpopt: won't be able to run tests or build rdiff]
+    )])
+AM_CONDITIONAL([HAVE_LIBPOPT], [test x"$HAVE_LIBPOPT" == xyes])
 
 # Checks for header files.
 AC_FUNC_ALLOCA
@@ -89,12 +94,7 @@ AC_CHECK_FUNCS(snprintf,,[AC_CHECK_FUNCS(_snprintf)])
 AC_CHECK_FUNCS(vsnprintf,,[AC_CHECK_FUNCS(_vsnprintf,,[AC_LIBOBJ(snprintf)])])
 
 AC_PATH_PROG(PERL, perl, [NOTFOUND])
-AS_IF([test x"$PERL" == xNOTFOUND], [
-  AC_MSG_ERROR([
-    perl not found. Please set PERL environment variable to the correct perl
-    path for the perl program.
-  ])
-])
+AS_IF([test x"$PERL" == xNOTFOUND], [AC_MSG_ERROR([perl not found])])
 
 # Test if the compiler has the GNU feature of putting argv[0] into a global
 AC_MSG_CHECKING([for program_invocation_short_name])
@@ -137,7 +137,6 @@ AC_DEFINE_UNQUOTED(RS_LIBVERSION, "$librsync_libversion",[Version of the libtool
 AC_DEFINE_UNQUOTED(RS_CANONICAL_HOST, "$host",[Canonical GNU hostname])
 
 AC_SUBST(librsync_libversion)
-AC_SUBST(BUILD_POPT)
 
 AC_CONFIG_FILES([ 
   Makefile 

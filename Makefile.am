@@ -50,6 +50,7 @@ librsync_la_LDFLAGS = -version-info @librsync_libversion@
 # This is the default for any programs that don't specify a preference.
 LDADD = librsync.la
 
+if HAVE_LIBPOPT
 # This is the rdiff application
 bin_PROGRAMS = rdiff
 
@@ -57,6 +58,7 @@ rdiff_SOURCES = rdiff.c isprefix.c isprefix.h librsync.h librsync-config.h \
 	trace.h
 
 rdiff_LDADD = librsync.la
+endif
 
 # this script is used to build prototab.[ch]
 noinst_SCRIPTS = mkprototab.pl

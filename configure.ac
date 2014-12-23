@@ -88,6 +88,14 @@ AC_CHECK_FUNC(setreuid, [],
 AC_CHECK_FUNCS(snprintf,,[AC_CHECK_FUNCS(_snprintf)])
 AC_CHECK_FUNCS(vsnprintf,,[AC_CHECK_FUNCS(_vsnprintf,,[AC_LIBOBJ(snprintf)])])
 
+AC_PATH_PROG(PERL, perl, [NOTFOUND])
+AS_IF([test x"$PERL" == xNOTFOUND], [
+  AC_MSG_ERROR([
+    perl not found. Please set PERL environment variable to the correct perl
+    path for the perl program.
+  ])
+])
+
 # Test if the compiler has the GNU feature of putting argv[0] into a global
 AC_MSG_CHECKING([for program_invocation_short_name])
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM(

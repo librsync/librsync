@@ -53,12 +53,14 @@
 #include <fcntl.h>
 #include <popt.h>
 
+#if 0
 #ifdef HAVE_ZLIB_H
 #include <zlib.h>
 #endif
 
 #ifdef HAVE_BZLIB_H
 #include <bzlib.h>
+#endif
 #endif
 
 #include "librsync.h"
@@ -154,26 +156,17 @@ static void help(void) {
            "IO options:\n"
            "  -I, --input-size=BYTES    Input buffer size\n"
            "  -O, --output-size=BYTES   Output buffer size\n"
+#if 0
            "  -z, --gzip[=LEVEL]        gzip-compress deltas\n"
            "  -i, --bzip2[=LEVEL]       bzip2-compress deltas\n"
+#endif
            );
 }
 
 
 static void rdiff_show_version(void)
 {
-    char const *bzlib = "", *zlib = "", *trace = "";
-    
-#if 0
-    /* Compression isn't implemented so don't mention it. */
-#ifdef HAVE_LIBZ
-    zlib = ", gzip";
-#endif
-
-#ifdef HAVE_LIBBZ2
-    bzlib = ", bzip2";
-#endif
-#endif
+    char const *trace = "";
 
 #ifndef DO_RS_TRACE
     trace = ", trace disabled";
@@ -182,22 +175,21 @@ static void rdiff_show_version(void)
     printf("rdiff (%s) [%s]\n"
            "Copyright (C) 1997-2014 by Martin Pool, Andrew Tridgell and others.\n"
            "http://librsync.sourcefrog.net/\n"
-           "Capabilities: %ld bit files%s%s%s\n"
+           "Capabilities: %ld bit files%s\n"
            "\n"
            "librsync comes with NO WARRANTY, to the extent permitted by law.\n"
            "You may redistribute copies of librsync under the terms of the GNU\n"
            "Lesser General Public License.  For more information about these\n"
            "matters, see the files named COPYING.\n",
            rs_librsync_version, RS_CANONICAL_HOST,
-           (long) (8 * sizeof(rs_long_t)), zlib, bzlib, trace);
+           (long) (8 * sizeof(rs_long_t)), trace);
 }
 
 
 
 static void rdiff_options(poptContext opcon)
 {
-    int             c;
-    char const      *a;
+    int c;
     
     while ((c = poptGetNextOpt(opcon)) != -1) {
         switch (c) {
@@ -216,6 +208,9 @@ static void rdiff_options(poptContext opcon)
             
         case OPT_GZIP:
         case OPT_BZIP2:
+#if 0
+        {
+            char const *a;
             if ((a = poptGetOptArg(opcon))) {
                 int l = atoi(a);
                 if (c == OPT_GZIP)
@@ -228,6 +223,8 @@ static void rdiff_options(poptContext opcon)
                 else
                     bzip2_level = 9;      /* demand the best */
             }
+        }
+#endif
             rs_error("sorry, compression is not really implemented yet");
             exit(RS_UNIMPLEMENTED);
             

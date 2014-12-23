@@ -26,15 +26,13 @@ AC_PROG_INSTALL
 AC_PROG_MAKE_SET
 AC_PROG_LIBTOOL
 
-# Checks for libraries.
-AC_CHECK_LIB(z, deflate)
-AC_CHECK_LIB(bz2, BZ2_bzCompress)
+# Checks for popt.
 AC_CHECK_LIB(popt, poptGetContext, [], AC_MSG_WARN([cannot find libpopt: won't be able to run tests or build rdiff]))
 
 # Checks for header files.
 AC_FUNC_ALLOCA
 AC_HEADER_STDC
-AC_CHECK_HEADERS([mcheck.h bzlib.h zlib.h])
+AC_CHECK_HEADERS([mcheck.h])
 AC_CHECK_HEADERS([fcntl.h inttypes.h libintl.h limits.h malloc.h stdint.h stdlib.h string.h sys/file.h unistd.h])
 
 # Checks for typedefs, structures, and compiler characteristics.

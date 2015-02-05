@@ -1,0 +1,193 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug LIB|Win32">
+      <Configuration>Debug LIB</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release LIB|Win32">
+      <Configuration>Release LIB</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <SccProjectName />
+    <SccLocalPath />
+    <ProjectGuid>{2F7937D5-3051-4377-8C5C-E6540D3A168D}</ProjectGuid>
+    <ProjectName>librsync</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release LIB|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug LIB|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release LIB|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug LIB|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug LIB|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)\Build\Debug\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release LIB|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)\Build\Release\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug LIB|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <Optimization>Disabled</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <MinimalRebuild>true</MinimalRebuild>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <AdditionalIncludeDirectories>../;../../;../../popt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>VISUALSTUDIO;HAVE_CONFIG_H;_DEBUG;WIN32;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+    </ClCompile>
+    <Midl>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>.\..\..\rdiff.tlb</TypeLibraryName>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <TargetEnvironment>Win32</TargetEnvironment>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0c09</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\..\..\rdiff.bsc</OutputFile>
+    </Bscmake>
+    <Link>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release LIB|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>MaxSpeed</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>../;../../;../../popt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>VISUALSTUDIO;HAVE_CONFIG_H;NDEBUG;WIN32;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Midl>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>.\Release\rdiff.tlb</TypeLibraryName>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <TargetEnvironment>Win32</TargetEnvironment>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0c09</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\Release\rdiff.bsc</OutputFile>
+    </Bscmake>
+    <Link>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <SubSystem>Console</SubSystem>
+      <OutputFile>.\Release\rdiff.exe</OutputFile>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\base64.c" />
+    <ClCompile Include="..\..\buf.c" />
+    <ClCompile Include="..\..\checksum.c" />
+    <ClCompile Include="..\..\command.c" />
+    <ClCompile Include="..\..\delta.c" />
+    <ClCompile Include="..\..\emit.c" />
+    <ClCompile Include="..\..\fileutil.c" />
+    <ClCompile Include="..\..\hex.c" />
+    <ClCompile Include="..\..\isprefix.c" />
+    <ClCompile Include="..\..\job.c" />
+    <ClCompile Include="..\..\mdfour.c" />
+    <ClCompile Include="..\..\mksum.c" />
+    <ClCompile Include="..\..\msg.c" />
+    <ClCompile Include="..\..\netint.c" />
+    <ClCompile Include="..\..\patch.c" />
+    <ClCompile Include="..\..\popt\findme.c" />
+    <ClCompile Include="..\..\popt\popt.c" />
+    <ClCompile Include="..\..\popt\poptconfig.c" />
+    <ClCompile Include="..\..\popt\popthelp.c" />
+    <ClCompile Include="..\..\popt\poptparse.c" />
+    <ClCompile Include="..\..\prototab.c" />
+    <ClCompile Include="..\..\rdiff.c" />
+    <ClCompile Include="..\..\readsums.c" />
+    <ClCompile Include="..\..\rollsum.c" />
+    <ClCompile Include="..\..\scoop.c" />
+    <ClCompile Include="..\..\search.c" />
+    <ClCompile Include="..\..\stats.c" />
+    <ClCompile Include="..\..\stream.c" />
+    <ClCompile Include="..\..\sumset.c" />
+    <ClCompile Include="..\..\trace.c" />
+    <ClCompile Include="..\..\tube.c" />
+    <ClCompile Include="..\..\util.c" />
+    <ClCompile Include="..\..\version.c" />
+    <ClCompile Include="..\..\whole.c" />
+    <ClCompile Include="..\blake2b-ref.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\acconfig.h" />
+    <ClInclude Include="..\..\buf.h" />
+    <ClInclude Include="..\..\checksum.h" />
+    <ClInclude Include="..\..\command.h" />
+    <ClInclude Include="..\..\emit.h" />
+    <ClInclude Include="..\..\fileutil.h" />
+    <ClInclude Include="..\..\isprefix.h" />
+    <ClInclude Include="..\..\job.h" />
+    <ClInclude Include="..\..\librsync.h" />
+    <ClInclude Include="..\..\netint.h" />
+    <ClInclude Include="..\..\popt\findme.h" />
+    <ClInclude Include="..\..\popt\popt.h" />
+    <ClInclude Include="..\..\popt\poptint.h" />
+    <ClInclude Include="..\..\popt\system.h" />
+    <ClInclude Include="..\..\protocol.h" />
+    <ClInclude Include="..\..\prototab.h" />
+    <ClInclude Include="..\..\search.h" />
+    <ClInclude Include="..\..\snprintf.h" />
+    <ClInclude Include="..\..\stream.h" />
+    <ClInclude Include="..\..\sumset.h" />
+    <ClInclude Include="..\..\trace.h" />
+    <ClInclude Include="..\..\types.h" />
+    <ClInclude Include="..\..\util.h" />
+    <ClInclude Include="..\..\whole.h" />
+    <ClInclude Include="..\blake2-impl.h" />
+    <ClInclude Include="..\blake2.h" />
+    <ClInclude Include="..\config.h" />
+    <ClInclude Include="..\librsync-config.h" />
+    <ClInclude Include="..\visualstudio.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "librsync", "librsync\librsync.vcxproj", "{2F7937D5-3051-4377-8C5C-E6540D3A168D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "rdiff", "rdiff\rdiff.vcxproj", "{1375DD46-539F-41CB-BE7A-F0B8100B6759}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2F7937D5-3051-4377-8C5C-E6540D3A168D} = {2F7937D5-3051-4377-8C5C-E6540D3A168D}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Rdiff Debug DLL|Win32 = Rdiff Debug DLL|Win32
+		Rdiff Debug EXE|Win32 = Rdiff Debug EXE|Win32
+		Rdiff Release DLL|Win32 = Rdiff Release DLL|Win32
+		Rdiff Release EXE|Win32 = Rdiff Release EXE|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2F7937D5-3051-4377-8C5C-E6540D3A168D}.Rdiff Debug DLL|Win32.ActiveCfg = Debug LIB|Win32
+		{2F7937D5-3051-4377-8C5C-E6540D3A168D}.Rdiff Debug DLL|Win32.Build.0 = Debug LIB|Win32
+		{2F7937D5-3051-4377-8C5C-E6540D3A168D}.Rdiff Debug EXE|Win32.ActiveCfg = Debug LIB|Win32
+		{2F7937D5-3051-4377-8C5C-E6540D3A168D}.Rdiff Debug EXE|Win32.Build.0 = Debug LIB|Win32
+		{2F7937D5-3051-4377-8C5C-E6540D3A168D}.Rdiff Release DLL|Win32.ActiveCfg = Release LIB|Win32
+		{2F7937D5-3051-4377-8C5C-E6540D3A168D}.Rdiff Release DLL|Win32.Build.0 = Release LIB|Win32
+		{2F7937D5-3051-4377-8C5C-E6540D3A168D}.Rdiff Release EXE|Win32.ActiveCfg = Release LIB|Win32
+		{2F7937D5-3051-4377-8C5C-E6540D3A168D}.Rdiff Release EXE|Win32.Build.0 = Release LIB|Win32
+		{1375DD46-539F-41CB-BE7A-F0B8100B6759}.Rdiff Debug DLL|Win32.ActiveCfg = Debug DLL|Win32
+		{1375DD46-539F-41CB-BE7A-F0B8100B6759}.Rdiff Debug DLL|Win32.Build.0 = Debug DLL|Win32
+		{1375DD46-539F-41CB-BE7A-F0B8100B6759}.Rdiff Debug EXE|Win32.ActiveCfg = Debug EXE|Win32
+		{1375DD46-539F-41CB-BE7A-F0B8100B6759}.Rdiff Debug EXE|Win32.Build.0 = Debug EXE|Win32
+		{1375DD46-539F-41CB-BE7A-F0B8100B6759}.Rdiff Release DLL|Win32.ActiveCfg = Release DLL|Win32
+		{1375DD46-539F-41CB-BE7A-F0B8100B6759}.Rdiff Release DLL|Win32.Build.0 = Release DLL|Win32
+		{1375DD46-539F-41CB-BE7A-F0B8100B6759}.Rdiff Release EXE|Win32.ActiveCfg = Release EXE|Win32
+		{1375DD46-539F-41CB-BE7A-F0B8100B6759}.Rdiff Release EXE|Win32.Build.0 = Release EXE|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

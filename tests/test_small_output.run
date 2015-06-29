@@ -1,0 +1,39 @@
+#! /bin/sh
+
+gcc -o test_small_output.test test_small_output.c -I.. -L../.libs/ -lrsync
+
+echo TestSmallOutput_1_1_30 ; ./test_small_output.test 1 1 30
+echo
+echo TestSmallOutput_1_1_1 ; ./test_small_output.test 1 1 1
+echo
+echo TestSmallOutput_20000_1_30 ; ./test_small_output.test 20000 1 30
+echo
+echo TestSmallOutput_20000_1_1 ; ./test_small_output.test 20000 1 1
+echo
+
+echo TestSmallOutput_0_20_0 ; ./test_small_output.test 0 20 0
+echo
+echo TestSmallOutput_0_10_30 ; ./test_small_output.test 0 10 30
+echo
+echo TestSmallOutput_0_0_30 ; ./test_small_output.test 0 0 30
+echo
+echo TestSmallOutput_0_1_1 ; ./test_small_output.test 0 1 1
+echo
+
+echo TestSmallOutput_20000_1000_30 ; ./test_small_output.test 20000 1000 30
+echo
+echo TestSmallOutput_20000_1000_1 ; ./test_small_output.test 20000 1000 1
+echo
+
+echo TestSmallOutput_2000000_16000_16000 ; ./test_small_output.test 2000000 16000 16000
+echo
+echo TestSmallOutput_2000000_16000_30 ; ./test_small_output.test 2000000 16000 30
+echo TestSmallOutput_2000000_1000_30 ; ./test_small_output.test 2000000 1000 30
+echo
+echo TestSmallOutput_2000000_1000_1 ; ./test_small_output.test 2000000 1000 1
+echo
+
+echo TestSmallOutput_1_1000_30 ; ./test_small_output.test 1 1000 30
+echo
+echo TestSmallOutput_1_1000_1 ; ./test_small_output.test 1 1000 1
+echo

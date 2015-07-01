@@ -1,0 +1,24 @@
+#! /bin/sh
+
+gcc -g -Wall -o test_delta_read.test test_delta_read.c -I.. -L../.libs/ -lrsync
+echo '======================================================================='
+echo '  very small input (1 bytes), very small delta - 8 bytes'
+echo
+echo '------ be good -----'
+./test_delta_read.test 1 0
+echo
+echo '------ be bad -----'
+./test_delta_read.test 1 1
+echo
+
+echo
+echo
+echo '======================================================================='
+echo '  large input (2e6 bytes), delta of 6844 bytes'
+echo
+echo '------ be good -----'
+./test_delta_read.test 2000000 0
+echo
+echo '------ be bad -----'
+./test_delta_read.test 2000000 1
+echo

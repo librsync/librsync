@@ -209,13 +209,14 @@ static rs_result rs_patch_s_copy(rs_job_t *job)
 static rs_result rs_patch_s_copying(rs_job_t *job)
 {
     rs_result       result;
-    size_t          len;
+    size_t          len, requested_len;
     void            *buf, *ptr;
     rs_buffers_t    *buffs = job->stream;
 
     /* copy only as much as will fit in the output buffer, so that we
      * don't have to block or store the input. */
     len = (buffs->avail_out < job->basis_len) ? buffs->avail_out : job->basis_len;
+    requested_len = len; /* remember for asserting correct behaviour */
 
     if (!len)
         return RS_BLOCKED;
@@ -226,6 +227,10 @@ static rs_result rs_patch_s_copying(rs_job_t *job)
     ptr = buf = rs_alloc(len, "basis buffer");
     
     result = (job->copy_cb)(job->copy_arg, job->basis_pos, &len, &ptr);
+
+    if (len > requested_len)
+        rs_fatal("rb_copy_cb() must only return UP TO the requested 'len'");
+
     if (result != RS_DONE)
         return result;
     else

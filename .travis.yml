@@ -4,3 +4,6 @@ language: c
 script: ./autogen.sh && ./configure && make && make check
 # separate `make` shouldn't be necessary - https://github.com/librsync/librsync/issues/1
 
+compiler:
+  - clang
+  - gcc

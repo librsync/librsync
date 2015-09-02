@@ -7,3 +7,5 @@ script: ./autogen.sh && ./configure && make && make check
 compiler:
   - clang
   - gcc
+
+sudo: false

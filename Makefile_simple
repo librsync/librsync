@@ -1,0 +1,9 @@
+# For OS X
+shlib_suffix = .dylib
+
+rdiff: ./target/debug/librsync_rs$(shlib_suffix) Makefile_simple src/rdiff.c
+	clang -o rdiff src/rdiff.c src/isprefix.c \
+	-L . "-Wl,-rpath,`pwd`" \
+	-lpopt -I /usr/local/include -L /usr/local/lib -l rsync \
+	-L ./target/debug "-Wl,-rpath,`pwd`/target/debug" \
+	-l rsync_rs

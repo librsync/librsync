@@ -158,6 +158,8 @@ if(DOXYGEN_FOUND)
     )
 endif(DOXYGEN_FOUND)
 
+# TODO: Build the Rust part as an external dependency?
+
 # Generate prototab.c/h
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/src)
 execute_process(COMMAND ${PERL_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/src/mkprototab.pl" "${CMAKE_CURRENT_BINARY_DIR}/src/prototab.c" "${CMAKE_CURRENT_BINARY_DIR}/src/prototab.h")
@@ -236,6 +238,10 @@ target_link_libraries(rsync
    ${BZIP2_LIBRARIES}
    ${ZLIB_LIBRARIES}
 )
+
+target_link_libraries(rsync
+    debug "${CMAKE_SOURCE_DIR}/target/debug/librsync_rs${CMAKE_SHARED_LIBRARY_SUFFIX}"
+    optimized "${CMAKE_SOURCE_DIR}/target/release/librsync_rs${CMAKE_SHARED_LIBRARY_SUFFIX}")
 
 set_target_properties(rsync PROPERTIES VERSION ${LIBRSYNC_VERSION}
         SOVERSION ${LIBRSYNC_MAJOR_VERSION})

@@ -1,0 +1,16 @@
+[package]
+name = "rsync_rs"
+version = "2.0.0"
+authors = ["Martin Pool <mbp@sourcefrog.net>"]
+
+[[bin]]
+name = "rdiff_rs"
+doc = false
+
+[dependencies]
+getopts = "0.2"
+libc = "0.2"
+
+[lib]
+# See https://github.com/rust-lang/rust/issues/19680
+crate-type = ["rlib", "dylib", "lib"]

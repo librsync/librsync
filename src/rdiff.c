@@ -198,6 +198,8 @@ static void rdiff_options(poptContext opcon)
 {
     int             c;
     char const      *a;
+    
+    rs_hello();
 
     while ((c = poptGetNextOpt(opcon)) != -1) {
         switch (c) {

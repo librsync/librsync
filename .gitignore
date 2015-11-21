@@ -1,4 +1,3 @@
-rdiff
 *.o
 CMakeCache.txt
 CTestTestfile.cmake
@@ -30,3 +29,10 @@ Testing
 .sw?
 .*.sw?
 isprefix_test
+
+# Binary output
+rdiff
+
+# Rust implementation
+target/
+Cargo.lock

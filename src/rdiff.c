@@ -173,14 +173,14 @@ static void rdiff_show_version(void)
 #ifdef HAVE_LIBBZ2
     bzlib = ", bzip2";
 #endif
-#endif
+#endif /* if 0 */
 
 #ifndef DO_RS_TRACE
     trace = ", trace disabled";
 #endif
 
-    printf("rdiff (%s) [%s]\n"
-           "Copyright (C) 1997-2014 by Martin Pool, Andrew Tridgell and others.\n"
+    printf("rdiff (%s)\n"
+           "Copyright (C) 1997-2015 by Martin Pool, Andrew Tridgell and others.\n"
            "http://librsync.sourcefrog.net/\n"
            "Capabilities: %ld bit files%s%s%s\n"
            "\n"
@@ -188,7 +188,7 @@ static void rdiff_show_version(void)
            "You may redistribute copies of librsync under the terms of the GNU\n"
            "Lesser General Public License.  For more information about these\n"
            "matters, see the files named COPYING.\n",
-           rs_librsync_version, RS_CANONICAL_HOST,
+           rs_version(),
            (long) (8 * sizeof(rs_long_t)), zlib, bzlib, trace);
 }
 
@@ -199,8 +199,6 @@ static void rdiff_options(poptContext opcon)
     int             c;
     char const      *a;
     
-    rs_hello();
-
     while ((c = poptGetNextOpt(opcon)) != -1) {
         switch (c) {
         case 'h':

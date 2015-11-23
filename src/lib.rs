@@ -17,9 +17,12 @@
 
 extern crate libc;
 
-pub const VERSION: &'static str = env!("CARGO_PKG_VERSION");
+// pub const VERSION: &'static str = env!("CARGO_PKG_VERSION");
+
+pub static VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
 #[no_mangle]
-pub extern fn rs_hello() {
-    println!("hello from rust!");
+pub extern fn rs_version() -> *const libc::c_char {
+    // Version from environment has nul termination (I think we can count on this?)
+    return VERSION.as_ptr() as *const libc::c_char;
 }

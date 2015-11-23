@@ -1,3 +1,8 @@
+## Rust port
+
+* How to handle rs_version, exposing a static string char*?
+
+## Misc
 * Upload built documentation to librsync.sourcefrog.net, delete dead sites.
 
 * Documentation

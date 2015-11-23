@@ -47,8 +47,10 @@
 extern "C" {
 #endif
 
-extern char const rs_librsync_version[];
+/* rs_librsync_version was replaced by rs_version() in 2.0 */
 extern char const rs_licence_string[];
+
+const char* rs_version();
 
 typedef unsigned char rs_byte_t;
 

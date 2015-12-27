@@ -151,7 +151,9 @@ rs_build_hash_table(rs_signature_t * sums)
 
 
 
-/*
+/**
+ * \private
+ *
  * See if there is a match for the specified block INBUF..BLOCK_LEN in
  * the checksum set, using precalculated WEAK_SUM.
  *
@@ -161,7 +163,7 @@ rs_build_hash_table(rs_signature_t * sums)
  * anything.
  */
 int
-rs_search_for_block(rs_weak_sum_t weak_sum,
+rs__search_for_block(rs_weak_sum_t weak_sum,
                     const rs_byte_t *inbuf,
                     size_t block_len,
                     rs_signature_t const *sig, rs_stats_t * stats,
@@ -199,8 +201,6 @@ rs_search_for_block(rs_weak_sum_t weak_sum,
                 } else if (sig->magic == RS_MD4_SIG_MAGIC) {
                     rs_calc_md4_sum(inbuf, block_len, &strong_sum);
                 } else {
-                    /* Bad input data is checked in rs_delta_begin, so this
-                     * should never be reached. */
                     rs_fatal("Unknown signature algorithm %#x", sig->magic);
                     return 0;
                 }

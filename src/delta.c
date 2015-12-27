@@ -270,7 +270,7 @@ inline int rs_findmatch(rs_job_t *job, rs_long_t *match_pos, size_t *match_len) 
         /* set the match_len to the weak_sum count */
         *match_len=job->weak_sum.count;
     }
-    return rs_search_for_block(RollsumDigest(&job->weak_sum),
+    return rs__search_for_block(RollsumDigest(&job->weak_sum),
                                job->scoop_next+job->scoop_pos,
                                *match_len,
                                job->signature,

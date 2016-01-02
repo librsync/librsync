@@ -2,7 +2,7 @@
  *
  * librsync -- the library for network deltas
  *
- * Copyright (C) 1999, 2000, 2001, 2014 by Martin Pool <mbp@sourcefrog.net>
+ * Copyright (C) 1999, 2000, 2001, 2014, 2015, 2016 by Martin Pool
  * Copyright (C) 1999 by Andrew Tridgell
  *
  * This program is free software; you can redistribute it and/or modify
@@ -25,13 +25,6 @@
  * values.
  */
 
-/*
- * TODO: The common case is that the next block in both streams
- * match. Can we make that a bit faster at all?  We'd need to perhaps
- * add a link forward between blocks in the sum_struct corresponding
- * to the order they're found in the input; then before doing a search
- * we can just check that pointer.
- */
 
 #include "config.h"
 

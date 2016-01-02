@@ -51,6 +51,10 @@
        hash-table, and this is going to make a much bigger difference than
        optimizing the copy commands.
   
+  We can also possibly improve the search.c code for consecutive matches: this
+  might require adding additional indexing into the sumset structure to point to
+  following blocks. I don't think it requires a wire format change.
+  
 * Optimisations and code cleanups;
 
   scoop.c: Scoop needs major refactor. Perhaps the API needs

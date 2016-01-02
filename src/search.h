@@ -21,7 +21,7 @@
  */
 
 int
-rs_search__for_block(rs_weak_sum_t weak_sum,
+rs__search_for_block(rs_weak_sum_t weak_sum,
                     const rs_byte_t *inbuf,
                     size_t block_len,
                     rs_signature_t const *sums, rs_stats_t * stats,

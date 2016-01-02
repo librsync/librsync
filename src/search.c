@@ -20,9 +20,10 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/*
- * This file contains code for searching the sumset for matching
- * values.
+/**
+ * \file
+ *
+ * Searching an \ref ::rs_signature for matching values.
  */
 
 
@@ -154,6 +155,11 @@ rs_build_hash_table(rs_signature_t * sums)
  * up.  If we do find a weak match, then we proceed to calculate the
  * strong checksum for the current block, and see if it will match
  * anything.
+ *
+ * This does a binary search on a two-part key of the weak sum and then the
+ * strong sum.
+ *
+ * \returns True if an exact match was found.
  */
 int
 rs__search_for_block(rs_weak_sum_t weak_sum,

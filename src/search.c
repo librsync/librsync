@@ -144,7 +144,6 @@ rs_build_hash_table(rs_signature_t * sums)
 }
 
 
-
 /**
  * \private
  *
@@ -169,28 +168,39 @@ rs__search_for_block(rs_weak_sum_t weak_sum,
                     rs_long_t * match_where)
 {
     /* Caller must have called rs_build_hash_table() by now */
-    if (!sig->tag_table)
+    if (!sig->tag_table) {
         rs_fatal("Must have called rs_build_hash_table() by now");
+        return 0;
+    }
 
     rs_strong_sum_t strong_sum;
     int got_strong = 0;
     int hash_tag = gettag(weak_sum);
     rs_tag_table_entry_t *bucket = &(sig->tag_table[hash_tag]);
-    int l = bucket->l; /* left bound of search region */
-    int r = bucket->r + 1; /* right bound of search region */
-    int v = 1; /* direction of next move: -ve left, +ve right */
+    int l = bucket->l; /* Left inclusive bound of search region */
+    int r = bucket->r; /* Right inclusive bound of search region */
+    int v;  /* direction of next move: -ve left, +ve right */
 
     if (l == NULL_TAG)
         return 0;
 
-    while (l < r) {
+    while (1) {
         int m = (l + r) >> 1; /* midpoint of search region */
+        if (m < 0 || m >= sig->count) {
+            rs_fatal("bisection m=%d out of range [0,%d]", m, sig->count);
+            return 0;
+        }
         int i = sig->targets[m].i;
-        rs_block_sig_t *b = &(sig->block_sigs[i]);
+        const rs_block_sig_t *b = &(sig->block_sigs[i]);
         v = (weak_sum > b->weak_sum) - (weak_sum < b->weak_sum);
         // v < 0  - weak_sum <  b->weak_sum
         // v == 0 - weak_sum == b->weak_sum
         // v > 0  - weak_sum >  b->weak_sum
+        
+        if (l == r && v != 0) {
+            /* Weak sum doesn't match and there's no other options to search. */
+            return 0;
+        }
 
         if (v == 0) {
             if (!got_strong) {
@@ -206,40 +216,22 @@ rs__search_for_block(rs_weak_sum_t weak_sum,
                 got_strong = 1;
             }
             v = memcmp(strong_sum, b->strong_sum, sig->strong_sum_len);
-
             if (v == 0) {
-                l = m;
-                r = m;
-                break;
+                int token = b->i;
+                *match_where = (rs_long_t)(token - 1) * sig->block_len;
+                return 1;
             }
         }
 
-        if (v > 0)
-            l = m + 1;
-        else
-            r = m;
-    }
-
-    if (l == r) {
-        int i = sig->targets[l].i;
-        rs_block_sig_t *b = &(sig->block_sigs[i]);
-        if (weak_sum != b->weak_sum)
+        /* Mismatched on either the weak or strong sum: continue to bisect into
+         * the range, if any remains. */
+        if (l == r)
             return 0;
-        if (!got_strong) {
-            if(sig->magic == RS_BLAKE2_SIG_MAGIC) {
-                rs_calc_blake2_sum(inbuf, block_len, &strong_sum);
-            } else if (sig->magic == RS_MD4_SIG_MAGIC) {
-                rs_calc_md4_sum(inbuf, block_len, &strong_sum);
-            } else {
-                rs_error("Unknown signature algorithm - this is a BUG");
-                return 0; /* FIXME: Is this the best way to handle this? */
-            }
-            got_strong = 1;
+        else if (v > 0) {
+            l = m + 1;
+        } else {
+            r = m - 1;
         }
-        v = memcmp(strong_sum, b->strong_sum, sig->strong_sum_len);
-        int token = b->i;
-        *match_where = (rs_long_t)(token - 1) * sig->block_len;
     }
-
-    return !v;
+    return 0;
 }

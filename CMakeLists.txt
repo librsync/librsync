@@ -27,6 +27,7 @@ set(LIBRSYNC_VERSION
 
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+include(CodeCoverage)
 
 if (NOT CMAKE_SYSTEM_PROCESSOR)
 	message(FATAL_ERROR "No target CPU architecture set")
@@ -113,7 +114,7 @@ if (CMAKE_C_COMPILER_ID MATCHES "(Clang|Gnu|GNU)")
   # TODO: Set for MSVC and other compilers.
   # TODO: Set -Werror when the build is clean.
 
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -O0 -g --coverage")
 endif()
 
 site_name(SITE_NAME)
@@ -173,6 +174,11 @@ add_test(NAME rdiff_bad_option
          WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 
 add_executable(isprefix_test tests/isprefix_test.c src/isprefix.c)
+
+
+setup_target_for_coverage(isprefix_coverage
+        isprefix_test coverage)
+
 
 set_property(TARGET isprefix_test
     PROPERTY COMPILE_FLAGS " --coverage -g")

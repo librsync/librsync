@@ -38,3 +38,4 @@ isprefix_test
 # for rtags
 compile_commands.json
 coverage
+doxygen_sqlite3.db

@@ -25,6 +25,7 @@ set(LIBRSYNC_PATCH_VERSION 1)
 set(LIBRSYNC_VERSION
   ${LIBRSYNC_MAJOR_VERSION}.${LIBRSYNC_MINOR_VERSION}.${LIBRSYNC_PATCH_VERSION})
 
+
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 if (NOT CMAKE_SYSTEM_PROCESSOR)
@@ -172,6 +173,12 @@ add_test(NAME rdiff_bad_option
          WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 
 add_executable(isprefix_test tests/isprefix_test.c src/isprefix.c)
+
+set_property(TARGET isprefix_test
+    PROPERTY COMPILE_FLAGS " --coverage -g")
+
+set_property(TARGET isprefix_test
+    PROPERTY LINK_FLAGS " --coverage -g")
 
 add_test(NAME isprefix_test COMMAND isprefix_test)
 

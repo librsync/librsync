@@ -13,6 +13,18 @@ NOT RELEASED YET
    Remove declaration of unimplemented `rs_mdfour_file()`.
    (Martin Pool)
  
+ * Remove shipped `snprintf` code: no longer acutally linked after changing to
+   CMake, and since it's part of C99 it should be widely available.
+   (Martin Pool)
+
+ * Document that Ninja (http://ninja-build.org/) is supported under CMake.
+   It's a bit faster and nicer than Make.
+   (Martin Pool)
+
+ * `make check` (or `ninja check` etc) will now build and run the tests.
+   Previously due to a CMake limitation, `make test` would only run existing
+   tests and could fail if they weren't built.
+   (Martin Pool, https://github.com/librsync/librsync/issues/49)
 
 ## librsync 2.0.0
 

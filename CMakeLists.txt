@@ -1,17 +1,19 @@
 # Copyright (C) 2015 Adam Schubert <adam.schubert@sg1-game.net>
+# Copyright 2016 Martin Pool
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation; either version 2.1 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+# GNU Lesser General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 
 project(librsync)
@@ -66,12 +68,8 @@ check_function_exists ( alloca HAVE_ALLOCA )
 check_function_exists ( fseeko HAVE_FSEEKO )
 check_function_exists ( memmove HAVE_MEMMOVE )
 check_function_exists ( memset HAVE_MEMSET )
-check_function_exists ( snprintf HAVE_SNPRINTF )
 check_function_exists ( strchr HAVE_STRCHR )
 check_function_exists ( strerror HAVE_STRERROR )
-check_function_exists ( vsnprintf HAVE_VSNPRINTF )
-check_function_exists ( _snprintf HAVE__SNPRINTF )
-check_function_exists ( _vsnprintf HAVE__VSNPRINTF )
 
 include(CheckTypeSize)
 check_type_size ( "long" SIZEOF_LONG )
@@ -112,10 +110,18 @@ if(APPLE)
   endif()
 endif()
 
-site_name(SITE_NAME)
+if (CMAKE_C_COMPILER_ID MATCHES "(Clang|Gnu|GNU)")
+  # TODO: Set for MSVC and other compilers.
+  # TODO: Set -Werror when the build is clean.
+
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
+endif()
+
+site_name(BUILD_HOSTNAME)
 
 message (STATUS "PROJECT_NAME  = ${PROJECT_NAME}")
-message (STATUS "SITE_NAME  = ${SITE_NAME}")
+message (STATUS "BUILD_HOSTNAME = ${BUILD_HOSTNAME}")
+message (STATUS "CMAKE_SYSTEM = ${CMAKE_SYSTEM}")
 
 # Find POPT
 find_package(POPT REQUIRED)
@@ -164,17 +170,30 @@ execute_process(COMMAND ${PERL_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/src/mkpr
 
 # Testing
 
-add_executable(isprefix_test tests/isprefix_test.c src/isprefix.c)
+add_test(NAME rdiff_bad_option
+         COMMAND rdiff_bad_option.sh ${CMAKE_CURRENT_BINARY_DIR}
+         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+
+add_executable(isprefix_test
+    tests/isprefix_test.c src/isprefix.c)
 
 add_test(NAME isprefix_test COMMAND isprefix_test)
 
 add_test(NAME Help COMMAND help.test ${CMAKE_CURRENT_BINARY_DIR} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+
 add_test(NAME Mutate COMMAND mutate.test ${CMAKE_CURRENT_BINARY_DIR} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 add_test(NAME Signature COMMAND signature.test ${CMAKE_CURRENT_BINARY_DIR} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 add_test(NAME Sources COMMAND sources.test ${CMAKE_CURRENT_BINARY_DIR} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 add_test(NAME Triple COMMAND triple.test ${CMAKE_CURRENT_BINARY_DIR} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 add_test(NAME Delta COMMAND delta.test ${CMAKE_CURRENT_BINARY_DIR} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 add_test(NAME Changes COMMAND changes.test ${CMAKE_CURRENT_BINARY_DIR} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+
+
+# `make check` that will build everything and then run the tests.
+# See https://cmake.org/Wiki/CMakeEmulateMakeCheck and
+# https://github.com/librsync/librsync/issues/49
+add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
+add_dependencies(check rdiff isprefix_test)
 
 
 enable_testing()
@@ -261,3 +280,7 @@ install(FILES
         src/librsync.h
         ${CMAKE_CURRENT_BINARY_DIR}/src/librsync-config.h
         DESTINATION include)
+
+message (STATUS "CMAKE_C_FLAGS  = ${CMAKE_C_FLAGS}")
+
+# vim: shiftwidth=4 expandtab

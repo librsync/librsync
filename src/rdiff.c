@@ -66,7 +66,6 @@
 #include "util.h"
 #include "trace.h"
 #include "isprefix.h"
-#include "snprintf.h"
 
 
 #define PROGRAM "rdiff"
@@ -125,12 +124,8 @@ static void rdiff_no_more_args(poptContext opcon)
 
 static void bad_option(poptContext opcon, int error)
 {
-    char       msgbuf[1000];
-
-    snprintf(msgbuf, sizeof msgbuf-1, "%s: %s: %s",
-             PROGRAM, poptStrerror(error), poptBadOption(opcon, 0));
-    rdiff_usage(msgbuf);
-
+    fprintf(stderr, "%s: %s: %s",
+            PROGRAM, poptStrerror(error), poptBadOption(opcon, 0));
     exit(RS_SYNTAX_ERROR);
 }
 
@@ -179,8 +174,8 @@ static void rdiff_show_version(void)
     trace = ", trace disabled";
 #endif
 
-    printf("rdiff (%s) [%s]\n"
-           "Copyright (C) 1997-2014 by Martin Pool, Andrew Tridgell and others.\n"
+    printf("rdiff (%s)\n"
+           "Copyright (C) 1997-2016 by Martin Pool, Andrew Tridgell and others.\n"
            "http://librsync.sourcefrog.net/\n"
            "Capabilities: %ld bit files%s%s%s\n"
            "\n"
@@ -188,7 +183,7 @@ static void rdiff_show_version(void)
            "You may redistribute copies of librsync under the terms of the GNU\n"
            "Lesser General Public License.  For more information about these\n"
            "matters, see the files named COPYING.\n",
-           rs_librsync_version, RS_CANONICAL_HOST,
+           rs_librsync_version,
            (long) (8 * sizeof(rs_long_t)), zlib, bzlib, trace);
 }
 

@@ -6,18 +6,20 @@ To build librsync you will need:
 
 * A C compiler and appropriate headers and libraries
 
-* Make
+* [CMake]
+
+* Some build tool supported by CMake: [Make] is most common,
+  [Ninja] is nicer.
 
 * [popt] command line parsing library
-
-* [CMake]
 
 * [Doxygen] - optional, to build docs
 
 [popt]: http://rpm5.org/files/popt/
 [CMake]: http://cmake.org/
 [Doxygen]: https://www.stack.nl/~dimitri/doxygen
-
+[Ninja]: http://build-ninja.org
+[Make]: https://www.gnu.org/software/make/
 
 ## Building
 
@@ -29,11 +31,9 @@ After building you can install `rdiff` and `librsync` for system-wide use.
 
     $ make
     
-To run the tests:
+To build and run the tests:
 
-    $ make test
-    
-(Note that [CMake will not automatically build before testing](https://github.com/librsync/librsync/issues/49).)
+    $ make check
 
 To install:
 
@@ -53,6 +53,17 @@ If you are using GNU libc, you might like to use
 to detect some allocation bugs.
 
 librsync has annotations for the SPLINT static checking tool.
+
+
+## Ninja builds
+
+CMake generates input files for an underlying build tool that will actually do
+the build. Typically this is Make, but others are supported. In particular
+[Ninja] is a nice alternative. To use it:
+
+    $ cmake -G Ninja .
+    $ ninja check
+
 
 ## Cygwin
 

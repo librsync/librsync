@@ -1,27 +1,28 @@
 /*=                    -*- c-basic-offset: 4; indent-tabs-mode: nil; -*-
  *
  * librsync -- the library for network deltas
- * 
+ *
  * Copyright (C) 2000, 2001 by Martin Pool <mbp@sourcefrog.net>
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
  * as published by the Free Software Foundation; either version 2.1 of
  * the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/*
- * scoop.c -- This file deals with readahead from caller-supplied
- * buffers.
+/**
+ * \file scoop.c
+ *
+ * This file deals with readahead from caller-supplied buffers.
  *
  * Many functions require a certain minimum amount of input to do their
  * processing.  For example, to calculate a strong checksum of a block
@@ -53,10 +54,10 @@
 
 
                               /*
-                               | To walk on water you've gotta sink 
+                               | To walk on water you've gotta sink
                                | in the ice.
                                |   -- Shihad, `The General Electric'.
-                               */ 
+                               */
 
 #include "config.h"
 
@@ -135,12 +136,12 @@ void rs_scoop_advance(rs_job_t *job, size_t len)
      * at them all at the same time. */
     if (job->scoop_avail) {
         /* reading from the scoop buffer */
-         rs_trace("advance over %ld bytes from scoop", (long) len); 
+         rs_trace("advance over %ld bytes from scoop", (long) len);
         assert(len <= job->scoop_avail);
         job->scoop_avail -= len;
         job->scoop_next += len;
     } else {
-         rs_trace("advance over %ld bytes from input buffer", (long) len); 
+         rs_trace("advance over %ld bytes from input buffer", (long) len);
         assert(len <= stream->avail_in);
         stream->avail_in -= len;
         stream->next_in += len;

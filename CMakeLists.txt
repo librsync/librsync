@@ -188,7 +188,6 @@ add_test(NAME Triple COMMAND triple.test ${CMAKE_CURRENT_BINARY_DIR} WORKING_DIR
 add_test(NAME Delta COMMAND delta.test ${CMAKE_CURRENT_BINARY_DIR} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 add_test(NAME Changes COMMAND changes.test ${CMAKE_CURRENT_BINARY_DIR} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 
-
 # `make check` that will build everything and then run the tests.
 # See https://cmake.org/Wiki/CMakeEmulateMakeCheck and
 # https://github.com/librsync/librsync/issues/49
@@ -259,6 +258,14 @@ target_link_libraries(rsync
 set_target_properties(rsync PROPERTIES VERSION ${LIBRSYNC_VERSION}
         SOVERSION ${LIBRSYNC_MAJOR_VERSION})
 install(TARGETS rsync ${INSTALL_TARGETS_DEFAULT_ARGS} DESTINATION lib)
+
+
+### tests that use librsync
+
+add_executable(search_test
+    src/search_test.c)
+target_link_libraries(search_test rsync)
+add_test(NAME search_test COMMAND search_test)
 
 
 ########### next target ###############

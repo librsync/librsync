@@ -150,6 +150,9 @@ rs_build_hash_table(rs_signature_t * sums)
  * See if there is a match for the specified block INBUF..BLOCK_LEN in
  * the checksum set, using precalculated WEAK_SUM.
  *
+ * Note that there must be \c block_len bytes at \c inbuf, even if it's at
+ * the end of the file.
+ *
  * If we don't find a match on the weak checksum, then we just give
  * up.  If we do find a weak match, then we proceed to calculate the
  * strong checksum for the current block, and see if it will match
@@ -158,14 +161,18 @@ rs_build_hash_table(rs_signature_t * sums)
  * This does a binary search on a two-part key of the weak sum and then the
  * strong sum.
  *
+ * \param sig In-memory signature to search.
+ *
  * \returns True if an exact match was found.
  */
 int
-rs__search_for_block(rs_weak_sum_t weak_sum,
-                    const rs_byte_t *inbuf,
-                    size_t block_len,
-                    rs_signature_t const *sig, rs_stats_t * stats,
-                    rs_long_t * match_where)
+rs__search_for_block(
+    rs_weak_sum_t weak_sum,
+    const rs_byte_t *inbuf,
+    size_t block_len,
+    rs_signature_t const *sig,
+    rs_stats_t * stats,
+    rs_long_t * match_where)
 {
     /* Caller must have called rs_build_hash_table() by now */
     if (!sig->tag_table) {

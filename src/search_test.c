@@ -35,20 +35,17 @@
 
 static void test_search_for_block_empty(void) {
     rs_signature_t *sig = rs_alloc_struct(rs_signature_t);
-    size_t block_len = 6000;
+    sig->block_len = 6000;
     rs_stats_t *stats = 0;
     rs_long_t match_where;
-    rs_byte_t *inbuf = rs_alloc(block_len, "input buffer");
-    
-    rs_bzero(inbuf, block_len);
+    const char *inbuf = "hello";
     
     rs_build_hash_table(sig);
-    int result = rs__search_for_block(42, inbuf, block_len,
+    int result = rs__search_for_block(42, (const rs_byte_t *) inbuf, 6,
         sig, stats, &match_where);
         
     if (result) {
-        rs_error("unexpectedly found a match at %ld", match_where);
-        abort();
+        rs_fatal("unexpectedly found a match at %ld", match_where);
     }
         
     rs_free_sumset(sig);

@@ -23,18 +23,20 @@ cmake_install.cmake
 src/prototab.c
 src/prototab.h
 doc/Doxyfile
-tests/isprefix.driver
 html
 latex
 Testing
 *.user
+
+# Test binaries
+isprefix_test
+search_test
+
+# General temp files
+*.bak
+*.tmp
 .sw?
 .*.sw?
-isprefix_test
-
-*.bak
-
-*.tmp
 
 # for rtags
 compile_commands.json

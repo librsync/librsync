@@ -246,8 +246,8 @@ void rs_getinput(rs_job_t *job) {
 
         
 /**
- * find a match at scoop_pos, returning the match_pos and match_len.
- * Note that this will calculate weak_sum if required. It will also
+ * Find a match at \c scoop_pos, returning the match_pos and match_len.
+ * Note that this will calculate \c job->weak_sum if required. It will also
  * determine the match_len.
  *
  * Note that this routine could be modified to do xdelta style matches that

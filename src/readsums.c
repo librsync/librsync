@@ -34,50 +34,30 @@
 #include <string.h>
 
 #include "librsync.h"
-#include "sumset.h"
 #include "job.h"
 #include "trace.h"
 #include "netint.h"
 #include "util.h"
 #include "stream.h"
+#include "sumset.h"
 
 
 static rs_result rs_loadsig_s_weak(rs_job_t *job);
 static rs_result rs_loadsig_s_strong(rs_job_t *job);
 
 
-
 /**
  * Add a just-read-in checksum pair to the signature block.
  */
-static rs_result rs_loadsig_add_sum(rs_job_t *job, rs_strong_sum_t *strong)
+static rs_result rs_loadsig_add_sum(
+    rs_job_t *job,
+    const rs_strong_sum_t *strong_sum)
 {
-    size_t              new_size;
-    rs_signature_t      *sig = job->signature;
-    rs_block_sig_t      *asignature;
-
-    sig->count++;
-    new_size = sig->count * sizeof(rs_block_sig_t);
-
-    sig->block_sigs = realloc(sig->block_sigs, new_size);
+    rs_result result;
     
-    if (sig->block_sigs == NULL) {
-        return RS_MEM_ERROR;
-    }
-    asignature = &(sig->block_sigs[sig->count - 1]);
-
-    asignature->weak_sum = job->weak_sig;
-    asignature->i = sig->count;
-
-    memcpy(asignature->strong_sum, strong, sig->strong_sum_len);
-
-    if (rs_trace_enabled()) {
-        char                hexbuf[RS_MAX_STRONG_SUM_LENGTH * 2 + 2];
-        rs_hexify(hexbuf, strong, sig->strong_sum_len);
-
-        rs_trace("read in checksum: weak=%#x, strong=%s", asignature->weak_sum,
-                 hexbuf);
-    }
+    result = rs__sumset_append(job->signature, job->weak_sig, strong_sum);
+    if (result != RS_DONE)
+        return result;
 
     job->stats.sig_blocks++;
 

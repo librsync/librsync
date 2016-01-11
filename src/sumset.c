@@ -32,6 +32,40 @@
 #include "trace.h"
 
 
+rs_result rs__sumset_append(
+    rs_signature_t *sig,
+    rs_weak_sum_t weak_sum,
+    const rs_strong_sum_t *strong_sum)
+{
+    size_t              new_size;
+    rs_block_sig_t      *asignature;
+
+    sig->count++;
+    new_size = sig->count * sizeof(rs_block_sig_t);
+
+    sig->block_sigs = realloc(sig->block_sigs, new_size);
+
+    if (sig->block_sigs == NULL) {
+        return RS_MEM_ERROR;
+    }
+    asignature = &(sig->block_sigs[sig->count - 1]);
+
+    asignature->weak_sum = weak_sum;
+    asignature->i = sig->count;
+
+    memcpy(asignature->strong_sum, strong_sum, sig->strong_sum_len);
+
+    if (rs_trace_enabled()) {
+        char                hexbuf[RS_MAX_STRONG_SUM_LENGTH * 2 + 2];
+        rs_hexify(hexbuf, strong_sum, sig->strong_sum_len);
+
+        rs_trace("read in checksum: weak=%#x, strong=%s", asignature->weak_sum,
+                 hexbuf);
+    }
+    return RS_DONE;
+}
+
+
 void
 rs_free_sumset(rs_signature_t * psums)
 {

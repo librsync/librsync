@@ -71,3 +71,8 @@ struct rs_block_sig {
     rs_weak_sum_t   weak_sum;	/**< Simple checksum */
     rs_strong_sum_t strong_sum;	/**< Strong checksum  */
 };
+
+rs_result rs__sumset_append(
+    rs_signature_t *sig,
+    rs_weak_sum_t weak_sum,
+    const rs_strong_sum_t *strong_sum);

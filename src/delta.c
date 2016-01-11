@@ -143,7 +143,7 @@ static rs_result rs_delta_s_scan(rs_job_t *job)
     rs_long_t      match_pos;
     size_t         match_len;
     rs_result      result;
-    Rollsum        test;
+    rs_weak_sum_t  verification_weak_sum;
 
     rs_job_check(job);
     /* read the input into the scoop */
@@ -164,15 +164,15 @@ static rs_result rs_delta_s_scan(rs_job_t *job)
                           job->scoop_next[job->scoop_pos+job->block_len]);
             result=rs_appendmiss(job,1);
             if (rs_roll_paranoia) {
-                RollsumInit(&test);
-                RollsumUpdate(&test, job->scoop_next+job->scoop_pos,
-                              job->block_len);
-                if (RollsumDigest(&test) != RollsumDigest(&job->weak_sum)) {
+                /* FIXME: Seems wrong if at end of file? */
+                rs__rollsum_block(job->scoop_next + job->scoop_pos,
+                    job->block_len,
+                    &verification_weak_sum);
+                if (verification_weak_sum != RollsumDigest(&job->weak_sum)) {
                     rs_fatal("mismatch between rolled sum %#x and check %#x",
-                             (int)RollsumDigest(&job->weak_sum),
-                             (int)RollsumDigest(&test));
+                             (int) RollsumDigest(&job->weak_sum),
+                             (int) verification_weak_sum);
                 }
-                
             }
         }
     }

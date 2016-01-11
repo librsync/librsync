@@ -181,7 +181,7 @@ rs__search_for_block(
     }
 
     rs_strong_sum_t strong_sum;
-    int got_strong = 0;
+    int got_strong = 0; /* strong sum of inbuf has been calculated. */
     int hash_tag = gettag(weak_sum);
     rs_tag_table_entry_t *bucket = &(sig->tag_table[hash_tag]);
     int l = bucket->l; /* Left inclusive bound of search region */

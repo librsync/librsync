@@ -147,11 +147,8 @@ rs_build_hash_table(rs_signature_t * sums)
 /**
  * \private
  *
- * See if there is a match for the specified block INBUF..BLOCK_LEN in
- * the checksum set, using precalculated WEAK_SUM.
- *
- * Note that there must be \c block_len bytes at \c inbuf, even if it's at
- * the end of the file.
+ * See if there is a match for the specified block \p inbuf in
+ * the checksum set, using precalculated \p weak_sum.
  *
  * If we don't find a match on the weak checksum, then we just give
  * up.  If we do find a weak match, then we proceed to calculate the
@@ -163,13 +160,16 @@ rs_build_hash_table(rs_signature_t * sums)
  *
  * \param sig In-memory signature to search.
  *
+ * \param inbuf_len Number of bytes to match from \p inbuf: normally the
+ * signature block len, unless this is a short final block.
+ *
  * \returns True if an exact match was found.
  */
 int
 rs__search_for_block(
     rs_weak_sum_t weak_sum,
     const rs_byte_t *inbuf,
-    size_t block_len,
+    size_t inbuf_len,
     rs_signature_t const *sig,
     rs_stats_t * stats,
     rs_long_t * match_where)
@@ -213,9 +213,9 @@ rs__search_for_block(
             if (!got_strong) {
                 /* Lazy calculate strong sum after finding weak match. */
                 if(sig->magic == RS_BLAKE2_SIG_MAGIC) {
-                    rs_calc_blake2_sum(inbuf, block_len, &strong_sum);
+                    rs_calc_blake2_sum(inbuf, inbuf_len, &strong_sum);
                 } else if (sig->magic == RS_MD4_SIG_MAGIC) {
-                    rs_calc_md4_sum(inbuf, block_len, &strong_sum);
+                    rs_calc_md4_sum(inbuf, inbuf_len, &strong_sum);
                 } else {
                     rs_fatal("Unknown signature algorithm %#x", sig->magic);
                     return 0;

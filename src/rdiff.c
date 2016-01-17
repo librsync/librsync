@@ -170,7 +170,7 @@ static void rdiff_show_version(void)
 #endif
 #endif
 
-#ifndef DO_RS_TRACE
+#ifndef RS_ENABLE_TRACE
     trace = ", trace disabled";
 #endif
 

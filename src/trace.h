@@ -66,13 +66,13 @@ void rs_log0(int level, char const *fn, char const *fmt, ...)
 /* In all of these, the format string is exposed as a specific
  * macro parameter so that it can be statically checked. */
 
-#ifdef DO_RS_TRACE
+#ifdef RS_ENABLE_TRACE
 #  define rs_trace(fmt, ...)                            \
     do { rs_log0(RS_LOG_DEBUG, __FUNCTION__, fmt, ##__VA_ARGS);  \
     } while (0)
 #else
 #  define rs_trace(fmt, ...)
-#endif	/* !DO_RS_TRACE */
+#endif	/* !RS_ENABLE_TRACE */
 
 #define rs_log(l, fmt, ...) do {              \
      rs_log0((l), __FUNCTION__, (fmt) , ##__VA_ARGS__);  \
@@ -112,7 +112,7 @@ enum {
 
 extern int rs_trace_level;
 
-#ifdef DO_RS_TRACE
+#ifdef RS_ENABLE_TRACE
 #  define rs_trace_enabled() ((rs_trace_level & RS_LOG_PRIMASK) >= RS_LOG_DEBUG)
 #else
 #  define rs_trace_enabled() 0

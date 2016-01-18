@@ -193,6 +193,7 @@ add_test(NAME Changes COMMAND changes.test ${CMAKE_CURRENT_BINARY_DIR} WORKING_D
 # https://github.com/librsync/librsync/issues/49
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
 add_dependencies(check rdiff isprefix_test)
+add_dependencies(check rdiff search_test)
 
 
 enable_testing()

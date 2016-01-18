@@ -45,7 +45,7 @@ static void test_search_for_block_empty(void) {
         sig, stats, &match_where);
         
     if (result) {
-        rs_fatal("unexpectedly found a match at %ld", match_where);
+        rs_fatal("unexpectedly found a match at %jd", (intmax_t) match_where);
     }
         
     rs_free_sumset(sig);

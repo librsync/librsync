@@ -192,6 +192,10 @@ rs__search_for_block(
         return 0;
 
     while (1) {
+        if (r < l) {
+            rs_fatal("bisection range inverted [%d, %d]", l, r);
+            return 0;
+        }
         int m = (l + r) >> 1; /* midpoint of search region */
         if (m < 0 || m >= sig->count) {
             rs_fatal("bisection m=%d out of range [0,%d]", m, sig->count);

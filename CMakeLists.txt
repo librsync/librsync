@@ -58,7 +58,11 @@ check_include_files ( zlib.h HAVE_ZLIB_H )
 
 #Temporary configuration
 set ( STDC_HEADERS 1 )
-set ( DO_RS_TRACE 0 )
+
+# TODO: Let this be configured by the user: there is a substantial runtime
+# const to compiling it in.
+set ( RS_ENABLE_TRACE 0 )
+
 set ( HAVE_PROGRAM_INVOCATION_NAME 0)
 
 

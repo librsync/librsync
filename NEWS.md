@@ -25,6 +25,11 @@ NOT RELEASED YET
    Previously due to a CMake limitation, `make test` would only run existing
    tests and could fail if they weren't built.
    (Martin Pool, https://github.com/librsync/librsync/issues/49)
+   
+ * Use C99 vararg macros rather than the gcc-specific form, and use them on
+   all platforms. This also avoids potentially expensive trace code being
+   compiled in on non-gcc compilers when it was not actually used.
+   (Martin Pool, https://github.com/librsync/librsync/issues/58)
 
 ## librsync 2.0.0
 

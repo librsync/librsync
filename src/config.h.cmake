@@ -13,7 +13,7 @@
 #cmakedefine C_ALLOCA 1
 
 /* Define this to enable trace code  */
-#cmakedefine DO_RS_TRACE
+#cmakedefine RS_ENABLE_TRACE
 
 /* Define to 1 if you have `alloca', as a function or macro. */
 #cmakedefine HAVE_ALLOCA 1

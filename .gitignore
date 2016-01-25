@@ -28,6 +28,9 @@ latex
 Testing
 *.user
 
+# OSX build outputs
+*.dSYM
+
 # Test binaries
 isprefix_test
 search_test

@@ -200,22 +200,22 @@ rs_error0(char const *s, ...)
 void
 rs_trace0(char const *s, ...)
 {
-#ifdef DO_RS_TRACE
+#ifdef RS_ENABLE_TRACE
     va_list	va;
 
     va_start(va, s);
     rs_log_va(RS_LOG_DEBUG, PACKAGE, s, va);
     va_end(va);
-#endif /* !DO_RS_TRACE */
+#endif /* !RS_ENABLE_TRACE */
 }
 
 
 int
 rs_supports_trace(void)
 {
-#ifdef DO_RS_TRACE
+#ifdef RS_ENABLE_TRACE
     return 1;
 #else
     return 0;
-#endif				/* !DO_RS_TRACE */
+#endif				/* !RS_ENABLE_TRACE */
 }

@@ -2,7 +2,7 @@
  *
  * librsync -- the library for network deltas
  *
- * Copyright (C) 1999, 2000, 2001, 2014 by Martin Pool <mbp@sourcefrog.net>
+ * Copyright (C) 1999, 2000, 2001, 2014, 2015, 2016 by Martin Pool
  * Copyright (C) 1999 by Andrew Tridgell
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,18 +20,12 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/*
- * This file contains code for searching the sumset for matching
- * values.
+/**
+ * \file
+ *
+ * Searching an \ref ::rs_signature for matching values.
  */
 
-/*
- * TODO: The common case is that the next block in both streams
- * match. Can we make that a bit faster at all?  We'd need to perhaps
- * add a link forward between blocks in the sum_struct corresponding
- * to the order they're found in the input; then before doing a search
- * we can just check that pointer.
- */
 
 #include "config.h"
 
@@ -150,97 +144,105 @@ rs_build_hash_table(rs_signature_t * sums)
 }
 
 
-
-/*
- * See if there is a match for the specified block INBUF..BLOCK_LEN in
- * the checksum set, using precalculated WEAK_SUM.
+/**
+ * \private
+ *
+ * See if there is a match for the specified block \p inbuf in
+ * the checksum set, using precalculated \p weak_sum.
  *
  * If we don't find a match on the weak checksum, then we just give
  * up.  If we do find a weak match, then we proceed to calculate the
  * strong checksum for the current block, and see if it will match
  * anything.
+ *
+ * This does a binary search on a two-part key of the weak sum and then the
+ * strong sum.
+ *
+ * \param sig In-memory signature to search.
+ *
+ * \param inbuf_len Number of bytes to match from \p inbuf: normally the
+ * signature block len, unless this is a short final block.
+ *
+ * \returns True if an exact match was found.
  */
 int
-rs_search_for_block(rs_weak_sum_t weak_sum,
-                    const rs_byte_t *inbuf,
-                    size_t block_len,
-                    rs_signature_t const *sig, rs_stats_t * stats,
-                    rs_long_t * match_where)
+rs__search_for_block(
+    rs_weak_sum_t weak_sum,
+    const rs_byte_t *inbuf,
+    size_t inbuf_len,
+    rs_signature_t const *sig,
+    rs_stats_t * stats,
+    rs_long_t * match_where)
 {
     /* Caller must have called rs_build_hash_table() by now */
-    if (!sig->tag_table)
+    if (!sig->tag_table) {
         rs_fatal("Must have called rs_build_hash_table() by now");
+        return 0;
+    }
 
     rs_strong_sum_t strong_sum;
-    int got_strong = 0;
+    int got_strong = 0; /* strong sum of inbuf has been calculated. */
     int hash_tag = gettag(weak_sum);
     rs_tag_table_entry_t *bucket = &(sig->tag_table[hash_tag]);
-    int l = bucket->l; /* left bound of search region */
-    int r = bucket->r + 1; /* right bound of search region */
-    int v = 1; /* direction of next move: -ve left, +ve right */
+    int l = bucket->l; /* Left inclusive bound of search region */
+    int r = bucket->r; /* Right inclusive bound of search region */
+    int v;  /* direction of next move: -ve left, +ve right */
 
     if (l == NULL_TAG)
         return 0;
 
-    while (l < r) {
+    while (1) {
+        if (r < l) {
+            rs_fatal("bisection range inverted [%d, %d]", l, r);
+            return 0;
+        }
         int m = (l + r) >> 1; /* midpoint of search region */
+        if (m < 0 || m >= sig->count) {
+            rs_fatal("bisection m=%d out of range [0,%d]", m, sig->count);
+            return 0;
+        }
         int i = sig->targets[m].i;
-        rs_block_sig_t *b = &(sig->block_sigs[i]);
+        const rs_block_sig_t *b = &(sig->block_sigs[i]);
         v = (weak_sum > b->weak_sum) - (weak_sum < b->weak_sum);
         // v < 0  - weak_sum <  b->weak_sum
         // v == 0 - weak_sum == b->weak_sum
         // v > 0  - weak_sum >  b->weak_sum
+        
+        if (l == r && v != 0) {
+            /* Weak sum doesn't match and there's no other options to search. */
+            return 0;
+        }
 
         if (v == 0) {
             if (!got_strong) {
                 /* Lazy calculate strong sum after finding weak match. */
                 if(sig->magic == RS_BLAKE2_SIG_MAGIC) {
-                    rs_calc_blake2_sum(inbuf, block_len, &strong_sum);
+                    rs_calc_blake2_sum(inbuf, inbuf_len, &strong_sum);
                 } else if (sig->magic == RS_MD4_SIG_MAGIC) {
-                    rs_calc_md4_sum(inbuf, block_len, &strong_sum);
+                    rs_calc_md4_sum(inbuf, inbuf_len, &strong_sum);
                 } else {
-                    /* Bad input data is checked in rs_delta_begin, so this
-                     * should never be reached. */
                     rs_fatal("Unknown signature algorithm %#x", sig->magic);
                     return 0;
                 }
                 got_strong = 1;
             }
             v = memcmp(strong_sum, b->strong_sum, sig->strong_sum_len);
-
             if (v == 0) {
-                l = m;
-                r = m;
-                break;
+                int token = b->i;
+                *match_where = (rs_long_t)(token - 1) * sig->block_len;
+                return 1;
             }
         }
 
-        if (v > 0)
-            l = m + 1;
-        else
-            r = m;
-    }
-
-    if (l == r) {
-        int i = sig->targets[l].i;
-        rs_block_sig_t *b = &(sig->block_sigs[i]);
-        if (weak_sum != b->weak_sum)
+        /* Mismatched on either the weak or strong sum: continue to bisect into
+         * the range, if any remains. */
+        if (l == r)
             return 0;
-        if (!got_strong) {
-            if(sig->magic == RS_BLAKE2_SIG_MAGIC) {
-                rs_calc_blake2_sum(inbuf, block_len, &strong_sum);
-            } else if (sig->magic == RS_MD4_SIG_MAGIC) {
-                rs_calc_md4_sum(inbuf, block_len, &strong_sum);
-            } else {
-                rs_error("Unknown signature algorithm - this is a BUG");
-                return 0; /* FIXME: Is this the best way to handle this? */
-            }
-            got_strong = 1;
+        else if (v > 0) {
+            l = m + 1;
+        } else {
+            r = m - 1;
         }
-        v = memcmp(strong_sum, b->strong_sum, sig->strong_sum_len);
-        int token = b->i;
-        *match_where = (rs_long_t)(token - 1) * sig->block_len;
     }
-
-    return !v;
+    return 0;
 }

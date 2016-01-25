@@ -68,4 +68,7 @@ unsigned long RollsumDigest(Rollsum *sum);
 
 #define RollsumDigest(sum) (((sum)->s2 << 16) | ((sum)->s1 & 0xffff))
 
+void rs__rollsum_block(const rs_byte_t *block, rs_long_t block_len,
+    rs_weak_sum_t *weak_sum_out);
+
 #endif /* _ROLLSUM_H_ */

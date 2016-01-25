@@ -1,24 +1,26 @@
 /*= -*- c-basic-offset: 4; indent-tabs-mode: nil; -*-
  *
  * rollsum -- the librsync rolling checksum
- * 
- * Copyright (C) 2003 by Donovan Baarda <abo@minkirri.apana.org.au> 
+ *
+ * Copyright (C) 2003 by Donovan Baarda <abo@minkirri.apana.org.au>
  * based on work, Copyright (C) 2000, 2001 by Martin Pool <mbp@sourcefrog.net>
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+ 
+#include "librsync.h"
 #include "rollsum.h"
 
 #define DO1(buf,i)  {s1 += buf[i]; s2 += s1;}
@@ -29,7 +31,7 @@
 #define OF16(off)  {s1 += 16*off; s2 += 136*off;}
 
 void RollsumUpdate(Rollsum *sum,const unsigned char *buf,unsigned int len) {
-    /* ANSI C says no overflow for unsigned. 
+    /* ANSI C says no overflow for unsigned.
      zlib's adler 32 goes to extra effort to avoid overflow*/
     unsigned long s1 = sum->s1;
     unsigned long s2 = sum->s2;
@@ -48,4 +50,16 @@ void RollsumUpdate(Rollsum *sum,const unsigned char *buf,unsigned int len) {
     }
     sum->s1=s1;
     sum->s2=s2;
+}
+
+void rs__rollsum_block(
+    const rs_byte_t *block,
+    rs_long_t block_len,
+    rs_weak_sum_t *weak_sum_out)
+{
+    Rollsum accum;
+    
+    RollsumInit(&accum);
+    RollsumUpdate(&accum, block, block_len);
+    *weak_sum_out = RollsumDigest(&accum);
 }

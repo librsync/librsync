@@ -2,7 +2,7 @@
  *
  * librsync -- generate and apply network deltas
  *
- * Copyright (C) 2000, 2001, 2004 by Martin Pool <mbp@sourcefrog.net>
+ * Copyright (C) 2000, 2001, 2004, 2016 by Martin Pool
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -48,7 +48,7 @@
 #if SIZEOF_LONG == 8
 #  define PRINTF_CAST_U64(x) ((unsigned long) (x))
 #  define PRINTF_FORMAT_U64 "%lu"
-#elif defined(__GNUC__)
+#elif defined(__GNUC__) || defined(__clang__)
 #  define PRINTF_CAST_U64(x) ((unsigned long long) (x))
 #  define PRINTF_FORMAT_U64 "%llu"
 #else
@@ -60,46 +60,33 @@
 #endif
 
 
-#if defined(__clang__) || defined(__GNUC__)
-/*
- * TODO: Also look for the C9X predefined identifier `_function', or
- * whatever it's called.
- */
-
 void rs_log0(int level, char const *fn, char const *fmt, ...)
     __attribute__ ((format(printf, 3, 4)));
 
-#ifdef DO_RS_TRACE
-#  define rs_trace(fmt, arg...)                            \
-    do { rs_log0(RS_LOG_DEBUG, __FUNCTION__, fmt , ##arg);  \
+/* In all of these, the format string is exposed as a specific
+ * macro parameter so that it can be statically checked. */
+
+#ifdef RS_ENABLE_TRACE
+#  define rs_trace(fmt, ...)                            \
+    do { rs_log0(RS_LOG_DEBUG, __FUNCTION__, fmt, ##__VA_ARGS);  \
     } while (0)
 #else
-#  define rs_trace(fmt, arg...)
-#endif	/* !DO_RS_TRACE */
+#  define rs_trace(fmt, ...)
+#endif	/* !RS_ENABLE_TRACE */
 
-#define rs_log(l, s, str...) do {              \
-     rs_log0((l), __FUNCTION__, (s) , ##str);  \
+#define rs_log(l, fmt, ...) do {              \
+     rs_log0((l), __FUNCTION__, (fmt) , ##__VA_ARGS__);  \
      } while (0)
 
-
-#define rs_error(s, str...) do {                       \
-     rs_log0(RS_LOG_ERR,  __FUNCTION__, (s) , ##str);  \
+#define rs_error(fmt, ...) do {                       \
+     rs_log0(RS_LOG_ERR,  __FUNCTION__, (fmt), ##__VA_ARGS__);  \
      } while (0)
 
-
-#define rs_fatal(s, str...) do {               \
-     rs_log0(RS_LOG_CRIT,  __FUNCTION__,       \
-	      (s) , ##str);                    \
+#define rs_fatal(fmt, ...) do {               \
+     rs_log0(RS_LOG_CRIT,  __FUNCTION__, (fmt), ##__VA_ARGS__); \
      abort();                                  \
      } while (0)
 
-
-#else /************************* ! __GNUC__ */
-#  define rs_trace rs_trace0
-#  define rs_fatal rs_fatal0
-#  define rs_error rs_error0
-#  define rs_log   rs_log0_nofn
-#endif				/* ! __GNUC__ */
 
 void rs_trace0(char const *s, ...);
 void rs_fatal0(char const *s, ...);
@@ -125,7 +112,7 @@ enum {
 
 extern int rs_trace_level;
 
-#ifdef DO_RS_TRACE
+#ifdef RS_ENABLE_TRACE
 #  define rs_trace_enabled() ((rs_trace_level & RS_LOG_PRIMASK) >= RS_LOG_DEBUG)
 #else
 #  define rs_trace_enabled() 0

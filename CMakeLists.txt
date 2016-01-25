@@ -58,7 +58,11 @@ check_include_files ( zlib.h HAVE_ZLIB_H )
 
 #Temporary configuration
 set ( STDC_HEADERS 1 )
-set ( DO_RS_TRACE 0 )
+
+# TODO: Let this be configured by the user: there is a substantial runtime
+# const to compiling it in.
+set ( RS_ENABLE_TRACE 0 )
+
 set ( HAVE_PROGRAM_INVOCATION_NAME 0)
 
 
@@ -187,12 +191,12 @@ add_test(NAME Triple COMMAND triple.test ${CMAKE_CURRENT_BINARY_DIR} WORKING_DIR
 add_test(NAME Delta COMMAND delta.test ${CMAKE_CURRENT_BINARY_DIR} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 add_test(NAME Changes COMMAND changes.test ${CMAKE_CURRENT_BINARY_DIR} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 
-
 # `make check` that will build everything and then run the tests.
 # See https://cmake.org/Wiki/CMakeEmulateMakeCheck and
 # https://github.com/librsync/librsync/issues/49
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
 add_dependencies(check rdiff isprefix_test)
+add_dependencies(check rdiff search_test)
 
 
 enable_testing()
@@ -258,6 +262,14 @@ target_link_libraries(rsync
 set_target_properties(rsync PROPERTIES VERSION ${LIBRSYNC_VERSION}
         SOVERSION ${LIBRSYNC_MAJOR_VERSION})
 install(TARGETS rsync ${INSTALL_TARGETS_DEFAULT_ARGS} DESTINATION lib)
+
+
+### tests that use librsync
+
+add_executable(search_test
+    src/search_test.c)
+target_link_libraries(search_test rsync)
+add_test(NAME search_test COMMAND search_test)
 
 
 ########### next target ###############

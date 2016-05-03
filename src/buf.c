@@ -58,6 +58,8 @@
 #define fseek fseeko
 #elif defined HAVE_FSEEKO64
 #define fseek fseeko64
+#elif defined HAVE_FSEEKI64
+#define fseek _fseeki64
 #endif
 
 /**

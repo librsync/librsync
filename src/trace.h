@@ -48,6 +48,9 @@
 #if defined(HAVE_FSEEKO64) && defined(WIN32)
 #  define PRINTF_CAST_U64(x) ((off64_t) (x))
 #  define PRINTF_FORMAT_U64 "%I64u"
+#elif defined(HAVE_FSEEKI64) && defined(WIN32)
+#  define PRINTF_CAST_U64(x) ((__int64) (x))
+#  define PRINTF_FORMAT_U64 "%I64u"
 #elif SIZEOF_LONG == 8
 #  define PRINTF_CAST_U64(x) ((unsigned long) (x))
 #  define PRINTF_FORMAT_U64 "%lu"

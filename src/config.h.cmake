@@ -36,6 +36,9 @@
 /* Define to 1 if fseeko64 (and presumably ftello64) exists and is declared. */
 #cmakedefine HAVE_FSEEKO64 1
 
+/* Define to 1 if _fseeki64 (and presumably _ftelli64) exists and is declared. */
+#cmakedefine HAVE_FSEEKI64 1
+
 /* Define to 1 if you have the <inttypes.h> header file. */
 #cmakedefine HAVE_INTTYPES_H 1
 

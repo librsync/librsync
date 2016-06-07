@@ -163,10 +163,12 @@ if (BZIP2_FOUND)
 endif (BZIP2_FOUND)
 
 # Find Perl
-find_package (Perl REQUIRED)
-if (PERL_FOUND)
-  message (STATUS "PERL_EXECUTABLE  = ${PERL_EXECUTABLE}")
-endif (PERL_FOUND)
+if (NOT CMAKE_CROSSCOMPILING)
+	find_package (Perl REQUIRED)
+	if (PERL_FOUND)
+	  message (STATUS "PERL_EXECUTABLE  = ${PERL_EXECUTABLE}")
+	endif (PERL_FOUND)
+endif()
 
 # Find ZLIB
 find_package (ZLIB)

@@ -49,7 +49,7 @@
 
 #include "librsync.h"
 #include "trace.h"
-#include "buf.h"
+#include "librsyncbuf.h"
 #include "job.h"
 #include "util.h"
 

@@ -256,7 +256,7 @@ set(rsync_LIB_SRCS
     # This was generated
     ${CMAKE_CURRENT_BINARY_DIR}/src/prototab.c
     src/base64.c
-    src/buf.c
+    src/rsyncbuf.c
     src/checksum.c
     src/command.c
     src/delta.c
@@ -322,6 +322,7 @@ endif (BUILD_RDIFF)
 
 install(FILES
         src/librsync.h
+        src/librsyncbuf.h
         ${CMAKE_CURRENT_BINARY_DIR}/src/librsync-config.h
         DESTINATION include)
 

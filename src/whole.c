@@ -46,7 +46,7 @@
 #include "fileutil.h"
 #include "sumset.h"
 #include "job.h"
-#include "buf.h"
+#include "librsyncbuf.h"
 #include "whole.h"
 #include "util.h"
 

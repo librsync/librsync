@@ -67,7 +67,6 @@ static rs_result rs_loadsig_add_sum(rs_job_t *job, rs_strong_sum_t *strong)
     asignature = &(sig->block_sigs[sig->count - 1]);
 
     asignature->weak_sum = job->weak_sig;
-    asignature->i = sig->count;
 
     memcpy(asignature->strong_sum, strong, sig->strong_sum_len);
 

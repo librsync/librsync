@@ -20,7 +20,9 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-int
+#include <stdbool.h>
+
+bool
 rs_search_for_block(rs_weak_sum_t weak_sum,
                     const rs_byte_t *inbuf,
                     size_t block_len,

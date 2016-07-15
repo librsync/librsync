@@ -443,7 +443,7 @@ static rs_result rs_delta_s_header(rs_job_t *job)
 rs_job_t *rs_delta_begin(rs_signature_t *sig)
 {
     /* Caller must have called rs_build_hash_table() by now */
-    if (!sig->tag_table)
+    if (!sig->buckets)
         rs_fatal("Must call rs_build_hash_table() prior to calling rs_delta_begin()");
 
     rs_job_t *job;

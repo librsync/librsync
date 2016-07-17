@@ -56,11 +56,21 @@ static unsigned int next_pow_2(unsigned int v)
     return (1U << (32 - __builtin_clz(v - 1)));
 }
 
+// mix full 32-bits of bad adler32 hash before truncating
+static unsigned int mix32(unsigned int h)
+{
+    // final mix function of MurmurHash2
+    h ^= h >> 13;
+    h *= 0x5bd1e995;
+    h ^= h >> 15;
+    return h;
+}
+
 static bool insert_entry(rs_signature_t *sigs, const rs_block_sig_t *block_sig, unsigned int strong_idx)
 {
     const unsigned int mask = sigs->bucket_len - 1;
     size_t i, step;
-    for (i = block_sig->weak_sum & mask, step = 0; ; i = (i + ++step) & mask)
+    for (i = mix32(block_sig->weak_sum) & mask, step = 0; ; i = (i + ++step) & mask)
     {
         if (sigs->buckets[i].strong_idx == 0) // empty bucket
         {
@@ -85,7 +95,7 @@ static unsigned int lookup_entry(const rs_signature_t *sigs, rs_weak_sum_t weak_
 
     const unsigned int mask = sigs->bucket_len - 1;
     size_t i, step;
-    for (i = weak_sum & mask, step = 0; ; i = (i + ++step) & mask)
+    for (i = mix32(weak_sum) & mask, step = 0; ; i = (i + ++step) & mask)
     {
         if (sigs->buckets[i].strong_idx == 0) // empty bucket
             return -1;

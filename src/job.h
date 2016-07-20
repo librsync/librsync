@@ -45,6 +45,7 @@ struct rs_job {
      * they're also used in the mksum operation. */
     int                 block_len;
     int                 strong_sum_len;
+    int                 block_match;
 
     /** Signature that's either being read in, or used for
      * generating a delta. */

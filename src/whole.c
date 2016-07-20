@@ -129,12 +129,12 @@ rs_loadsig_file(FILE *sig_file, rs_signature_t **sumset, rs_stats_t *stats)
 
 rs_result
 rs_delta_file(rs_signature_t *sig, FILE *new_file, FILE *delta_file,
-              rs_stats_t *stats)
+              rs_stats_t *stats, int block_match)
 {
     rs_job_t            *job;
     rs_result           r;
 
-    job = rs_delta_begin(sig);
+    job = rs_delta_begin(sig, block_match);
 
     r = rs_whole_run(job, new_file, delta_file);
 

@@ -488,10 +488,13 @@ rs_job_t *rs_sig_begin(size_t new_block_len,
 /**
  * Prepare to compute a streaming delta.
  *
+ * \param block_match Indicates that full block matching should be made
+ * (no rolling checksum)
+ *
  * \todo Add a version of this that takes a ::rs_magic_number controlling the
  * delta format.
  **/
-rs_job_t *rs_delta_begin(rs_signature_t *);
+rs_job_t *rs_delta_begin(rs_signature_t *, int block_match);
 
 
 /**
@@ -613,7 +616,7 @@ rs_result rs_file_copy_cb(void *arg, rs_long_t pos, size_t *len, void **buf);
  * Generate a delta between a signature and a new file, int a delta file.
  * \sa \ref api_whole
  **/
-rs_result rs_delta_file(rs_signature_t *, FILE *new_file, FILE *delta_file, rs_stats_t *);
+rs_result rs_delta_file(rs_signature_t *, FILE *new_file, FILE *delta_file, rs_stats_t *, int);
 
 
 /**

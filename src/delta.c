@@ -159,20 +159,25 @@ static rs_result rs_delta_s_scan(rs_job_t *job)
             result=rs_appendmatch(job,match_pos,match_len);
             RollsumInit(&job->weak_sum);
         } else {
-            /* rotate the weak_sum and append the miss byte */
-            RollsumRotate(&job->weak_sum,job->scoop_next[job->scoop_pos],
+            if (!job->block_match) {
+                /* rotate the weak_sum and append the miss byte */
+                RollsumRotate(&job->weak_sum,job->scoop_next[job->scoop_pos],
                           job->scoop_next[job->scoop_pos+job->block_len]);
-            result=rs_appendmiss(job,1);
-            if (rs_roll_paranoia) {
-                RollsumInit(&test);
-                RollsumUpdate(&test, job->scoop_next+job->scoop_pos,
+                result=rs_appendmiss(job,1);
+                if (rs_roll_paranoia) {
+                    RollsumInit(&test);
+                    RollsumUpdate(&test, job->scoop_next+job->scoop_pos,
                               job->block_len);
-                if (RollsumDigest(&test) != RollsumDigest(&job->weak_sum)) {
-                    rs_fatal("mismatch between rolled sum %#x and check %#x",
+                    if (RollsumDigest(&test) != RollsumDigest(&job->weak_sum)) {
+                        rs_fatal("mismatch between rolled sum %#x and check %#x",
                              (int)RollsumDigest(&job->weak_sum),
                              (int)RollsumDigest(&test));
+                    }
                 }
-                
+            } else {
+                /* append block_len miss bytes */
+                result=rs_appendmiss(job,job->block_len);
+                RollsumInit(&job->weak_sum);
             }
         }
     }
@@ -440,7 +445,7 @@ static rs_result rs_delta_s_header(rs_job_t *job)
 }
 
 
-rs_job_t *rs_delta_begin(rs_signature_t *sig)
+rs_job_t *rs_delta_begin(rs_signature_t *sig, int block_match)
 {
     /* Caller must have called rs_build_hash_table() by now */
     if (!sig->tag_table)
@@ -450,6 +455,7 @@ rs_job_t *rs_delta_begin(rs_signature_t *sig)
 
     job = rs_job_new("delta", rs_delta_s_header);
     job->signature = sig;
+    job->block_match = block_match;
 
     RollsumInit(&job->weak_sum);
 

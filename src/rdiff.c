@@ -70,6 +70,7 @@
 
 #define PROGRAM "rdiff"
 
+static int block_match = 0;
 static size_t block_len = RS_DEFAULT_BLOCK_LEN;
 static size_t strong_len = 0;
 
@@ -95,6 +96,7 @@ const struct poptOption opts[] = {
     { "help",        '?', POPT_ARG_NONE, 0,             'h' },
     {  0,            'h', POPT_ARG_NONE, 0,             'h' },
     { "block-size",  'b', POPT_ARG_INT,  &block_len },
+    { "block-match", 'm', POPT_ARG_NONE, &block_match },
     { "sum-size",    'S', POPT_ARG_INT,  &strong_len },
     { "statistics",  's', POPT_ARG_NONE, &show_stats },
     { "stats",        0,  POPT_ARG_NONE, &show_stats },
@@ -144,6 +146,7 @@ static void help(void) {
            "  -H, --hash=ALG            Hash algorithm: blake2 (default), md4\n"
            "Delta-encoding options:\n"
            "  -b, --block-size=BYTES    Signature block size\n"
+           "  -m, --block-match         Enable matching only full blocks\n"
            "  -S, --sum-size=BYTES      Set signature strength\n"
            "      --paranoia            Verify all rolling checksums\n"
            "IO options:\n"
@@ -308,7 +311,7 @@ static rs_result rdiff_delta(poptContext opcon)
     if ((result = rs_build_hash_table(sumset)) != RS_DONE)
         return result;
 
-    result = rs_delta_file(sumset, new_file, delta_file, &stats);
+    result = rs_delta_file(sumset, new_file, delta_file, &stats, block_match);
 
     rs_free_sumset(sumset);
 

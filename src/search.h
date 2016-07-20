@@ -25,5 +25,5 @@ rs_search_for_block(rs_weak_sum_t weak_sum,
                     const rs_byte_t *inbuf,
                     size_t block_len,
                     rs_signature_t const *sums, rs_stats_t * stats,
-                    rs_long_t * match_where);
+                    rs_long_t * match_where, int job_token);
 

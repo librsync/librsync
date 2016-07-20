@@ -165,7 +165,7 @@ rs_search_for_block(rs_weak_sum_t weak_sum,
                     const rs_byte_t *inbuf,
                     size_t block_len,
                     rs_signature_t const *sig, rs_stats_t * stats,
-                    rs_long_t * match_where)
+                    rs_long_t * match_where, int job_token)
 {
     /* Caller must have called rs_build_hash_table() by now */
     if (!sig->tag_table)
@@ -178,9 +178,20 @@ rs_search_for_block(rs_weak_sum_t weak_sum,
     int l = bucket->l; /* left bound of search region */
     int r = bucket->r + 1; /* right bound of search region */
     int v = 1; /* direction of next move: -ve left, +ve right */
+    int i = -1;
 
     if (l == NULL_TAG)
         return 0;
+
+    /* Try a direct match */
+    if ((job_token > 0) && (job_token < sig->count) &&
+        (weak_sum == sig->block_sigs[job_token-1].weak_sum)) {
+
+        l = 0;
+        r = 0;
+        i = job_token-1;
+        rs_trace("direct match block %d", job_token);
+    }
 
     while (l < r) {
         int m = (l + r) >> 1; /* midpoint of search region */
@@ -222,7 +233,7 @@ rs_search_for_block(rs_weak_sum_t weak_sum,
     }
 
     if ((l == r) && (l <= bucket->r)) {
-        int i = sig->targets[l].i;
+        if (i < 0) i = sig->targets[l].i;
         rs_block_sig_t *b = &(sig->block_sigs[i]);
         if (weak_sum != b->weak_sum)
             return 0;

@@ -45,6 +45,9 @@ struct rs_job {
      * they're also used in the mksum operation. */
     int                 block_len;
     int                 strong_sum_len;
+
+    /** block_match is the current block being processed, only valid
+        when block_match is set (starts at 1) */
     int                 block_match;
 
     /** Signature that's either being read in, or used for

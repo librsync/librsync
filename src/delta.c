@@ -180,6 +180,10 @@ static rs_result rs_delta_s_scan(rs_job_t *job)
                 RollsumInit(&job->weak_sum);
             }
         }
+
+        if (job->block_match > 0) {
+            job->block_match++;
+        }
     }
     /* if we completed OK */
     if (result==RS_DONE) {
@@ -207,6 +211,8 @@ static rs_result rs_delta_s_flush(rs_job_t *job)
     rs_getinput(job);
     /* output any pending output */
     result=rs_tube_catchup(job);
+    /* tokens should no longer be valid */
+    job->block_match = -1;
     /* while output is not blocked and there is any remaining data */
     while ((result==RS_DONE) && (job->scoop_pos < job->scoop_avail)) {
         /* check if this block matches */
@@ -280,7 +286,7 @@ inline int rs_findmatch(rs_job_t *job, rs_long_t *match_pos, size_t *match_len) 
                                *match_len,
                                job->signature,
                                &job->stats,
-                               match_pos);
+                               match_pos, job->block_match);
 }
 
 

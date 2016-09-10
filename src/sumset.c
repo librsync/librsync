@@ -38,11 +38,11 @@ rs_free_sumset(rs_signature_t * psums)
         if (psums->block_sigs)
                 free(psums->block_sigs);
 
-        if (psums->tag_table)
-		free(psums->tag_table);
+        if (psums->buckets)
+		free(psums->buckets);
 
-        if (psums->targets)
-                free(psums->targets);
+        if (psums->strong_sums)
+                free(psums->strong_sums);
 
         rs_bzero(psums, sizeof *psums);
         free(psums);

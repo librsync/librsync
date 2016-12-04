@@ -205,9 +205,11 @@ rs_search_for_block(rs_weak_sum_t weak_sum,
             }
         }
 
-        if (v > 0)
+        if (v > 0) {
             l = m + 1;
-        else
+            if (l >= bucket->r)
+                return 0;
+        } else
             r = m;
     }
 

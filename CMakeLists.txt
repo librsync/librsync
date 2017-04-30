@@ -300,7 +300,11 @@ set(rsync_LIB_SRCS
     src/version.c
     src/whole.c
     src/blake2b-ref.c)
-
+if(MSVC)
+	set(rsync_LIB_SRCS ${rsync_LIB_SRCS}
+		src/librsync.def)
+endif(MSVC)
+	
 add_library(rsync SHARED ${rsync_LIB_SRCS})
 
 # Optionally link zlib and bzip2 if

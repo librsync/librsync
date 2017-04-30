@@ -1,0 +1,13 @@
+LIBRARY librsync
+
+EXPORTS
+	rs_sig_begin
+	rs_loadsig_begin
+	rs_free_sumset
+	rs_delta_begin
+	rs_patch_begin
+	rs_build_hash_table
+	rs_trace0
+	rs_error0
+	rs_job_drive
+	rs_job_free

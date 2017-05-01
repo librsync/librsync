@@ -103,6 +103,10 @@ rs_realloc(void *ptr, size_t size, char const *name)
 #  define fstat(f,s) fstat64((f), (s))
 #endif
 
+#ifndef S_ISREG
+#   define S_ISREG(x) (x & _S_IFREG)
+#endif
+
 void
 rs_get_filesize(FILE *f, rs_long_t *size)
 {

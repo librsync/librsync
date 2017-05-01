@@ -107,7 +107,7 @@ void
 rs_get_filesize(FILE *f, rs_long_t *size)
 {
     struct stat st;
-    if (size && (fstat(fileno(f), &st) == 0) && (S_ISREG(st.st_mode))) {
+    if (size && (fstat(_fileno(f), &st) == 0) && (S_ISREG(st.st_mode))) {
         *size = st.st_size;
     }
 }

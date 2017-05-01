@@ -250,6 +250,13 @@ add_dependencies(check ${LAST_TARGET} isprefix_test rollsum_test hashtable_test 
 
 enable_testing()
 
+if (NOT MSVC)
+	# It appears the "_fileno" is defined only on Windos (Microsft Visual Studio). In the rest of the platforms it need
+	# to be "fileno". For this, the _fileno variable is set here and a corresponding "#cmakedefine" directive is inserted
+	# in config.h.cmake.
+	set(_fileno fileno)
+endif (NOT MSVC)
+
 # Create conf files
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/src/config.h)
 

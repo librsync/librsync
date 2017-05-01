@@ -218,7 +218,7 @@ rs_result rs_file_copy_cb(void *arg, rs_long_t pos, size_t *len, void **buf)
         rs_error("read error: %s", strerror(errno));
         return RS_IO_ERROR;
     } else if (got == 0) {
-        rs_error("unexpected eof on fd%d", fileno(f));
+        rs_error("unexpected eof on fd%d", _fileno(f));
         return RS_INPUT_ENDED;
     } else {
         *len = got;

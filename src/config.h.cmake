@@ -215,3 +215,6 @@
 
 /* FIXME Define to `unsigned int' if <sys/types.h> does not define. */
 /* #undef size_t */
+
+/*"_fileno" adjustment to "fileno" on non MSVC platforms*/
+#cmakedefine _fileno ${_fileno}

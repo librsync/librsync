@@ -1,4 +1,4 @@
-LIBRARY librsync
+LIBRARY rsync
 
 EXPORTS
 	rs_sig_begin

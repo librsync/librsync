@@ -19,6 +19,10 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct rs_filebuf rs_filebuf_t;
 
 rs_filebuf_t *rs_filebuf_new(FILE *f, size_t buf_len);
@@ -28,3 +32,7 @@ void rs_filebuf_free(rs_filebuf_t *fb);
 rs_result rs_infilebuf_fill(rs_job_t *, rs_buffers_t *buf, void *fb);
 
 rs_result rs_outfilebuf_drain(rs_job_t *, rs_buffers_t *, void *fb);
+
+#ifdef __cplusplus
+}
+#endif

@@ -171,10 +171,12 @@ if (BZIP2_FOUND)
 endif (BZIP2_FOUND)
 
 # Find Perl
-find_package (Perl REQUIRED)
-if (PERL_FOUND)
-  message (STATUS "PERL_EXECUTABLE  = ${PERL_EXECUTABLE}")
-endif (PERL_FOUND)
+if (NOT CMAKE_CROSSCOMPILING)
+	find_package (Perl REQUIRED)
+	if (PERL_FOUND)
+	  message (STATUS "PERL_EXECUTABLE  = ${PERL_EXECUTABLE}")
+	endif (PERL_FOUND)
+endif()
 
 # Find ZLIB
 find_package (ZLIB)
@@ -274,7 +276,7 @@ set(rsync_LIB_SRCS
     # This was generated
     ${CMAKE_CURRENT_BINARY_DIR}/src/prototab.c
     src/base64.c
-    src/buf.c
+    src/rsyncbuf.c
     src/checksum.c
     src/command.c
     src/delta.c
@@ -326,14 +328,13 @@ if (BUILD_RDIFF)
       src/rdiff.c
       src/isprefix.c)
 
-  add_executable(rdiff ${rdiff_SRCS})
   if (POPT_FOUND)
+    add_executable(rdiff ${rdiff_SRCS})
     target_link_libraries(rdiff rsync ${POPT_LIBRARIES})
+    install(TARGETS rdiff ${INSTALL_TARGETS_DEFAULT_ARGS} DESTINATION bin)
   else (POPT_FOUND)
     message (WARNING "Popt library is required for rdiff target")
   endif (POPT_FOUND)
-
-  install(TARGETS rdiff ${INSTALL_TARGETS_DEFAULT_ARGS} DESTINATION bin)
 endif (BUILD_RDIFF)
 
 
@@ -341,6 +342,7 @@ endif (BUILD_RDIFF)
 
 install(FILES
         src/librsync.h
+        src/librsyncbuf.h
         ${CMAKE_CURRENT_BINARY_DIR}/src/librsync-config.h
         DESTINATION include)
 

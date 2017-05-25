@@ -32,7 +32,7 @@ NOT RELEASED YET
 
  * `popt` is only needed when `rdiff` is being built. (gulikoza)
 
- * Use `fseeko64` on mingw. (gulikoza)
+ * `fseeko64` is used when compiling with mingw.
 
  * `rdiff -s` option now shows bytes read/written and speed. (gulikoza)
 

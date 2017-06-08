@@ -53,19 +53,13 @@
 #include "job.h"
 #include "util.h"
 
-/* Use fseeko instead of fseek for long file support if we have it.
- *
- * If provided use fseeko64 when compiling with mingw64 on Windows
- * as the size of off_t is 4 and will overflow on large files.
+/* Use fseeko64 or fseeko instead of fseek for long file support if
+ * we have it.
  */
-#if defined(__MINGW32__) && defined(HAVE_FSEEKO64)
-    #define fseek fseeko64
-#else
-    #ifdef HAVE_FSEEKO
-    #define fseek fseeko
-    #elif defined HAVE_FSEEKO64
-    #define fseek fseeko64
-    #endif
+#if defined(HAVE_FSEEKO64) && defined(HAVE_FOPEN64)
+#  define fseek fseeko64
+#elif defined(HAVE_FSEEKO)
+#  define fseek fseeko
 #endif
 
 /**

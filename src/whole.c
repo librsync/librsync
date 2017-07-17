@@ -111,7 +111,7 @@ rs_sig_file(FILE *old_file, FILE *sig_file, size_t block_len,
 	return r;
     job = rs_sig_begin(block_len, strong_len, sig_magic);
     /* Size inbuf for 4 blocks, outbuf for header + 4 blocksums. */
-    r = rs_whole_run(job, old_file, sig_file, 4 * new_block_len, 12 + 4*(4 + strong_len));
+    r = rs_whole_run(job, old_file, sig_file, 4 * block_len, 12 + 4*(4 + strong_len));
     if (stats)
         memcpy(stats, &job->stats, sizeof *stats);
     rs_job_free(job);

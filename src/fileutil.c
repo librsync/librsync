@@ -41,6 +41,12 @@
 #include "fileutil.h"
 #include "trace.h"
 
+/* Use fopen64 instead of fopen for long file support if we have it
+ * and fseeko64.
+ */
+#if defined(HAVE_FSEEKO64) && defined(HAVE_FOPEN64)
+#  define fopen fopen64
+#endif
 
 /**
  * \brief Open a file, with special handling for `-' or unspecified

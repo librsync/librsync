@@ -53,11 +53,13 @@
 #include "job.h"
 #include "util.h"
 
-/* use fseeko instead of fseek for long file support if we have it */
-#ifdef HAVE_FSEEKO
-#define fseek fseeko
-#elif defined HAVE_FSEEKO64
-#define fseek fseeko64
+/* Use fseeko64 or fseeko instead of fseek for long file support if
+ * we have it.
+ */
+#if defined(HAVE_FSEEKO64) && defined(HAVE_FOPEN64)
+#  define fseek fseeko64
+#elif defined(HAVE_FSEEKO)
+#  define fseek fseeko
 #endif
 
 

@@ -97,17 +97,18 @@ rs_whole_run(rs_job_t *job, FILE *in_file, FILE *out_file)
 }
 
 
-
 rs_result
-rs_sig_file(FILE *old_file, FILE *sig_file, size_t new_block_len,
-            size_t strong_len,
-	    rs_magic_number sig_magic,
-	    rs_stats_t *stats)
+rs_sig_file(FILE *old_file, FILE *sig_file, size_t block_len,
+            size_t strong_len, rs_magic_number sig_magic, rs_stats_t *stats)
 {
     rs_job_t        *job;
     rs_result       r;
+    rs_long_t       old_fsize = 0;
 
-    job = rs_sig_begin(new_block_len, strong_len, sig_magic);
+    rs_get_filesize(old_file, &old_fsize);
+    if ((r = rs_sig_args(old_fsize, &sig_magic, &block_len, &strong_len)) != RS_DONE)
+	return r;
+    job = rs_sig_begin(block_len, strong_len, sig_magic);
     r = rs_whole_run(job, old_file, sig_file);
     if (stats)
         memcpy(stats, &job->stats, sizeof *stats);
@@ -168,7 +169,7 @@ rs_result rs_patch_file(FILE *basis_file, FILE *delta_file, FILE *new_file,
     job = rs_patch_begin(rs_file_copy_cb, basis_file);
 
     r = rs_whole_run(job, delta_file, new_file);
-    
+
     if (stats)
         memcpy(stats, &job->stats, sizeof *stats);
 

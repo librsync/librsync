@@ -402,9 +402,17 @@ struct rs_buffers_s {
  */
 typedef struct rs_buffers_s rs_buffers_t;
 
-/** Default block length, if not determined by any other factors. */
+/** Default block length, if not determined by any other factors.
+ *
+ * The 2K default assumes a typical file is about 4MB and should be
+ * OK for files up to 32G with more than 1GB ram. */
 #define RS_DEFAULT_BLOCK_LEN 2048
 
+/** Default strong sum length, if not determined by any other factors.
+ *
+ * This is conservative, and should be safe for files up to 32TB with
+ * a 1KB block_len. */
+#define RS_DEFAULT_STRONG_LEN 12
 
 /**
  * \brief Job of work to be done.
@@ -465,8 +473,34 @@ const rs_stats_t * rs_job_statistics(rs_job_t *job);
  */
 rs_result       rs_job_free(rs_job_t *);
 
-/**
- * \brief Start generating a signature.
+/** Get or check signature arguments for a given file size.
+ *
+ * This can be used to get the recommended arguments for generating a
+ * signature. On calling, all arguments can be set to a value to use,
+ * or zero to indicate "unknown". On return any zero inputs (except
+ * old_fsize) will be set to the recommended value to use and the
+ * returned result will indicate if any non-zero inputs were invalid.
+ *
+ * \param old_fsize - the original file size (0 for "unknown).
+ *
+ * \param *magic - the magic type to use.
+ *
+ * \param *block_len - the block length to use.
+ *
+ * \param *strong_len - the strongsum length to use.
+ *
+ * \return RS_DONE if all arguments are valid, otherwise an error code.
+ */
+rs_result rs_sig_args(rs_long_t old_fsize,
+                      rs_magic_number *magic,
+                      size_t *block_len,
+                      size_t *strong_len);
+
+
+/** Start generating a signature.
+ *
+ * It's recommended you use rs_sig_args() to get the recommended arguments for
+ * this based on the original file size.
  *
  * \return A new rs_job_t into which the old file data can be passed.
  *

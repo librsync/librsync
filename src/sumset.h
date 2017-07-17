@@ -62,7 +62,7 @@ struct rs_signature {
  *
  * \param sig_fsize signature file size to preallocate required storage for.
  * Use 0 if size is unknown. */
-rs_result rs_signature_init(rs_signature_t *sig, int magic, int block_len, int strong_len, rs_long_t sig_fsize);
+rs_result rs_signature_init(rs_signature_t *sig, rs_magic_number magic, size_t block_len, size_t strong_len, rs_long_t sig_fsize);
 
 /** Destroy an rs_signature instance. */
 void rs_signature_done(rs_signature_t *sig);
@@ -76,15 +76,23 @@ rs_long_t rs_signature_find_match(rs_signature_t *sig, rs_weak_sum_t weak_sum, v
 /** Log the rs_signature_find_match() stats. */
 void rs_signature_log_stats(rs_signature_t const *sig);
 
+/** Assert that rs_sig_args() args for rs_signature_init() are valid.
+ *
+ * We don't use a static inline function here so that assert failure output
+ * points at where rs_sig_args_check() was called from. */
+#define rs_sig_args_check(magic, block_len, strong_len) do {\
+    assert(((magic) == RS_BLAKE2_SIG_MAGIC && (strong_len) <= RS_BLAKE2_SUM_LENGTH)\
+           || ((magic) == RS_MD4_SIG_MAGIC && (strong_len) <= RS_MD4_SUM_LENGTH));\
+    assert(0 < (block_len));\
+    assert(0 < (strong_len) && (strong_len) <= RS_MAX_STRONG_SUM_LENGTH);\
+} while (0)
+
 /** Assert that a signature is valid.
  *
  * We don't use a static inline function here so that assert failure output
  * points at where rs_signature_check() was called from. */
 #define rs_signature_check(sig) do {\
-    assert(((sig)->magic == RS_BLAKE2_SIG_MAGIC && (sig)->strong_sum_len <= RS_BLAKE2_SUM_LENGTH)\
-           || ((sig)->magic == RS_MD4_SIG_MAGIC && (sig)->strong_sum_len <= RS_MD4_SUM_LENGTH));\
-    assert(0 < (sig)->block_len);\
-    assert(0 < (sig)->strong_sum_len && (sig)->strong_sum_len <= RS_MAX_STRONG_SUM_LENGTH);\
+    rs_sig_args_check((sig)->magic, (sig)->block_len, (sig)->strong_sum_len);\
     assert(0 <= (sig)->count && (sig)->count <= (sig)->size);\
     assert(!(sig)->hashtable || (sig)->hashtable->count == (sig)->count);\
 } while (0)

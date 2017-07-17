@@ -71,7 +71,7 @@
 
 #define PROGRAM "rdiff"
 
-static size_t block_len = RS_DEFAULT_BLOCK_LEN;
+static size_t block_len = 0;
 static size_t strong_len = 0;
 
 static int show_stats = 0;
@@ -254,12 +254,6 @@ static rs_result rdiff_sig(poptContext opcon)
     if (!rs_hash_name || !strcmp(rs_hash_name, "blake2")) {
         sig_magic = RS_BLAKE2_SIG_MAGIC;
     } else if (!strcmp(rs_hash_name, "md4")) {
-        /* By default, for compatibility with rdiff 0.9.8 and before, mdfour
-         * sums are truncated to only 8 bytes, making them even weaker, but
-         * making the signature file shorter.
-         */
-        if (!strong_len)
-            strong_len = 8;
         sig_magic = RS_MD4_SIG_MAGIC;
     } else {
         rs_error("unknown hash algorithm %s", rs_hash_name);

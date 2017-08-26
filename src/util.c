@@ -26,12 +26,8 @@
 
 
 #include "config.h"
-#include <sys/types.h>
-
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
-#include <sys/stat.h>
 
 #include "librsync.h"
 #include "util.h"
@@ -108,34 +104,4 @@ int rs_long_sqrt(rs_long_t v)
 	    n ^= b;
     }
     return n;
-}
-
-
-#ifdef HAVE_FSTATI64
-#  ifdef stat
-#   undef stat
-#  endif
-#  define stat _stati64
-#  ifdef fstat
-#   undef fstat
-#  endif
-#  define fstat(f,s) _fstati64((f), (s))
-#elif defined HAVE_FSTAT64
-#  ifdef stat
-#   undef stat
-#  endif
-#  define stat stat64
-#  ifdef fstat
-#   undef fstat
-#  endif
-#  define fstat(f,s) fstat64((f), (s))
-#endif
-
-void
-rs_get_filesize(FILE *f, rs_long_t *size)
-{
-    struct stat st;
-    if (size && (fstat(fileno(f), &st) == 0) && (S_ISREG(st.st_mode))) {
-        *size = st.st_size;
-    }
 }

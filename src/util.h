@@ -20,8 +20,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-void * rs_alloc(size_t size, char const *name);
-void * rs_realloc(void *ptr, size_t size, char const *name);
+void *rs_alloc(size_t size, char const *name);
+void *rs_realloc(void *ptr, size_t size, char const *name);
 void *rs_alloc_struct0(size_t size, char const *name);
 
 void rs_bzero(void *buf, size_t size);
@@ -29,17 +29,14 @@ void rs_bzero(void *buf, size_t size);
 int rs_long_ln2(rs_long_t v);
 int rs_long_sqrt(rs_long_t v);
 
-/*
- * Allocate and zero-fill an instance of TYPE.
- */
+/** Allocate and zero-fill an instance of TYPE. */
 #define rs_alloc_struct(type)				\
         ((type *) rs_alloc_struct0(sizeof(type), #type))
-
 
 #ifdef __GNUC__
 #  define UNUSED(x) x __attribute__((unused))
 #elif defined(__LCLINT__) || defined(S_SPLINT_S)
 #  define UNUSED(x) /*@unused@*/ x
-#else				/* !__GNUC__ && !__LCLINT__ */
+#else                           /* !__GNUC__ && !__LCLINT__ */
 #  define UNUSED(x) x
-#endif				/* !__GNUC__ && !__LCLINT__ */
+#endif                          /* !__GNUC__ && !__LCLINT__ */

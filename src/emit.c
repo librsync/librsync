@@ -19,16 +19,10 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-
-/*
- * TODO: Pluggable encoding formats:
+/** \file emit.c encoding output routines.
  *
- *  - gdiff-style
- *  - rsync 24
- *  - ed (text)
- *  - Delta HTTP
- */
-
+ * \todo Pluggable encoding formats: gdiff-style, rsync 24, ed (text), Delta
+ * HTTP. */
 
 #include "config.h"
 
@@ -45,38 +39,26 @@
 #include "sumset.h"
 #include "job.h"
 
-
-/*
- * Write the magic for the start of a delta.
- */
-void
-rs_emit_delta_header(rs_job_t *job)
+/** Write the magic for the start of a delta. */
+void rs_emit_delta_header(rs_job_t *job)
 {
     rs_trace("emit DELTA magic");
     rs_squirt_n4(job, RS_DELTA_MAGIC);
 }
 
-
-
-/* Write a LITERAL command. */
-void
-rs_emit_literal_cmd(rs_job_t *job, int len)
+/** Write a LITERAL command. */
+void rs_emit_literal_cmd(rs_job_t *job, int len)
 {
     int cmd;
-    int param_len;
+    int param_len = rs_int_len(len);
 
-    switch (param_len = rs_int_len(len)) {
-    case 1:
+    if (param_len == 1)
         cmd = RS_OP_LITERAL_N1;
-        break;
-    case 2:
+    else if (param_len == 2)
         cmd = RS_OP_LITERAL_N2;
-        break;
-    case 4:
+    else {
+        assert(param_len == 4);
         cmd = RS_OP_LITERAL_N4;
-        break;
-    default:
-        rs_fatal("What?");
     }
 
     rs_trace("emit LITERAL_N%d(len=%d), cmd_byte=%#04x", param_len, len, cmd);
@@ -88,18 +70,16 @@ rs_emit_literal_cmd(rs_job_t *job, int len)
     job->stats.lit_cmdbytes += 1 + param_len;
 }
 
-
 /** Write a COPY command for given offset and length.
  *
- * There is a choice of variable-length encodings, depending on the
- * size of representation for the parameters. */
-void
-rs_emit_copy_cmd(rs_job_t *job, rs_long_t where, rs_long_t len)
+ * There is a choice of variable-length encodings, depending on the size of
+ * representation for the parameters. */
+void rs_emit_copy_cmd(rs_job_t *job, rs_long_t where, rs_long_t len)
 {
-    int            cmd;
-    rs_stats_t     *stats = &job->stats;
+    int cmd;
+    rs_stats_t *stats = &job->stats;
     const int where_bytes = rs_int_len(where);
-    const int len_bytes   = rs_int_len(len);
+    const int len_bytes = rs_int_len(len);
 
     /* Commands ascend (1,1), (1,2), ... (8, 8) */
     if (where_bytes == 8)
@@ -108,26 +88,23 @@ rs_emit_copy_cmd(rs_job_t *job, rs_long_t where, rs_long_t len)
         cmd = RS_OP_COPY_N4_N1;
     else if (where_bytes == 2)
         cmd = RS_OP_COPY_N2_N1;
-    else if (where_bytes == 1)
-        cmd = RS_OP_COPY_N1_N1;
     else {
-        rs_fatal("can't encode copy command with where_bytes=%d", where_bytes);
+        assert(where_bytes == 1);
+        cmd = RS_OP_COPY_N1_N1;
     }
 
-    if (len_bytes == 1)
-        ;
+    if (len_bytes == 1) ;
     else if (len_bytes == 2)
         cmd += 1;
     else if (len_bytes == 4)
         cmd += 2;
-    else if (len_bytes == 8)
-        cmd += 3;
     else {
-        rs_fatal("can't encode copy command with len_bytes=%d", len_bytes);
+        assert(len_bytes == 8);
+        cmd += 3;
     }
 
-    rs_trace("emit COPY_N%d_N%d(where="FMT_LONG", len="FMT_LONG"), cmd_byte=%#04x",
-             where_bytes, len_bytes, where, len, cmd);
+    rs_trace("emit COPY_N%d_N%d(where=" FMT_LONG ", len=" FMT_LONG
+             "), cmd_byte=%#04x", where_bytes, len_bytes, where, len, cmd);
     rs_squirt_byte(job, cmd);
     rs_squirt_netint(job, where, where_bytes);
     rs_squirt_netint(job, len, len_bytes);
@@ -136,13 +113,11 @@ rs_emit_copy_cmd(rs_job_t *job, rs_long_t where, rs_long_t len)
     stats->copy_bytes += len;
     stats->copy_cmdbytes += 1 + where_bytes + len_bytes;
 
-    /* TODO: All the stats */
+    /* \todo All the stats */
 }
 
-
 /** Write an END command. */
-void
-rs_emit_end_cmd(rs_job_t *job)
+void rs_emit_end_cmd(rs_job_t *job)
 {
     int cmd = RS_OP_END;
 

@@ -99,7 +99,9 @@ rs_result rs_sig_file(FILE *old_file, FILE *sig_file, size_t block_len,
     rs_long_t old_fsize = 0;
 
     rs_get_filesize(old_file, &old_fsize);
-    if ((r = rs_sig_args(old_fsize, &sig_magic, &block_len, &strong_len)) != RS_DONE)
+    if ((r =
+         rs_sig_args(old_fsize, &sig_magic, &block_len,
+                     &strong_len)) != RS_DONE)
         return r;
     job = rs_sig_begin(block_len, strong_len, sig_magic);
     /* Size inbuf for 4 blocks, outbuf for header + 4 blocksums. */

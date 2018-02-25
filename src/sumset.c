@@ -118,11 +118,15 @@ static inline int rs_block_sig_idx(const rs_signature_t *sig,
             (char *)sig->block_sigs) / rs_block_sig_size(sig);
 }
 
-rs_result rs_sig_args(rs_long_t old_fsize, rs_magic_number *magic, size_t *block_len, size_t *strong_len)
+rs_result rs_sig_args(rs_long_t old_fsize, rs_magic_number * magic,
+                      size_t *block_len, size_t *strong_len)
 {
-    size_t max_strong_len;  /* the maximum strong_len for the given magic type. */
-    size_t rec_strong_len;  /* the recommended strong_len for the given file size. */
-    size_t rec_block_len;   /* the recomended block_len for the given file size. */
+    size_t max_strong_len;      /* the maximum strong_len for the given magic
+                                   type. */
+    size_t rec_strong_len;      /* the recommended strong_len for the given
+                                   file size. */
+    size_t rec_block_len;       /* the recomended block_len for the given file
+                                   size. */
 
     /* Check and set default arguments. */
     *magic = *magic ? *magic : RS_BLAKE2_SIG_MAGIC;
@@ -137,51 +141,57 @@ rs_result rs_sig_args(rs_long_t old_fsize, rs_magic_number *magic, size_t *block
         rs_error("invalid magic %#x", *magic);
         return RS_BAD_MAGIC;
     }
-    /* The recommended block_len is sqrt(old_fsize) with a 256 min size to
-     give a reasonable compromise between signature size, delta size, and
-     performance. If the old_fsize is unknown, we use a reasonable default. */
+    /* The recommended block_len is sqrt(old_fsize) with a 256 min size to give
+       a reasonable compromise between signature size, delta size, and
+       performance. If the old_fsize is unknown, we use a reasonable default. */
     if (old_fsize) {
-	rec_block_len = old_fsize <= 256 * 256 ? 256 : rs_long_sqrt(old_fsize);
+        rec_block_len = old_fsize <= 256 * 256 ? 256 : rs_long_sqrt(old_fsize);
     } else {
-	rec_block_len = RS_DEFAULT_BLOCK_LEN;
+        rec_block_len = RS_DEFAULT_BLOCK_LEN;
     }
     *block_len = *block_len ? *block_len : rec_block_len;
-    /* The recommended strong_len assumes new_fsize = old_fsize with
-     worst-case no matches. This results in comparing a block at every byte
-     offset against all the blocks in the signature, or fsize*block_num
-     comparisons. With N bits in the blocksig, there is a 1/2^N chance per
-     comparison of a hash colision. So with 2^N attempts there would be a
-     fair chance of having a collision. So we want to round up to the next
-     byte, add an extra 2 bytes (16 bits) in the strongsum, and assume the
-     weaksum is worth another 16 bits, for at least 32 bits extra, giving a
-     1/2^32 chance of having a hash collision per delta. If old_fsize is
-     unknown, we use a conservative default. */
+    /* The recommended strong_len assumes new_fsize = old_fsize with worst-case
+       no matches. This results in comparing a block at every byte offset
+       against all the blocks in the signature, or fsize*block_num comparisons.
+       With N bits in the blocksig, there is a 1/2^N chance per comparison of a
+       hash colision. So with 2^N attempts there would be a fair chance of
+       having a collision. So we want to round up to the next byte, add an
+       extra 2 bytes (16 bits) in the strongsum, and assume the weaksum is
+       worth another 16 bits, for at least 32 bits extra, giving a 1/2^32
+       chance of having a hash collision per delta. If old_fsize is unknown, we
+       use a conservative default. */
     if (old_fsize) {
-	rec_strong_len = 2 + (2*rs_long_ln2(old_fsize) - rs_long_ln2(*block_len) + 7)/8;
+        rec_strong_len =
+            2 + (2 * rs_long_ln2(old_fsize) - rs_long_ln2(*block_len) + 7) / 8;
     } else {
-	rec_strong_len = RS_DEFAULT_STRONG_LEN;
+        rec_strong_len = RS_DEFAULT_STRONG_LEN;
     }
     *strong_len = *strong_len ? *strong_len : rec_strong_len;
     if (*strong_len < 1 || max_strong_len < *strong_len) {
-        rs_error("invalid strong_sum_len "FMT_SIZE" for magic %#x", *strong_len, (int)*magic);
+        rs_error("invalid strong_sum_len " FMT_SIZE " for magic %#x",
+                 *strong_len, (int)*magic);
         return RS_PARAM_ERROR;
     } else if (old_fsize && *strong_len < rec_strong_len) {
-        rs_log(RS_LOG_WARNING|RS_LOG_NONAME,
-	       "strong_len "FMT_SIZE" is less than the recommended "FMT_SIZE" for block_len "FMT_SIZE" "
-	       "with a file size of %.1fMB, and risks corruption from hash "
-	       "collisions", *strong_len, rec_strong_len, *block_len, old_fsize/(float)(1<<20));
+        rs_log(RS_LOG_WARNING | RS_LOG_NONAME,
+               "strong_len " FMT_SIZE " is less than the recommended " FMT_SIZE
+               " for block_len " FMT_SIZE " "
+               "with a file size of %.1fMB, and risks corruption from hash "
+               "collisions", *strong_len, rec_strong_len, *block_len,
+               old_fsize / (float)(1 << 20));
     }
     rs_sig_args_check(*magic, *block_len, *strong_len);
     return RS_DONE;
 }
 
-rs_result rs_signature_init(rs_signature_t *sig, rs_magic_number magic, size_t block_len, size_t strong_len, rs_long_t sig_fsize)
+rs_result rs_signature_init(rs_signature_t *sig, rs_magic_number magic,
+                            size_t block_len, size_t strong_len,
+                            rs_long_t sig_fsize)
 {
     rs_result result;
 
     /* Check and set default arguments. */
     if ((result = rs_sig_args(0, &magic, &block_len, &strong_len)) != RS_DONE)
-	return result;
+        return result;
     /* Set attributes from args. */
     sig->magic = magic;
     sig->block_len = block_len;

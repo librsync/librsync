@@ -334,15 +334,15 @@ typedef struct rs_buffers_s rs_buffers_t;
 
 /** Default block length, if not determined by any other factors.
  *
- * The 2K default assumes a typical file is about 4MB and should be
- * OK for files up to 32G with more than 1GB ram. */
-#define RS_DEFAULT_BLOCK_LEN 2048
+ * The 2K default assumes a typical file is about 4MB and should be OK for
+ * files up to 32G with more than 1GB ram. */
+#  define RS_DEFAULT_BLOCK_LEN 2048
 
 /** Default strong sum length, if not determined by any other factors.
  *
- * This is conservative, and should be safe for files up to 32TB with
- * a 1KB block_len. */
-#define RS_DEFAULT_STRONG_LEN 12
+ * This is conservative, and should be safe for files up to 32TB with a 1KB
+ * block_len. */
+#  define RS_DEFAULT_STRONG_LEN 12
 
 /** Job of work to be done.
  *
@@ -391,10 +391,10 @@ rs_result rs_job_free(rs_job_t *);
 /** Get or check signature arguments for a given file size.
  *
  * This can be used to get the recommended arguments for generating a
- * signature. On calling, all arguments can be set to a value to use,
- * or zero to indicate "unknown". On return any zero inputs (except
- * old_fsize) will be set to the recommended value to use and the
- * returned result will indicate if any non-zero inputs were invalid.
+ * signature. On calling, all arguments can be set to a value to use, or zero
+ * to indicate "unknown". On return any zero inputs (except old_fsize) will be
+ * set to the recommended value to use and the returned result will indicate if
+ * any non-zero inputs were invalid.
  *
  * \param old_fsize - the original file size (0 for "unknown).
  *
@@ -404,12 +404,9 @@ rs_result rs_job_free(rs_job_t *);
  *
  * \param *strong_len - the strongsum length to use.
  *
- * \return RS_DONE if all arguments are valid, otherwise an error code.
- */
-rs_result rs_sig_args(rs_long_t old_fsize,
-                      rs_magic_number *magic,
-                      size_t *block_len,
-                      size_t *strong_len);
+ * \return RS_DONE if all arguments are valid, otherwise an error code. */
+rs_result rs_sig_args(rs_long_t old_fsize, rs_magic_number * magic,
+                      size_t *block_len, size_t *strong_len);
 
 /** Start generating a signature.
  *

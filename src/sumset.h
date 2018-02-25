@@ -63,8 +63,8 @@ struct rs_signature {
  * \param sig_fsize signature file size to preallocate required storage for.
  * Use 0 if size is unknown. */
 rs_result rs_signature_init(rs_signature_t *sig, rs_magic_number magic,
-			    size_t block_len, size_t strong_len,
-			    rs_long_t sig_fsize);
+                            size_t block_len, size_t strong_len,
+                            rs_long_t sig_fsize);
 
 /** Destroy an rs_signature instance. */
 void rs_signature_done(rs_signature_t *sig);

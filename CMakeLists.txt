@@ -24,7 +24,7 @@ include(GNUInstallDirs)
 
 set(LIBRSYNC_MAJOR_VERSION 2)
 set(LIBRSYNC_MINOR_VERSION 0)
-set(LIBRSYNC_PATCH_VERSION 2)
+set(LIBRSYNC_PATCH_VERSION 3)
 
 set(LIBRSYNC_VERSION
   ${LIBRSYNC_MAJOR_VERSION}.${LIBRSYNC_MINOR_VERSION}.${LIBRSYNC_PATCH_VERSION})
@@ -171,12 +171,6 @@ if (BZIP2_FOUND)
   include_directories(${BZIP2_INCLUDE_DIR})
 endif (BZIP2_FOUND)
 
-# Find Perl
-find_package (Perl REQUIRED)
-if (PERL_FOUND)
-  message (STATUS "PERL_EXECUTABLE  = ${PERL_EXECUTABLE}")
-endif (PERL_FOUND)
-
 # Find ZLIB
 find_package (ZLIB)
 if (ZLIB_FOUND)
@@ -248,10 +242,6 @@ add_custom_target(tidyc
     VERBATIM
 )
 
-# Generate prototab.c/h
-file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/src)
-execute_process(COMMAND ${PERL_EXECUTABLE} "${CMAKE_CURRENT_SOURCE_DIR}/src/mkprototab.pl" "${CMAKE_CURRENT_BINARY_DIR}/src/prototab.c" "${CMAKE_CURRENT_BINARY_DIR}/src/prototab.h")
-
 # Testing
 
 add_executable(isprefix_test
@@ -320,8 +310,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 # (Don't list .h files)
 
 set(rsync_LIB_SRCS
-    # This was generated
-    ${CMAKE_CURRENT_BINARY_DIR}/src/prototab.c
+    src/prototab.c
     src/base64.c
     src/buf.c
     src/checksum.c
@@ -394,5 +383,12 @@ install(FILES
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 message (STATUS "CMAKE_C_FLAGS  = ${CMAKE_C_FLAGS}")
+
+install(FILES
+	doc/librsync.3
+	DESTINATION ${CMAKE_INSTALL_MANDIR}/man3)
+install(FILES
+	doc/rdiff.1
+	DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 
 # vim: shiftwidth=4 expandtab

@@ -168,6 +168,8 @@ void rs_signature_done(rs_signature_t *sig)
 {
     hashtable_free(sig->hashtable);
     rs_bzero(sig, sizeof(*sig));
+
+    free(sig->block_sigs);
 }
 
 rs_block_sig_t *rs_signature_add_block(rs_signature_t *sig,

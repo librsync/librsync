@@ -167,9 +167,8 @@ rs_result rs_signature_init(rs_signature_t *sig, int magic, int block_len,
 void rs_signature_done(rs_signature_t *sig)
 {
     hashtable_free(sig->hashtable);
-    rs_bzero(sig, sizeof(*sig));
-
     free(sig->block_sigs);
+    rs_bzero(sig, sizeof(*sig));
 }
 
 rs_block_sig_t *rs_signature_add_block(rs_signature_t *sig,

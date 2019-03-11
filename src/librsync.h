@@ -340,8 +340,8 @@ typedef struct rs_buffers_s rs_buffers_t;
 
 /** Default strong sum length, if not determined by any other factors.
  *
- * This is conservative, and should be safe for files up to 32TB with a 1KB
- * block_len. */
+ * This is conservative, and should be safe for files less than 32TB with a
+ * 1KB block_len. */
 #  define RS_DEFAULT_STRONG_LEN 12
 
 /** Job of work to be done.

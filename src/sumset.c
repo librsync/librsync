@@ -161,9 +161,9 @@ rs_result rs_sig_args(rs_long_t old_fsize, rs_magic_number * magic,
        worst case 1/2^32 chance of having a hash collision per delta. If
        old_fsize is unknown, we use a conservative default. */
     if (old_fsize) {
-        rec_strong_len = 3 +
-	    (rs_long_ln2(old_fsize + (1<<40)) +
-	     rs_long_ln2(old_fsize / block_len + 1)) / 8;
+        rec_strong_len =
+            3 + (rs_long_ln2(old_fsize + ((rs_long_t)1 << 40)) +
+                 rs_long_ln2(old_fsize / *block_len + 1)) / 8;
     } else {
         rec_strong_len = RS_DEFAULT_STRONG_LEN;
     }

@@ -219,6 +219,7 @@ rs_result rs_signature_init(rs_signature_t *sig, rs_magic_number magic,
 void rs_signature_done(rs_signature_t *sig)
 {
     hashtable_free(sig->hashtable);
+    free(sig->block_sigs);
     rs_bzero(sig, sizeof(*sig));
 }
 

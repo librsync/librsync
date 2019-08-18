@@ -95,9 +95,8 @@ rs_result rs_sig_file(FILE *old_file, FILE *sig_file, size_t block_len,
 {
     rs_job_t *job;
     rs_result r;
-    rs_long_t old_fsize = 0;
+    rs_long_t old_fsize = rs_file_size(old_file);
 
-    rs_get_filesize(old_file, &old_fsize);
     if ((r =
          rs_sig_args(old_fsize, &sig_magic, &block_len,
                      &strong_len)) != RS_DONE)

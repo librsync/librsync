@@ -342,8 +342,8 @@ typedef struct rs_buffers_s rs_buffers_t;
 
 /** Default strong sum length, if not determined by any other factors.
  *
- * This is conservative, and should be safe for files less than 32TB with a
- * 1KB block_len. */
+ * This is conservative, and should be safe for files less than 32TB with a 1KB
+ * block_len. */
 #  define RS_DEFAULT_STRONG_LEN 12
 
 /** Job of work to be done.
@@ -408,8 +408,9 @@ LIBRSYNC_EXPORT rs_result rs_job_free(rs_job_t *);
  * \param *strong_len - the strongsum length to use.
  *
  * \return RS_DONE if all arguments are valid, otherwise an error code. */
-rs_result rs_sig_args(rs_long_t old_fsize, rs_magic_number * magic,
-                      size_t *block_len, size_t *strong_len);
+LIBRSYNC_EXPORT rs_result rs_sig_args(rs_long_t old_fsize,
+                                      rs_magic_number * magic,
+                                      size_t *block_len, size_t *strong_len);
 
 /** Start generating a signature.
  *

@@ -76,24 +76,7 @@ enum {
 };
 
 char *rs_hash_name;
-
-const struct poptOption opts[] = {
-    {"verbose", 'v', POPT_ARG_NONE, 0, 'v'},
-    {"version", 'V', POPT_ARG_NONE, 0, 'V'},
-    {"input-size", 'I', POPT_ARG_INT, &rs_inbuflen},
-    {"output-size", 'O', POPT_ARG_INT, &rs_outbuflen},
-    {"hash", 'H', POPT_ARG_STRING, &rs_hash_name},
-    {"help", '?', POPT_ARG_NONE, 0, 'h'},
-    {0, 'h', POPT_ARG_NONE, 0, 'h'},
-    {"block-size", 'b', POPT_ARG_INT, &block_len},
-    {"sum-size", 'S', POPT_ARG_INT, &strong_len},
-    {"statistics", 's', POPT_ARG_NONE, &show_stats},
-    {"stats", 0, POPT_ARG_NONE, &show_stats},
-    {"gzip", 'z', POPT_ARG_NONE, 0, OPT_GZIP},
-    {"bzip2", 'i', POPT_ARG_NONE, 0, OPT_BZIP2},
-    {"force", 'f', POPT_ARG_NONE, &file_force},
-    {0}
-};
+char *rs_rollsum_name;
 
 static void rdiff_usage(const char *error, ...)
 {
@@ -134,6 +117,7 @@ static void help(void)
            "  -f, --force               Force overwriting existing files\n"
            "Signature generation options:\n"
            "  -H, --hash=ALG            Hash algorithm: blake2 (default), md4\n"
+           "  -R, --rollsum=ALG         Rollsum algorithm: rabinkarp (default), rollsum\n"
            "Delta-encoding options:\n"
            "  -b, --block-size=BYTES    Signature block size\n"
            "  -S, --sum-size=BYTES      Set signature strength\n"
@@ -235,6 +219,13 @@ static rs_result rdiff_sig(poptContext opcon)
         sig_magic = RS_MD4_SIG_MAGIC;
     } else {
         rdiff_usage("Unknown hash algorithm '%s'.", rs_hash_name);
+        exit(RS_SYNTAX_ERROR);
+    }
+    if (!rs_rollsum_name || !strcmp(rs_rollsum_name, "rabinkarp")) {
+        /* The RabinKarp magics are 0x10 greater than the rollsum magics. */
+        sig_magic += 0x10;
+    } else if (strcmp(rs_rollsum_name, "rollsum")) {
+        rdiff_usage("Unknown rollsum algorithm '%s'.", rs_rollsum_name);
         exit(RS_SYNTAX_ERROR);
     }
 
@@ -351,6 +342,26 @@ static rs_result rdiff_action(poptContext opcon)
 
 int main(const int argc, const char *argv[])
 {
+    /* Initialize opts at runtime to avoid unknown address values. */
+    const struct poptOption opts[] = {
+        {"verbose", 'v', POPT_ARG_NONE, 0, 'v'},
+        {"version", 'V', POPT_ARG_NONE, 0, 'V'},
+        {"input-size", 'I', POPT_ARG_INT, &rs_inbuflen},
+        {"output-size", 'O', POPT_ARG_INT, &rs_outbuflen},
+        {"hash", 'H', POPT_ARG_STRING, &rs_hash_name},
+        {"rollsum", 'R', POPT_ARG_STRING, &rs_rollsum_name},
+        {"help", '?', POPT_ARG_NONE, 0, 'h'},
+        {0, 'h', POPT_ARG_NONE, 0, 'h'},
+        {"block-size", 'b', POPT_ARG_INT, &block_len},
+        {"sum-size", 'S', POPT_ARG_INT, &strong_len},
+        {"statistics", 's', POPT_ARG_NONE, &show_stats},
+        {"stats", 0, POPT_ARG_NONE, &show_stats},
+        {"gzip", 'z', POPT_ARG_NONE, 0, OPT_GZIP},
+        {"bzip2", 'i', POPT_ARG_NONE, 0, OPT_BZIP2},
+        {"force", 'f', POPT_ARG_NONE, &file_force},
+        {0}
+    };
+
     poptContext opcon;
     rs_result result;
 

@@ -45,7 +45,7 @@ extern "C" {
 /** Library version string.
  *
  * \sa \ref versioning */
-extern char const rs_librsync_version[];
+LIBRSYNC_EXPORT extern char const rs_librsync_version[];
 
 typedef uint8_t rs_byte_t;
 typedef intmax_t rs_long_t;
@@ -87,7 +87,28 @@ typedef enum {
      * The four-byte literal \c "rs\x017".
      *
      * \sa rs_sig_begin() */
-    RS_BLAKE2_SIG_MAGIC = 0x72730137
+    RS_BLAKE2_SIG_MAGIC = 0x72730137,
+
+    /** A signature file with RabinKarp rollsum and MD4 hash.
+     *
+     * Uses a faster/safer rollsum, but still strongly discouraged because of
+     * MD4's security vulnerability. Supported since librsync 2.2.0.
+     *
+     * The four-byte literal \c "rs\x01F".
+     *
+     * \sa rs_sig_begin() */
+    RS_RK_MD4_SIG_MAGIC = 0x72730146,
+
+    /** A signature file with RabinKarp rollsum and BLAKE2 hash.
+     *
+     * Uses a faster/safer rollsum together with the safer BLAKE2 hash. This is
+     * the recommended default supported since librsync 2.2.0.
+     *
+     * The four-byte literal \c "rs\x01G".
+     *
+     * \sa rs_sig_begin() */
+    RS_RK_BLAKE2_SIG_MAGIC = 0x72730147,
+
 } rs_magic_number;
 
 /** Log severity levels.
@@ -215,7 +236,7 @@ typedef struct rs_stats {
  * \sa rs_mdfour(), rs_mdfour_begin(), rs_mdfour_update(), rs_mdfour_result() */
 typedef struct rs_mdfour rs_mdfour_t;
 
-extern const int RS_MD4_SUM_LENGTH, RS_BLAKE2_SUM_LENGTH;
+LIBRSYNC_EXPORT extern const int RS_MD4_SUM_LENGTH, RS_BLAKE2_SUM_LENGTH;
 
 #  define RS_MAX_STRONG_SUM_LENGTH 32
 
@@ -526,7 +547,7 @@ LIBRSYNC_EXPORT rs_result rs_file_copy_cb(void *arg, rs_long_t pos, size_t *len,
  * The default 0 means use the recommended buffer size for the operation being
  * performed, any other value will override the recommended sizes. You probably
  * only need to change these in testing. */
-extern int rs_inbuflen, rs_outbuflen;
+LIBRSYNC_EXPORT extern int rs_inbuflen, rs_outbuflen;
 
 /** Generate the signature of a basis file, and write it out to another.
  *

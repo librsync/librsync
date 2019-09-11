@@ -46,7 +46,7 @@ int mykey_cmp(mykey_t *k, const mykey_t *o)
 
 /* Entry type for values in hashtable. */
 typedef struct myentry {
-    mykey_t key;                  /* Inherit from mykey_t. */
+    mykey_t key;                /* Inherit from mykey_t. */
     int value;
 } myentry_t;
 
@@ -57,11 +57,11 @@ void myentry_init(myentry_t *e, int i)
 }
 
 /* Match type for finding matching entries in hashtable.
- *
- * This demonstrates using deferred calculation and comparison of the
- * expected value only when the key matches. */
+
+   This demonstrates using deferred calculation and comparison of the expected
+   value only when the key matches. */
 typedef struct mymatch {
-    mykey_t key;                  /* Inherit from mykey_t. */
+    mykey_t key;                /* Inherit from mykey_t. */
     int value;
     int source;
 } mymatch_t;
@@ -85,7 +85,6 @@ int mymatch_cmp(mymatch_t *m, const myentry_t *e)
     return ans;
 }
 
-
 /* Instantiate a simple mykey_hashtable of keys. */
 #define ENTRY mykey
 #include "hashtable.h"
@@ -102,7 +101,7 @@ int main(int argc, char **argv)
 {
     /* Test mykey_hashtable instance. */
     hashtable_t *kt;
-    hashtable_iter_t ki;
+    int ki;
     mykey_t k1, k2;
 
     mykey_init(&k1, 1);
@@ -111,8 +110,8 @@ int main(int argc, char **argv)
     assert(mykey_hashtable_add(kt, &k1) == &k1);
     assert(mykey_hashtable_find(kt, &k1) == &k1);
     assert(mykey_hashtable_find(kt, &k2) == NULL);
-    assert(mykey_hashtable_iter(&ki, kt) == &k1);
-    assert(mykey_hashtable_next(&ki) == NULL);
+    assert(mykey_hashtable_iter(kt, &ki) == &k1);
+    assert(mykey_hashtable_next(kt, &ki) == NULL);
 
     /* Test myhashtable instance. */
     hashtable_t *t;
@@ -133,15 +132,17 @@ int main(int argc, char **argv)
     assert(t->ktable != NULL);
 
     /* Test myhashtable_add() */
-    assert(myhashtable_add(t, &e) == &e); /* Added duplicated copy. */
-    assert(myhashtable_add(t, &entry[0]) == &entry[0]);   /* Added duplicated instance. */
+    assert(myhashtable_add(t, &e) == &e);       /* Added duplicated copy. */
+    assert(myhashtable_add(t, &entry[0]) == &entry[0]); /* Added duplicated
+                                                           instance. */
     for (i = 0; i < 256; i++)
         assert(myhashtable_add(t, &entry[i]) == &entry[i]);
     assert(t->count == 258);
 
     /* Test myhashtable_find() */
     mymatch_init(&m, 0);
-    assert(myhashtable_find(t, &m) == &e);        /* Finds first duplicate added. */
+    assert(myhashtable_find(t, &m) == &e);      /* Finds first duplicate added.
+                                                 */
     assert(m.value == m.source);        /* mymatch_cmp() updated m.value. */
     for (i = 1; i < 256; i++) {
         mymatch_init(&m, i);
@@ -149,7 +150,7 @@ int main(int argc, char **argv)
         assert(m.value == m.source);    /* mymatch_cmp() updated m.value. */
     }
     mymatch_init(&m, 256);
-    assert(myhashtable_find(t, &m) == NULL);      /* Find missing myentry. */
+    assert(myhashtable_find(t, &m) == NULL);    /* Find missing myentry. */
     assert(m.value == 0);       /* mymatch_cmp() didn't update m.value. */
 #ifndef HASHTABLE_NSTATS
     assert(t->find_count == 257);
@@ -165,9 +166,10 @@ int main(int argc, char **argv)
 
     /* Test hashtable iterators */
     myentry_t *p;
-    hashtable_iter_t iter;
+    int iter;
     int count = 0;
-    for (p = myhashtable_iter(&iter, t); p != NULL; p = myhashtable_next(&iter)) {
+    for (p = myhashtable_iter(t, &iter); p != NULL;
+         p = myhashtable_next(t, &iter)) {
         assert(p == &e || (&entry[0] <= p && p <= &entry[255]));
         count++;
     }

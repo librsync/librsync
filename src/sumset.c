@@ -151,9 +151,10 @@ rs_result rs_sig_args(rs_long_t old_fsize, rs_magic_number * magic,
     } else {
         rec_block_len = RS_DEFAULT_BLOCK_LEN;
     }
-    *block_len = *block_len ? *block_len : rec_block_len;
+    if (*block_len == 0)
+        *block_len = rec_block_len;
     /* The recommended strong_len assumes the worst case new_fsize = old_fsize
-       + 1TB with no matches. This results in comparing a block at every byte
+       + 16MB with no matches. This results in comparing a block at every byte
        offset against all the blocks in the signature, or new_fsize*block_num
        comparisons. With N bits in the blocksig, there is a 1/2^N chance per
        comparison of a hash colision. So with 2^N attempts there would be a
@@ -164,23 +165,17 @@ rs_result rs_sig_args(rs_long_t old_fsize, rs_magic_number * magic,
        old_fsize is unknown, we use a conservative default. */
     if (old_fsize) {
         rec_strong_len =
-            3 + (rs_long_ln2(old_fsize + ((rs_long_t)1 << 40)) +
-                 rs_long_ln2(old_fsize / *block_len + 1)) / 8;
+            2 + (rs_long_ln2(old_fsize + ((rs_long_t)1 << 24)) +
+                 rs_long_ln2(old_fsize / *block_len + 1) + 7) / 8;
     } else {
         rec_strong_len = RS_DEFAULT_STRONG_LEN;
     }
-    *strong_len = *strong_len ? *strong_len : rec_strong_len;
-    if (*strong_len < 1 || max_strong_len < *strong_len) {
+    if (*strong_len == 0 || (old_fsize && *strong_len < rec_strong_len))
+        *strong_len = rec_strong_len;
+    if (*strong_len > max_strong_len) {
         rs_error("invalid strong_sum_len " FMT_SIZE " for magic %#x",
                  *strong_len, (int)*magic);
         return RS_PARAM_ERROR;
-    } else if (old_fsize && *strong_len < rec_strong_len) {
-        rs_log(RS_LOG_WARNING | RS_LOG_NONAME,
-               "strong_len " FMT_SIZE " is less than the recommended " FMT_SIZE
-               " for block_len " FMT_SIZE " "
-               "with a file size of %.1fMB, and risks corruption from hash "
-               "collisions", *strong_len, rec_strong_len, *block_len,
-               old_fsize / (float)(1 << 20));
     }
     rs_sig_args_check(*magic, *block_len, *strong_len);
     return RS_DONE;

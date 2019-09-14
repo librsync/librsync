@@ -416,17 +416,20 @@ LIBRSYNC_EXPORT rs_result rs_job_free(rs_job_t *);
  *
  * This can be used to get the recommended arguments for generating a
  * signature. On calling, all arguments can be set to a value to use, or zero
- * to indicate "unknown". On return any zero inputs (except old_fsize) will be
- * set to the recommended value to use and the returned result will indicate if
- * any non-zero inputs were invalid.
+ * to indicate "unknown". On return zero inputs (except old_fsize) will be set
+ * to recommended values and the returned result will indicate if any inputs
+ * were invalid. If old_fsize is non-zero, the strong_len input value is
+ * considered a minimum value, and will be increased if the recommended value
+ * is larger. You should set strong_len to at least 16 if you need protection
+ * against hash collision attacks.
  *
- * \param old_fsize - the original file size (0 for "unknown).
+ * \param old_fsize - the original file size (0 for "unknown").
  *
- * \param *magic - the magic type to use.
+ * \param *magic - the magic type to use (0 for "recommended").
  *
- * \param *block_len - the block length to use.
+ * \param *block_len - the block length to use (0 for "recommended").
  *
- * \param *strong_len - the strongsum length to use.
+ * \param *strong_len - the minimum strongsum length to use.
  *
  * \return RS_DONE if all arguments are valid, otherwise an error code. */
 LIBRSYNC_EXPORT rs_result rs_sig_args(rs_long_t old_fsize,

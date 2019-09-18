@@ -146,10 +146,10 @@ rs_result rs_sig_args(rs_long_t old_fsize, rs_magic_number * magic,
     /* The recommended block_len is sqrt(old_fsize) with a 256 min size to give
        a reasonable compromise between signature size, delta size, and
        performance. If the old_fsize is unknown, we use a reasonable default. */
-    if (old_fsize) {
-        rec_block_len = old_fsize <= 256 * 256 ? 256 : rs_long_sqrt(old_fsize);
-    } else {
+    if (old_fsize < 0) {
         rec_block_len = RS_DEFAULT_BLOCK_LEN;
+    } else {
+        rec_block_len = old_fsize <= 256 * 256 ? 256 : rs_long_sqrt(old_fsize);
     }
     if (*block_len == 0)
         *block_len = rec_block_len;
@@ -163,14 +163,14 @@ rs_result rs_sig_args(rs_long_t old_fsize, rs_magic_number * magic,
        weaksum is worth another 16 bits, for at least 32 bits extra, giving a
        worst case 1/2^32 chance of having a hash collision per delta. If
        old_fsize is unknown, we use a conservative default. */
-    if (old_fsize) {
+    if (old_fsize < 0) {
+        rec_strong_len = RS_DEFAULT_STRONG_LEN;
+    } else {
         rec_strong_len =
             2 + (rs_long_ln2(old_fsize + ((rs_long_t)1 << 24)) +
                  rs_long_ln2(old_fsize / *block_len + 1) + 7) / 8;
-    } else {
-        rec_strong_len = RS_DEFAULT_STRONG_LEN;
     }
-    if (*strong_len == 0 || (old_fsize && *strong_len < rec_strong_len))
+    if (*strong_len < rec_strong_len)
         *strong_len = rec_strong_len;
     if (*strong_len > max_strong_len) {
         rs_error("invalid strong_sum_len " FMT_SIZE " for magic %#x",
@@ -187,7 +187,7 @@ rs_result rs_signature_init(rs_signature_t *sig, rs_magic_number magic,
 {
     rs_result result;
 
-    /* Check and set default arguments. */
+    /* Check and set default arguments, using old_fsize=0 to keep set args. */
     if ((result = rs_sig_args(0, &magic, &block_len, &strong_len)) != RS_DONE)
         return result;
     /* Set attributes from args. */
@@ -198,7 +198,7 @@ rs_result rs_signature_init(rs_signature_t *sig, rs_magic_number magic,
     /* Calculate the number of blocks if we have the signature file size. */
     /* Magic+header is 12 bytes, each block thereafter is 4 bytes
        weak_sum+strong_sum_len bytes */
-    sig->size = (int)(sig_fsize ? (sig_fsize - 12) / (4 + strong_len) : 0);
+    sig->size = (int)(sig_fsize < 12 ? 0 : (sig_fsize - 12) / (4 + strong_len));
     if (sig->size)
         sig->block_sigs =
             rs_alloc(sig->size * rs_block_sig_size(sig),

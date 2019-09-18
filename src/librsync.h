@@ -363,8 +363,8 @@ typedef struct rs_buffers_s rs_buffers_t;
 
 /** Default strong sum length, if not determined by any other factors.
  *
- * This is conservative, and should be safe for files less than 32TB with a 1KB
- * block_len. */
+ * This is conservative, and should be safe for files less than 45TB with a 2KB
+ * block_len, assuming no collision attack with crafted data. */
 #  define RS_DEFAULT_STRONG_LEN 12
 
 /** Job of work to be done.
@@ -415,15 +415,16 @@ LIBRSYNC_EXPORT rs_result rs_job_free(rs_job_t *);
 /** Get or check signature arguments for a given file size.
  *
  * This can be used to get the recommended arguments for generating a
- * signature. On calling, all arguments can be set to a value to use, or zero
- * to indicate "unknown". On return zero inputs (except old_fsize) will be set
- * to recommended values and the returned result will indicate if any inputs
- * were invalid. If old_fsize is non-zero, the strong_len input value is
- * considered a minimum value, and will be increased if the recommended value
- * is larger. You should set strong_len to at least 16 if you need protection
- * against hash collision attacks.
+ * signature. On calling, old_fsize should be set to the old filesize, or -1
+ * for "unknown", and other arguments set to a value to use or zero for
+ * "recommended". On return zero input args will be set to recommended values
+ * and the returned result will indicate if any inputs were invalid. If
+ * old_fsize is not unknown, the strong_len input value is considered a minimum
+ * value, and will be increased if the recommended value is larger. You should
+ * set strong_len to at least 16 if you need protection against hash collision
+ * attacks.
  *
- * \param old_fsize - the original file size (0 for "unknown").
+ * \param old_fsize - the original file size (-1 for "unknown").
  *
  * \param *magic - the magic type to use (0 for "recommended").
  *
@@ -535,7 +536,7 @@ LIBRSYNC_EXPORT int rs_file_close(FILE *file);
 /** Get the size of a file.
  *
  * This provides a platform independent way to get the size of large files. It
- * will return 0 if the size cannot be determined because it is not a regular
+ * will return -1 if the size cannot be determined because it is not a regular
  * file.
  *
  * \param file - the stdio file to get the size of. */

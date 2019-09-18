@@ -415,14 +415,14 @@ LIBRSYNC_EXPORT rs_result rs_job_free(rs_job_t *);
 /** Get or check signature arguments for a given file size.
  *
  * This can be used to get the recommended arguments for generating a
- * signature. On calling, old_fsize should be set to the old filesize, or -1
- * for "unknown", and other arguments set to a value to use or zero for
+ * signature. On calling, old_fsize should be set to the old filesize or -1 for
+ * "unknown", and other arguments set to a value to use or zero for
  * "recommended". On return zero input args will be set to recommended values
- * and the returned result will indicate if any inputs were invalid. If
- * old_fsize is not unknown, the strong_len input value is considered a minimum
- * value, and will be increased if the recommended value is larger. You should
- * set strong_len to at least 16 if you need protection against hash collision
- * attacks.
+ * and the returned result will indicate if any inputs were invalid. The
+ * strong_len input is considered a minimum value where 0 means "maxium", and
+ * will be increased if the suggested value for the old_fsize is larger. You
+ * should set strong_len to at least 16 or ideally 0 if you need protection
+ * against hash collision attacks.
  *
  * \param old_fsize - the original file size (-1 for "unknown").
  *
@@ -430,7 +430,7 @@ LIBRSYNC_EXPORT rs_result rs_job_free(rs_job_t *);
  *
  * \param *block_len - the block length to use (0 for "recommended").
  *
- * \param *strong_len - the minimum strongsum length to use.
+ * \param *strong_len - the minimum strongsum length to use (0 for "maximum").
  *
  * \return RS_DONE if all arguments are valid, otherwise an error code. */
 LIBRSYNC_EXPORT rs_result rs_sig_args(rs_long_t old_fsize,
@@ -444,19 +444,18 @@ LIBRSYNC_EXPORT rs_result rs_sig_args(rs_long_t old_fsize,
  *
  * \return A new rs_job_t into which the old file data can be passed.
  *
- * \param sig_magic Indicates the version of signature file format to generate.
+ * \param sig_magic Signature file format to generate (0 for "recommended").
  * See ::rs_magic_number.
  *
- * \param new_block_len Size of checksum blocks. Larger values make the
- * signature shorter, and the delta longer.
+ * \param block_len Checksum block size to use (0 for "recommended"). Larger
+ * values make the signature shorter, and the delta longer.
  *
- * \param strong_sum_len If non-zero, truncate the strong signatures to this
- * many bytes, to make the signature shorter. It's recommended you leave this
- * at zero to get the full strength.
+ * \param strong_len Strongsum length in bytes to use (0 for "maximum").
+ * Smaller values make the signature shorter but increase the risk of
+ * corruption from hash collisions.
  *
  * \sa rs_sig_file() */
-LIBRSYNC_EXPORT rs_job_t *rs_sig_begin(size_t new_block_len,
-                                       size_t strong_sum_len,
+LIBRSYNC_EXPORT rs_job_t *rs_sig_begin(size_t block_len, size_t strong_len,
                                        rs_magic_number sig_magic);
 
 /** Prepare to compute a streaming delta.

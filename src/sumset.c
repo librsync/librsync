@@ -170,9 +170,11 @@ rs_result rs_sig_args(rs_long_t old_fsize, rs_magic_number * magic,
             2 + (rs_long_ln2(old_fsize + ((rs_long_t)1 << 24)) +
                  rs_long_ln2(old_fsize / *block_len + 1) + 7) / 8;
     }
-    if (*strong_len < rec_strong_len)
+    if (*strong_len == 0)
+        *strong_len = max_strong_len;
+    else if (*strong_len < rec_strong_len)
         *strong_len = rec_strong_len;
-    if (*strong_len > max_strong_len) {
+    else if (*strong_len > max_strong_len) {
         rs_error("invalid strong_sum_len " FMT_SIZE " for magic %#x",
                  *strong_len, (int)*magic);
         return RS_PARAM_ERROR;

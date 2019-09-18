@@ -120,7 +120,7 @@ static void help(void)
            "  -R, --rollsum=ALG         Rollsum algorithm: rabinkarp (default), rollsum\n"
            "Delta-encoding options:\n"
            "  -b, --block-size=BYTES    Signature block size\n"
-           "  -S, --sum-size=BYTES      Minimum signature strength (default: 12)\n"
+           "  -S, --sum-size=BYTES      Minimum signature strength (default: max)\n"
            "IO options:\n" "  -I, --input-size=BYTES    Input buffer size\n"
            "  -O, --output-size=BYTES   Output buffer size\n"
            "  -z, --gzip[=LEVEL]        gzip-compress deltas\n"

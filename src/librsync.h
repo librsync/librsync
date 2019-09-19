@@ -415,15 +415,15 @@ LIBRSYNC_EXPORT rs_result rs_job_free(rs_job_t *);
 /** Get or check signature arguments for a given file size.
  *
  * This can be used to get the recommended arguments for generating a
- * signature. On calling, old_fsize should be set to the old filesize or -1 for
- * "unknown", and other arguments set to a value to use or zero for
- * "recommended". On return zero input args will be set to recommended values
- * and the returned result will indicate if any inputs were invalid. The
- * strong_len input is considered a minimum value where 0 means "maximum", and
- * will be increased if the suggested value for the old_fsize is larger. Use
- * strong_len=0 for the best protection against hash collision attacks. Use
- * strong_len=1 for the smallest signature size that is safe for the given file
- * size and block length.
+ * signature. On calling, old_fsize should be set to the old filesize, -1 for
+ * "unknown", or 0 for "just validate the args". Other arguments should be set
+ * to a value to use or zero for "recommended". On return zero input args will
+ * be set to recommended values and the returned result will indicate if any
+ * inputs were invalid. The strong_len input is considered a minimum value
+ * where 0 means "maximum", and will be increased if the suggested value for
+ * the old_fsize is larger. Use strong_len=0 for the best protection against
+ * hash collision attacks. Use strong_len=1 for the smallest signature size
+ * that is safe for the given file size and block length.
  *
  * \param old_fsize - the original file size (-1 for "unknown").
  *

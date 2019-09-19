@@ -145,8 +145,8 @@ rs_result rs_sig_args(rs_long_t old_fsize, rs_magic_number * magic,
     }
     /* The recommended block_len is sqrt(old_fsize) with a 256 min size to give
        a reasonable compromise between signature size, delta size, and
-       performance. If the old_fsize is unknown, we use a reasonable default. */
-    if (old_fsize < 0) {
+       performance. If the old_fsize is unknown or zero, we use the default. */
+    if (old_fsize <= 0) {
         rec_block_len = RS_DEFAULT_BLOCK_LEN;
     } else {
         rec_block_len = old_fsize <= 256 * 256 ? 256 : rs_long_sqrt(old_fsize);
@@ -172,7 +172,7 @@ rs_result rs_sig_args(rs_long_t old_fsize, rs_magic_number * magic,
     }
     if (*strong_len == 0)
         *strong_len = max_strong_len;
-    else if (*strong_len < rec_strong_len)
+    else if (old_fsize && *strong_len < rec_strong_len)
         *strong_len = rec_strong_len;
     else if (*strong_len > max_strong_len) {
         rs_error("invalid strong_sum_len " FMT_SIZE " for magic %#x",

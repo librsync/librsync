@@ -52,16 +52,16 @@ struct rs_signature {
  *
  * \param *sig the signature to initialize.
  *
- * \param magic the signature magic value. Must be set to a valid magic value.
+ * \param magic - the magic type to use (0 for "recommended").
  *
- * \param block_len the block size to use. Must be > 0.
+ * \param block_len - the block length to use (0 for "recommended").
  *
- * \param strong_len the strongsum size to use. Must be <= the max strongsum
- * size for the strongsum type indicated by the magic value. Use 0 to use the
- * recommended size for the provided magic value.
+ * \param strong_len - the strongsum length to use (0 for "maximum"). Must be
+ * <= the max strongsum size for the strongsum type indicated by the magic
+ * value.
  *
- * \param sig_fsize signature file size to preallocate required storage for.
- * Use 0 if size is unknown. */
+ * \param sig_fsize - the signature file size (-1 for "unknown"). Used to
+ * preallocate required storage. */
 rs_result rs_signature_init(rs_signature_t *sig, rs_magic_number magic,
                             size_t block_len, size_t strong_len,
                             rs_long_t sig_fsize);

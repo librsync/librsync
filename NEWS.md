@@ -20,8 +20,17 @@ NOT RELEASED YET
    each small insert use 1 less byte in deltas. (dbaarda,
    https://github.com/librsync/librsync/issues/120)
 
+ * Fix multiple warnings (cross-)compiling for windows. (Adsun701,
+   https://github.com/librsync/librsync/pull/165,
+   https://github.com/librsync/librsync/pull/166)
+
  * Change rs_file_size() to report -1 instead of 0 for unknown file sizes (not
    a regular file). (dbaarda https://github.com/librsync/librsync/pull/168)
+
+ * Add cmake BUILD_SHARED_LIBS option for static library support.
+   BUILD_SHARED_LIBS defaults to ON, and can be set to OFF using `ccmake .` to
+   build librsync as a static library. (dbaarda
+   https://github.com/librsync/librsync/pull/169)
 
 ## librsync 2.1.0
 

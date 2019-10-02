@@ -5,8 +5,6 @@ language: c
 before_script:
   - cmake --help
   - cmake $CMAKE_OPTIONS $CMAKE_GENERATOR .
-  
-sudo: required
 
 env:
   - CTEST_OUTPUT_ON_FAILURE=1
@@ -18,38 +16,36 @@ addons:
     - libpopt-dev
     - doxygen
     - ninja-build
+  homebrew:
+    packages:
+      - popt
 
 script:
   - make check
 
 matrix:
   include:
-    - compiler: clang
-      os: osx
-      before_install:
-        - brew update
-        - brew install popt
-      script:
-        - make check doc
+    - os: osx
+      compiler: clang
+      script: make check doc
 
-    - dist: xenial
-      sudo: false
+    - os: linux
+      compiler: gcc
 
-    - compiler: clang
-      dist: xenial
+    - os: linux
+      compiler: clang
 
-    - compiler: clang
+    - os: linux
+      compiler: clang
       env: CMAKE_GENERATOR="-G Ninja"
-      dist: xenial
-      script:
-        - ninja check doc
+      script: ninja check doc
 
-    - dist: xenial
-      sudo: false
+    - os: linux
+      compiler: gcc
+      env: CMAKE_OPTIONS="-D BUILD_SHARED_LIBS=OFF"
+
+    - os: linux
+      compiler: gcc
       env: CMAKE_OPTIONS="-D BUILD_RDIFF=OFF"
-
-
-# All tests are on xenial and OSX (which probably has older versions of
-# everything).
 
 # vim: shiftwidth=2 expandtab

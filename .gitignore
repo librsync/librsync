@@ -40,6 +40,8 @@ CMakeDoxygenDefaults.cmake
 
 # Test binaries
 *_test
+*_test.exe
+*_test.exe.manifest
 
 *.bak
 
@@ -60,3 +62,8 @@ doxygen_sqlite3.db
 .ninja_log
 build.ninja
 rules.ninja
+
+# Microsoft Visual Studio build files
+*.sln
+*.vcxproj
+*.vcxproj.filters

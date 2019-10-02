@@ -19,6 +19,7 @@ addons:
   homebrew:
     packages:
       - popt
+    update: true
 
 script:
   - make check

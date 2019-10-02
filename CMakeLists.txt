@@ -39,6 +39,8 @@ if (NOT CMAKE_SYSTEM_NAME)
 	message(FATAL_ERROR "No target OS set")
 endif()
 
+option(BUILD_SHARED_LIBS "Build librsync as a shared library." ON)
+
 set(DO_RS_TRACE 0)
 option(ENABLE_TRACE "Compile in detailed trace messages" OFF)
 if (ENABLE_TRACE)
@@ -355,7 +357,7 @@ set(rsync_LIB_SRCS
     src/whole.c
     ${blake2_SRCS})
 
-add_library(rsync SHARED ${rsync_LIB_SRCS})
+add_library(rsync ${rsync_LIB_SRCS})
 # TODO: Enable this when GenerateExportHeader works more widely.
 # include(GenerateExportHeader)
 # generate_export_header(rsync BASE_NAME librsync
@@ -373,10 +375,16 @@ if (ENABLE_COMPRESSION)
   endif (ZLIB_FOUND AND BZIP2_FOUND)
 endif (ENABLE_COMPRESSION)
 
+# Set properties/options for shared vs static library.
+if (BUILD_SHARED_LIBS)
+  set_target_properties(rsync PROPERTIES C_VISIBILITY_PRESET hidden)
+else (BUILD_SHARED_LIBS)
+  target_compile_options(rsync PUBLIC -DLIBRSYNC_STATIC_DEFINE)
+endif (BUILD_SHARED_LIBS)
+
 set_target_properties(rsync PROPERTIES
     VERSION ${LIBRSYNC_VERSION}
-    SOVERSION ${LIBRSYNC_MAJOR_VERSION}
-    C_VISIBILITY_PRESET hidden)
+    SOVERSION ${LIBRSYNC_MAJOR_VERSION})
 install(TARGETS rsync ${INSTALL_TARGETS_DEFAULT_ARGS}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}

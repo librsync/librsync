@@ -64,6 +64,7 @@ void _hashtable_free(hashtable_t *t)
         free(t);
     }
 }
+<<<<<<< HEAD
 
 void *_hashtable_iter(hashtable_iter_t *i, hashtable_t *t)
 {
@@ -87,3 +88,5 @@ void *_hashtable_next(hashtable_iter_t *i)
     }
     return NULL;
 }
+=======
+>>>>>>> upstream/master

@@ -23,7 +23,8 @@
 #  include <assert.h>
 #  include <stdlib.h>
 
-/** \file hashtable.h A generic open addressing hashtable.
+/** \file hashtable.h
+ * A generic open addressing hashtable.
  *
  * This is a minimal hashtable containing pointers to arbitrary entries with
  * configurable hashtable size and support for custom hash() and cmp() methods.
@@ -33,13 +34,14 @@
  * data. The hash() function doesn't need to avoid clustering behaviour.
  *
  * It uses open addressing with quadratic probing for collisions. The
- * MurmurHash3 finalization function is used on the hash() output to avoid
- * clustering. There is no support for removing entries, only adding them.
- * Multiple entries with the same key can be added, and you can use a fancy
- * cmp() function to find particular entries by more than just their key. There
- * is an iterator for iterating through all entries in the hashtable. There are
- * optional hashtable_find() find/match/hashcmp/entrycmp stats counters that
- * can be disabled by defining HASHTABLE_NSTATS.
+ * MurmurHash3 finalization function is optionally used on the hash() output to
+ * avoid clustering and can be disabled by setting HASHTABLE_NMIX32. There is
+ * no support for removing entries, only adding them. Multiple entries with the
+ * same key can be added, and you can use a fancy cmp() function to find
+ * particular entries by more than just their key. There is an iterator for
+ * iterating through all entries in the hashtable. There are optional
+ * NAME_find() find/match/hashcmp/entrycmp stats counters that can be disabled
+ * by defining HASHTABLE_NSTATS.
  *
  * The types and methods of the hashtable and its contents are specified by
  * using \#define parameters set to their basenames (the prefixes for the *_t
@@ -82,9 +84,9 @@
  *   k = ...;
  *   e = myentry_hashtable_find(t, &k);
  *
- *   hashtable_iter_t i;
- *   for (e = myentry_hashtable_iter(&i, t); e != NULL;
- *        e = myentry_hashtable_next(&i))
+ *   int i;
+ *   for (e = myentry_hashtable_iter(t, &i); e != NULL;
+ *        e = myentry_hashtable_next(t, &i))
  *     ...
  *
  *   myentry_hashtable_free(t);
@@ -127,7 +129,7 @@ typedef struct hashtable {
     int size;                   /**< Size of allocated hashtable. */
     int count;                  /**< Number of entries in hashtable. */
 #  ifndef HASHTABLE_NSTATS
-    /* The following are for accumulating hashtable_find() stats. */
+    /* The following are for accumulating NAME_find() stats. */
     long find_count;            /**< The count of finds tried. */
     long match_count;           /**< The count of matches found. */
     long hashcmp_count;         /**< The count of hash compares done. */
@@ -137,17 +139,9 @@ typedef struct hashtable {
     unsigned ktable[];          /**< Table of hash keys. */
 } hashtable_t;
 
-/** The hashtable iterator type. */
-typedef struct hashtable_iter {
-    hashtable_t *htable;        /**< The hashtable to iterate over. */
-    int index;                  /**< The index to scan from next. */
-} hashtable_iter_t;
-
 /* void* implementations for the type-safe static inline wrappers below. */
 hashtable_t *_hashtable_new(int size);
 void _hashtable_free(hashtable_t *t);
-void *_hashtable_iter(hashtable_iter_t *i, hashtable_t *t);
-void *_hashtable_next(hashtable_iter_t *i);
 
 /* inline keyword for MSVC */
 #if !defined __cplusplus && defined _MSC_VER
@@ -185,23 +179,42 @@ static inline unsigned mix32(unsigned int h)
 #    define NAME _JOIN(ENTRY, _hashtable)
 #  endif
 
-#  define ENTRY_T _JOIN(ENTRY, _t)      /**< The entry type. */
-#  define KEY_T _JOIN(KEY, _t)  /**< The key type. */
-#  define MATCH_T _JOIN(MATCH, _t)      /**< The match type. */
-/** The key hash(k) method. */
-#  define KEY_HASH(k) _JOIN(KEY, _hash)(k)
-/** The match cmp(m, e) method. */
-#  define MATCH_CMP(m, e) _JOIN(MATCH, _cmp)(m, e)
-#  define _FUNC(f) _JOIN(NAME, f)
+#  define ENTRY_t _JOIN(ENTRY, _t)      /**< The entry type. */
+#  define KEY_t _JOIN(KEY, _t)  /**< The key type. */
+#  define MATCH_t _JOIN(MATCH, _t)      /**< The match type. */
+#  define KEY_hash _JOIN(KEY, _hash)    /**< The key hash(k) method. */
+#  define MATCH_cmp _JOIN(MATCH, _cmp)  /**< The match cmp(m, e) method. */
+/* The names for all the hashtable methods. */
+#  define NAME_new _JOIN(NAME, _new)
+#  define NAME_free _JOIN(NAME, _free)
+#  define NAME_stats_init _JOIN(NAME, _stats_init)
+#  define NAME_new _JOIN(NAME, _new)
+#  define NAME_add _JOIN(NAME, _add)
+#  define NAME_find _JOIN(NAME, _find)
+#  define NAME_iter _JOIN(NAME, _iter)
+#  define NAME_next _JOIN(NAME, _next)
+
+/* Modified hash() with/without mix32() and non-zero output. */
+#  ifdef HASHTABLE_NMIX32
+#    define _KEY_HASH(k) ({unsigned hk=KEY_hash((KEY_t *)k); hk ? hk : -1;})
+#  else
+#    define _KEY_HASH(k) ({unsigned hk=mix32(KEY_hash((KEY_t *)k)); hk ? hk : -1;})
+#  endif
 
 /* Loop macro for probing table t for key k, setting hk to the hash for k
    reserving zero for empty buckets, and iterating with index i and entry hash
    h, terminating at an empty bucket. */
 #  define _for_probe(t, k, hk, i, h) \
+<<<<<<< HEAD
     mask = t->size - 1;\
     hk = KEY_HASH((KEY_T *)k);\
     hk = hk ? hk : -1;\
     for (i = mix32(hk) & mask, s = 0; (h = t->ktable[i]); i = (i + ++s) & mask)
+=======
+    const unsigned mask = t->size - 1;\
+    unsigned hk = _KEY_HASH(k), i, s, h;\
+    for (i = hk & mask, s = 0; (h = t->ktable[i]); i = (i + ++s) & mask)
+>>>>>>> upstream/master
 
 /* Declarations needed by macro _for_probe()
    Invoke this macro at the beginning of a block, with the same parameters as
@@ -227,7 +240,8 @@ static inline unsigned mix32(unsigned int h)
  * \param size - The desired minimum size of the hash table.
  *
  * \return The initialized hashtable instance or NULL if it failed. */
-static inline hashtable_t *_FUNC(_new) (int size) {
+static inline hashtable_t *NAME_new(int size)
+{
     return _hashtable_new(size);
 }
 
@@ -238,7 +252,8 @@ static inline hashtable_t *_FUNC(_new) (int size) {
  * free the the entries first.
  *
  * \param *t - The hashtable to destroy and free. */
-static inline void _FUNC(_free) (hashtable_t *t) {
+static inline void NAME_free(hashtable_t *t)
+{
     _hashtable_free(t);
 }
 
@@ -247,7 +262,8 @@ static inline void _FUNC(_free) (hashtable_t *t) {
  * This will reset all the stats counters for the hashtable,
  *
  * \param *t - The hashtable to initializ stats for. */
-static inline void _FUNC(_stats_init) (hashtable_t *t) {
+static inline void NAME_stats_init(hashtable_t *t)
+{
 #  ifndef HASHTABLE_NSTATS
     t->find_count = t->match_count = t->hashcmp_count = t->entrycmp_count = 0;
 #  endif
@@ -255,17 +271,22 @@ static inline void _FUNC(_stats_init) (hashtable_t *t) {
 
 /** Add an entry to a hashtable.
  *
- * This doesn't use MATCH_CMP() or do any checks for existing copies or
+ * This doesn't use MATCH_cmp() or do any checks for existing copies or
  * instances, so it will add duplicates. If you want to avoid adding
- * duplicates, use hashtable_find() to check for existing entries first.
+ * duplicates, use NAME_find() to check for existing entries first.
  *
  * \param *t - The hashtable to add to.
  *
  * \param *e - The entry object to add.
  *
  * \return The added entry, or NULL if the table is full. */
+<<<<<<< HEAD
 static inline ENTRY_T *_FUNC(_add) (hashtable_t *t, ENTRY_T * e) {
     _for_probe_declarations(t, e, he, i, h);
+=======
+static inline ENTRY_t *NAME_add(hashtable_t *t, ENTRY_t *e)
+{
+>>>>>>> upstream/master
     assert(e != NULL);
     if (t->count + 1 == t->size)
         return NULL;
@@ -277,7 +298,7 @@ static inline ENTRY_T *_FUNC(_add) (hashtable_t *t, ENTRY_T * e) {
 
 /** Find an entry in a hashtable.
  *
- * Uses MATCH_CMP() to find the first matching entry in the table in the same
+ * Uses MATCH_cmp() to find the first matching entry in the table in the same
  * hash() bucket.
  *
  * \param *t - The hashtable to search.
@@ -285,17 +306,24 @@ static inline ENTRY_T *_FUNC(_add) (hashtable_t *t, ENTRY_T * e) {
  * \param *m - The key or match object to search for.
  *
  * \return The first found entry, or NULL if nothing was found. */
+<<<<<<< HEAD
 static inline ENTRY_T *_FUNC(_find) (hashtable_t *t, MATCH_T * m) {
     ENTRY_T *e;
     _for_probe_declarations(t, m, hm, i, he);
     assert(m != NULL);
+=======
+static inline ENTRY_t *NAME_find(hashtable_t *t, MATCH_t *m)
+{
+    assert(m != NULL);
+    ENTRY_t *e;
+>>>>>>> upstream/master
 
     _stats_inc(t->find_count);
     _for_probe(t, m, hm, i, he) {
         _stats_inc(t->hashcmp_count);
         if (hm == he) {
             _stats_inc(t->entrycmp_count);
-            if (!MATCH_CMP(m, e = t->etable[i])) {
+            if (!MATCH_cmp(m, e = t->etable[i])) {
                 _stats_inc(t->match_count);
                 return e;
             }
@@ -304,42 +332,67 @@ static inline ENTRY_T *_FUNC(_find) (hashtable_t *t, MATCH_T * m) {
     return NULL;
 }
 
-/** Initialize a hashtable_iter_t and return the first entry.
+static inline ENTRY_t *NAME_next(hashtable_t *t, int *i);
+
+/** Initialize a iteration and return the first entry.
  *
- * This works together with hashtable_next() for iterating through all entries
- * in a hashtable.
+ * This works together with NAME_next() for iterating through all entries in a
+ * hashtable.
  *
  * Example: \code
- *   for (e = hashtable_iter(&i, t); e != NULL; e = hashtable_next(&i))
+ *   for (e = NAME_iter(t, &i); e != NULL; e = NAME_next(t, &i))
  *     ...
  * \endcode
  *
- * \param *i - the hashtable iterator to initialize.
- *
  * \param *t - the hashtable to iterate over.
  *
+ * \param *i - the int iterator index to initialize.
+ *
  * \return The first entry or NULL if the hashtable is empty. */
-static inline ENTRY_T *_FUNC(_iter) (hashtable_iter_t *i, hashtable_t *t) {
-    return _hashtable_iter(i, t);
+static inline ENTRY_t *NAME_iter(hashtable_t *t, int *i)
+{
+    assert(t != NULL);
+    assert(i != NULL);
+    *i = 0;
+    return NAME_next(t, i);
 }
 
 /** Get the next entry from a hashtable iterator or NULL when finished.
  *
- * \param *i - the hashtable iterator to use.
+ * This works together with NAME_iter() for iterating through all entries in a
+ * hashtable.
+ *
+ * \param *t - the hashtable to iterate over.
+ *
+ * \param *i - the int iterator index to use.
  *
  * \return The next entry or NULL if the iterator is finished. */
-static inline ENTRY_T *_FUNC(_next) (hashtable_iter_t *i) {
-    return _hashtable_next(i);
+static inline ENTRY_t *NAME_next(hashtable_t *t, int *i)
+{
+    assert(t != NULL);
+    assert(i != NULL);
+    ENTRY_t *e = NULL;
+
+    while ((*i < t->size) && !(e = t->etable[(*i)++])) ;
+    return e;
 }
 
 #  undef ENTRY
 #  undef KEY
 #  undef MATCH
 #  undef NAME
-#  undef ENTRY_T
-#  undef KEY_T
-#  undef MATCH_T
-#  undef KEY_HASH
-#  undef MATCH_CMP
-#  undef _FUNC
+#  undef ENTRY_t
+#  undef KEY_t
+#  undef MATCH_t
+#  undef KEY_hash
+#  undef MATCH_cmp
+#  undef NAME_new
+#  undef NAME_free
+#  undef NAME_stats_init
+#  undef NAME_new
+#  undef NAME_add
+#  undef NAME_find
+#  undef NAME_iter
+#  undef NAME_next
+#  undef _KEY_HASH
 #endif                          /* ENTRY */

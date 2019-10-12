@@ -1,8 +1,15 @@
 # librsync NEWS
 
-## librsync 2.1.1
+## librsync 2.2.1
 
 NOT RELEASED YET
+
+## librsync 2.2.0
+
+Released 2019-10-12
+
+ * Bump minor version from 2.1.0 to 2.2.0 to reflect additional RabinKarp
+   rollsum support.
 
  * Fix MSVC builds by adding missing LIBRSYNC_EXPORT to variables in
    librsync.h, add -DLIBRSYNC_STATIC_DEFINE to the sumset_test target,
@@ -20,8 +27,21 @@ NOT RELEASED YET
    each small insert use 1 less byte in deltas. (dbaarda,
    https://github.com/librsync/librsync/issues/120)
 
+ * Fix multiple warnings (cross-)compiling for windows. (Adsun701,
+   https://github.com/librsync/librsync/pull/165,
+   https://github.com/librsync/librsync/pull/166)
+
  * Change rs_file_size() to report -1 instead of 0 for unknown file sizes (not
    a regular file). (dbaarda https://github.com/librsync/librsync/pull/168)
+
+ * Add cmake BUILD_SHARED_LIBS option for static library support.
+   BUILD_SHARED_LIBS defaults to ON, and can be set to OFF using `ccmake .` to
+   build librsync as a static library. (dbaarda
+   https://github.com/librsync/librsync/pull/169)
+
+ * Fix compile errors and add .gitignore entries for MSVS 2019. Fixes
+   hashtable.h to be C99 compliant. (ardovm
+   https://github.com/librsync/librsync/pull/170)
 
 ## librsync 2.1.0
 

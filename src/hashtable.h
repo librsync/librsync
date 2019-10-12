@@ -189,11 +189,11 @@ static inline unsigned mix32(unsigned int h)
 #  define NAME_iter _JOIN(NAME, _iter)
 #  define NAME_next _JOIN(NAME, _next)
 
-/* Modified hash() with/without mix32() and non-zero output. */
+/* Modified hash() with/without mix32(). */
 #  ifdef HASHTABLE_NMIX32
-#    define _KEY_HASH(k) ({unsigned hk=KEY_hash((KEY_t *)k); hk ? hk : -1;})
+#    define _KEY_HASH(k) KEY_hash((KEY_t *)k)
 #  else
-#    define _KEY_HASH(k) ({unsigned hk=mix32(KEY_hash((KEY_t *)k)); hk ? hk : -1;})
+#    define _KEY_HASH(k) mix32(KEY_hash((KEY_t *)k))
 #  endif
 
 /* Loop macro for probing table t for key k, setting hk to the hash for k
@@ -202,6 +202,7 @@ static inline unsigned mix32(unsigned int h)
 #  define _for_probe(t, k, hk, i, h) \
     const unsigned mask = t->size - 1;\
     unsigned hk = _KEY_HASH(k), i, s, h;\
+    if (hk == 0) hk = -1;\
     for (i = hk & mask, s = 0; (h = t->ktable[i]); i = (i + ++s) & mask)
 
 /* Conditional macro for incrementing stats counters. */

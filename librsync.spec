@@ -1,7 +1,7 @@
-# This RPM supposes that you download the release zip file from github to SOURCES directory as v2.1.0.zip
+# This RPM supposes that you download the release zip file from github to SOURCES directory as v2.2.1.zip
 
 %define name librsync
-%define version 2.2.0
+%define version 2.2.1
 %define gitsource https://github.com/librsync/%{name}/archive/v%{version}.zip
 
 Summary:  	Rsync libraries

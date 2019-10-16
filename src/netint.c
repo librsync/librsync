@@ -146,9 +146,12 @@ rs_result rs_suck_n4(rs_job_t *job, int *v)
 
 int rs_int_len(rs_long_t val)
 {
-    int i;
-
-    for (i = 8; val >> i; i *= 2) ;
-    assert(i <= 64);
-    return i / 8;
+    if (!(val & ~(rs_long_t)0xff))
+        return 1;
+    if (!(val & ~(rs_long_t)0xffff))
+	return 2;
+    if (!(val & ~(rs_long_t)0xffffffff))
+	return 4;
+    assert(!(val & ~(rs_long_t)0xffffffffffffffff));
+    return 8;
 }

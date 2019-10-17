@@ -1,5 +1,9 @@
 # librsync NEWS
 
+## librsync 2.2.2
+
+NOT RELEASED YET
+
 ## librsync 2.2.1
 
 Released 2019-10-16

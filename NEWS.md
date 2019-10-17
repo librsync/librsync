@@ -1,8 +1,15 @@
 # librsync NEWS
 
-## librsync 2.2.1
+## librsync 2.2.2
 
 NOT RELEASED YET
+
+## librsync 2.2.1
+
+Released 2019-10-16
+
+ * Fix #176 hangs calculating deltas for files larger than 4GB. (dbaarda,
+   https://github.com/librsync/librsync/pull/177)
 
 ## librsync 2.2.0
 

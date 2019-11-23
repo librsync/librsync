@@ -149,7 +149,7 @@ if (CMAKE_C_COMPILER_ID MATCHES "(Clang|Gnu|GNU)")
   # TODO: Set for MSVC and other compilers.
   # TODO: Set -Werror when the build is clean.
 
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -std=c99")
 endif()
 
 site_name(BUILD_HOSTNAME)

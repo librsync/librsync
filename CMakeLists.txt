@@ -76,7 +76,6 @@ check_include_files ( zlib.h HAVE_ZLIB_H )
 
 #Temporary configuration
 set ( STDC_HEADERS 1 )
-set ( HAVE_PROGRAM_INVOCATION_NAME 0)
 
 # Remove compression support if not needed
 if (NOT ENABLE_COMPRESSION)

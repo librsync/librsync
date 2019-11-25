@@ -1,5 +1,4 @@
-/* config.h.  Generated from config.h.in by configure.  */
-/* config.h.in.  Generated from configure.ac by autoheader.  */
+/* config.h.  Generated from config.h.cmake by cmake.  */
 
 /* Define if building universal (internal helper macro) */
 #cmakedefine AC_APPLE_UNIVERSAL_BUILD
@@ -60,9 +59,6 @@
 
 /* Define to 1 if you have the `memset' function. */
 #cmakedefine HAVE_MEMSET 1
-
-/* GNU extension of saving argv[0] to program_invocation_short_name */
-#cmakedefine HAVE_PROGRAM_INVOCATION_NAME
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #cmakedefine HAVE_STDINT_H 1

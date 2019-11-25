@@ -56,11 +56,7 @@ rs_trace_fn_t *rs_trace_impl = rs_trace_stderr;
 
 int rs_trace_level = RS_LOG_INFO;
 
-#ifdef HAVE_PROGRAM_INVOCATION_NAME
-#  define MY_NAME program_invocation_short_name
-#else
-#  define MY_NAME "librsync"
-#endif
+#define MY_NAME "librsync"
 
 static void rs_log_va(int level, char const *fn, char const *fmt, va_list va);
 

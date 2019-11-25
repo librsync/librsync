@@ -107,17 +107,6 @@ static void rs_log_va(int flags, char const *fn, char const *fmt, va_list va)
     }
 }
 
-/* Called by a macro, used on platforms where we can't determine the calling
-   function name. */
-void rs_log0_nofn(int level, char const *fmt, ...)
-{
-    va_list va;
-
-    va_start(va, fmt);
-    rs_log_va(level, PACKAGE, fmt, va);
-    va_end(va);
-}
-
 /* Called by a macro that prepends the calling function name, etc. */
 void rs_log0(int level, char const *fn, char const *fmt, ...)
 {
@@ -132,39 +121,6 @@ void rs_trace_stderr(rs_loglevel UNUSED(level), char const *msg)
 {
     /* NOTE NO TRAILING NUL */
     write(STDERR_FILENO, msg, strlen(msg));
-}
-
-/* This is called directly if the machine doesn't allow varargs macros. */
-void rs_fatal0(char const *s, ...)
-{
-    va_list va;
-
-    va_start(va, s);
-    rs_log_va(RS_LOG_CRIT, PACKAGE, s, va);
-    va_end(va);
-    abort();
-}
-
-/* This is called directly if the machine doesn't allow varargs macros. */
-void rs_error0(char const *s, ...)
-{
-    va_list va;
-
-    va_start(va, s);
-    rs_log_va(RS_LOG_ERR, PACKAGE, s, va);
-    va_end(va);
-}
-
-/* This is called directly if the machine doesn't allow varargs macros. */
-void rs_trace0(char const *s, ...)
-{
-#ifdef DO_RS_TRACE
-    va_list va;
-
-    va_start(va, s);
-    rs_log_va(RS_LOG_DEBUG, PACKAGE, s, va);
-    va_end(va);
-#endif                          /* !DO_RS_TRACE */
 }
 
 int rs_supports_trace(void)

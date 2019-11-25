@@ -85,6 +85,9 @@ if (NOT ENABLE_COMPRESSION)
   SET(HAVE_ZLIB_H 0)
 endif (NOT ENABLE_COMPRESSION)
 
+include ( CheckSymbolExists )
+check_symbol_exists ( __func__ "" HAVE___FUNC__ )
+check_symbol_exists ( __FUNCTION__ "" HAVE___FUNCTION__ )
 
 include ( CheckFunctionExists )
 check_function_exists ( alloca HAVE_ALLOCA )
@@ -149,7 +152,7 @@ if (CMAKE_C_COMPILER_ID MATCHES "(Clang|Gnu|GNU)")
   # TODO: Set for MSVC and other compilers.
   # TODO: Set -Werror when the build is clean.
 
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -std=c99")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -std=c99 -pedantic")
 endif()
 
 site_name(BUILD_HOSTNAME)

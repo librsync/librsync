@@ -15,6 +15,12 @@
 /* Define this to enable trace code  */
 #cmakedefine DO_RS_TRACE
 
+/* Define if your compiler has C99's __func__. */
+#cmakedefine HAVE___FUNC__
+
+/* Define if your compiler has GNU's __FUNCTION__. */
+#cmakedefine HAVE___FUNCTION__
+
 /* Define to 1 if you have `alloca', as a function or macro. */
 #cmakedefine HAVE_ALLOCA 1
 
@@ -222,12 +228,3 @@
 
 /* FIXME Define to 1 if you need to in order for `stat' and other things to work. */
 /* #undef _POSIX_SOURCE */
-
-/* FIXME Define to empty if `const' does not conform to ANSI C. */
-/* #undef const */
-
-/* FIXME Define to `long int' if <sys/types.h> does not define. */
-/* #undef off_t */
-
-/* FIXME Define to `unsigned int' if <sys/types.h> does not define. */
-/* #undef size_t */

@@ -18,15 +18,6 @@
  */
 
 #include "config.h"
-
-#include <assert.h>
-#include <sys/types.h>
-#ifdef HAVE_INTTYPES_H
-#  include <inttypes.h>
-#endif
-#include <stdlib.h>
-#include <stdio.h>
-
 #include "librsync.h"
 
 void rs_hexify(char *to_buf, void const *from, int from_len)

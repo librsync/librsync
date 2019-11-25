@@ -4,14 +4,6 @@
 /* Define if building universal (internal helper macro) */
 #cmakedefine AC_APPLE_UNIVERSAL_BUILD
 
-/* Define to one of `_getb67', `GETB67', `getb67' for Cray-2 and Cray-YMP
-   systems. This function is required for `alloca.c' support on those systems.
-   */
-#cmakedefine CRAY_STACKSEG_END
-
-/* Define to 1 if using `alloca.c'. */
-#cmakedefine C_ALLOCA 1
-
 /* Define this to enable trace code  */
 #cmakedefine DO_RS_TRACE
 
@@ -20,12 +12,6 @@
 
 /* Define if your compiler has GNU's __FUNCTION__. */
 #cmakedefine HAVE___FUNCTION__
-
-/* Define to 1 if you have `alloca', as a function or macro. */
-#cmakedefine HAVE_ALLOCA 1
-
-/* Define to 1 if you have <alloca.h> and it should be used (not on Ultrix). */
-#cmakedefine HAVE_ALLOCA_H 1
 
 /* Define to 1 if you have the <bzlib.h> header file.  */
 #cmakedefine HAVE_BZLIB_H 1
@@ -60,15 +46,6 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #cmakedefine HAVE_INTTYPES_H 1
 
-/* Define to 1 if you have the `bz2' library (-lbz2). */
-#cmakedefine HAVE_LIBBZ2 ${BZIP2_FOUND}
-
-/* Define to 1 if you have the `popt' library (-lpopt). */
-#cmakedefine HAVE_LIBPOPT ${POPT_FOUND}
-
-/* Define to 1 if you have the `z' library (-lz). */
-#cmakedefine HAVE_LIBZ ${ZLIB_FOUND}
-
 /* Define to 1 if you have the <malloc.h> header file. */
 #cmakedefine HAVE_MALLOC_H 1
 
@@ -86,9 +63,6 @@
 
 /* GNU extension of saving argv[0] to program_invocation_short_name */
 #cmakedefine HAVE_PROGRAM_INVOCATION_NAME
-
-/* Define to 1 if you have the `snprintf' function. */
-#cmakedefine HAVE_SNPRINTF 1
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #cmakedefine HAVE_STDINT_H 1
@@ -120,20 +94,8 @@
 /* Define to 1 if you have the <unistd.h> header file. */
 #cmakedefine HAVE_UNISTD_H 1
 
-/* Define if your cpp has vararg macros */
-#cmakedefine HAVE_VARARG_MACROS
-
-/* Define to 1 if you have the `vsnprintf' function. */
-#cmakedefine HAVE_VSNPRINTF 1
-
 /* Define to 1 if you have the <zlib.h> header file. */
 #cmakedefine HAVE_ZLIB_H 1
-
-/* Define to 1 if you have the `_snprintf' function. */
-#cmakedefine HAVE__SNPRINTF 1
-
-/* Define to 1 if you have the `_vsnprintf' function. */
-#cmakedefine HAVE__VSNPRINTF 1
 
 /* Name of package */
 #define PACKAGE "${PROJECT_NAME}"
@@ -164,14 +126,6 @@
 
 /* Define to 1 if printf supports the size_t "%zu" length field. */
 #cmakedefine HAVE_PRINTF_Z 1
-
-/* If using the C implementation of alloca, define if you know the
-   direction of stack growth for your system; otherwise it will be
-   automatically deduced at runtime.
-        STACK_DIRECTION > 0 => grows toward higher addresses
-        STACK_DIRECTION < 0 => grows toward lower addresses
-        STACK_DIRECTION = 0 => direction of growth unknown */
-#cmakedefine STACK_DIRECTION
 
 /* Define to 1 if you have the ANSI C header files. */
 #cmakedefine STDC_HEADERS 1

@@ -6,12 +6,6 @@
 /* Define this to enable trace code  */
 #cmakedefine DO_RS_TRACE
 
-/* Define if your compiler has C99's __func__. */
-#cmakedefine HAVE___FUNC__
-
-/* Define if your compiler has GNU's __FUNCTION__. */
-#cmakedefine HAVE___FUNCTION__
-
 /* Define to 1 if you have the <sys/file.h> header file. */
 #cmakedefine HAVE_SYS_FILE_H 1
 
@@ -35,6 +29,12 @@
 
 /* Define to 1 if you have the <bzlib.h> header file.  */
 #cmakedefine HAVE_BZLIB_H 1
+
+/* Define if your compiler has C99's __func__. */
+#cmakedefine HAVE___FUNC__
+
+/* Define if your compiler has GNU's __FUNCTION__. */
+#cmakedefine HAVE___FUNCTION__
 
 /* Define to 1 if fseeko (and presumably ftello) exists and is declared. */
 #cmakedefine HAVE_FSEEKO 1
@@ -86,9 +86,6 @@
 
 /* Define to 1 if printf supports the size_t "%zu" length field. */
 #cmakedefine HAVE_PRINTF_Z 1
-
-/* Define to 1 if you have the ANSI C header files. */
-#cmakedefine STDC_HEADERS 1
 
 /* FIXME Enable extensions on AIX 3, Interix.  */
 #ifndef _ALL_SOURCE

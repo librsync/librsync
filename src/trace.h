@@ -44,8 +44,17 @@
 #endif
 
 /* Some old compilers don't support __func_ and have __FUNCTION__ instead. */
-#if !defined(HAVE___FUNC__) && defined(HAVE___FUNCTION__)
-#  define __func__ __FUNCTION__
+#ifndef HAVE___FUNC__
+#  ifdef HAVE___FUNCTION__
+#    define __func__ __FUNCTION__
+#  else
+#    define __func__ ""
+#  endif
+#endif
+
+/* Non-GNUC compatible compilers don't support __attribute__(). */
+#ifndef __GNUC__
+#  define __attribute__(x)
 #endif
 
 void rs_log0(int level, char const *fn, char const *fmt, ...)

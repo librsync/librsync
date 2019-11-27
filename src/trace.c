@@ -33,24 +33,13 @@
  * name. */
 
 #include "config.h"
-#ifdef HAVE_UNISTD_H
-#  include <unistd.h>
-#else
-#  define STDERR_FILENO 2
-#endif
-#include <stdio.h>
-#ifdef HAVE_SYS_FILE_H
-#  include <sys/file.h>
-#endif
-#include <string.h>
-#include <errno.h>
-#include <stdlib.h>
 #include <assert.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include <stdarg.h>
-
 #include "librsync.h"
-#include "util.h"
 #include "trace.h"
+#include "util.h"
 
 rs_trace_fn_t *rs_trace_impl = rs_trace_stderr;
 
@@ -92,7 +81,7 @@ static void rs_log_va(int flags, char const *fn, char const *fmt, va_list va)
         char full_buf[1040];
 
         vsnprintf(buf, sizeof(buf), fmt, va);
-        if (flags & RS_LOG_NONAME) {
+        if (flags & RS_LOG_NONAME || !(*fn)) {
             snprintf(full_buf, sizeof(full_buf), "%s: %s%s\n", MY_NAME,
                      rs_severities[level], buf);
         } else {
@@ -115,8 +104,7 @@ void rs_log0(int level, char const *fn, char const *fmt, ...)
 
 void rs_trace_stderr(rs_loglevel UNUSED(level), char const *msg)
 {
-    /* NOTE NO TRAILING NUL */
-    write(STDERR_FILENO, msg, strlen(msg));
+    fputs(msg, stderr);
 }
 
 int rs_supports_trace(void)

@@ -44,19 +44,12 @@
  * seems to be no ntohs() analog. */
 
 #include "config.h"
-
 #include <assert.h>
-#include <sys/types.h>
 #include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-
 #include "librsync.h"
-
-#include "job.h"
 #include "netint.h"
-#include "trace.h"
 #include "stream.h"
+#include "trace.h"
 
 #define RS_MAX_INT_BYTES 8
 

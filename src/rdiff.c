@@ -44,21 +44,10 @@
  * \todo Add an option for delta to check whether the files are identical. */
 
 #include "config.h"
-
 #include <stdlib.h>
-#include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
 #include <popt.h>
-
-#ifdef HAVE_ZLIB_H
-#  include <zlib.h>
-#endif
-
-#ifdef HAVE_BZLIB_H
-#  include <bzlib.h>
-#endif
-
 #include "librsync.h"
 #include "isprefix.h"
 

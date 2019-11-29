@@ -20,7 +20,6 @@
  */
 #include <assert.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include "hashtable.h"
 
 /* Open addressing works best if it can take advantage of memory caches using

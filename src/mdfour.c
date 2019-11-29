@@ -40,13 +40,9 @@
  * can't do unaligned access (e.g. ia64, pa-risc). */
 
 #include "config.h"
-
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
-
 #include "librsync.h"
-#include "trace.h"
 #include "mdfour.h"
 
 #define F(X,Y,Z) (((X)&(Y)) | ((~(X))&(Z)))

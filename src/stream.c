@@ -78,15 +78,11 @@
  * it's used. */
 
 #include "config.h"
-
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
-
 #include "librsync.h"
 #include "stream.h"
-#include "util.h"
 #include "trace.h"
 
 /** Copy up to \p max_len bytes from input of \b stream to its output.

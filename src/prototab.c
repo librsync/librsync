@@ -28,10 +28,6 @@
  * implied value is only used if the first parameter length is zero. */
 
 #include "config.h"
-
-#include <stdlib.h>
-#include <stdio.h>
-
 #include "librsync.h"
 #include "command.h"
 #include "prototab.h"

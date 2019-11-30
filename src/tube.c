@@ -52,17 +52,13 @@
  * then back out again later. */
 
 #include "config.h"
-
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
-
 #include "librsync.h"
-#include "trace.h"
-#include "util.h"
 #include "job.h"
 #include "stream.h"
+#include "trace.h"
 
 static void rs_tube_catchup_write(rs_job_t *job)
 {

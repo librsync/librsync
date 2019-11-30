@@ -57,27 +57,14 @@ if (ENABLE_COMPRESSION)
 endif (ENABLE_COMPRESSION)
 
 include ( CheckIncludeFiles )
-check_include_files ( alloca.h HAVE_ALLOCA_H )
-check_include_files ( dlfcn.h HAVE_DLFCN_H )
-check_include_files ( inttypes.h HAVE_INTTYPES_H )
-check_include_files ( memory.h HAVE_MEMORY_H )
-check_include_files ( stdint.h HAVE_STDINT_H )
-check_include_files ( stdlib.h HAVE_STDLIB_H )
-check_include_files ( strings.h HAVE_STRINGS_H )
-check_include_files ( string.h HAVE_STRING_H )
+check_include_files ( sys/file.h HAVE_SYS_FILE_H )
 check_include_files ( sys/stat.h HAVE_SYS_STAT_H )
 check_include_files ( sys/types.h HAVE_SYS_TYPES_H )
 check_include_files ( unistd.h HAVE_UNISTD_H )
-check_include_files ( bzlib.h HAVE_BZLIB_H )
 check_include_files ( fcntl.h HAVE_FCNTL_H )
-check_include_files ( malloc.h HAVE_MALLOC_H )
 check_include_files ( mcheck.h HAVE_MCHECK_H )
-check_include_files ( sys/file.h HAVE_SYS_FILE_H )
 check_include_files ( zlib.h HAVE_ZLIB_H )
-
-#Temporary configuration
-set ( STDC_HEADERS 1 )
-set ( HAVE_PROGRAM_INVOCATION_NAME 0)
+check_include_files ( bzlib.h HAVE_BZLIB_H )
 
 # Remove compression support if not needed
 if (NOT ENABLE_COMPRESSION)
@@ -85,9 +72,11 @@ if (NOT ENABLE_COMPRESSION)
   SET(HAVE_ZLIB_H 0)
 endif (NOT ENABLE_COMPRESSION)
 
+include ( CheckSymbolExists )
+check_symbol_exists ( __func__ "" HAVE___FUNC__ )
+check_symbol_exists ( __FUNCTION__ "" HAVE___FUNCTION__ )
 
 include ( CheckFunctionExists )
-check_function_exists ( alloca HAVE_ALLOCA )
 check_function_exists ( fseeko HAVE_FSEEKO )
 check_function_exists ( fseeko64 HAVE_FSEEKO64 )
 check_function_exists ( _fseeki64 HAVE__FSEEKI64 )
@@ -95,10 +84,6 @@ check_function_exists ( fstat64 HAVE_FSTAT64 )
 check_function_exists ( _fstati64 HAVE__FSTATI64 )
 check_function_exists ( fileno HAVE_FILENO )
 check_function_exists ( _fileno HAVE__FILENO )
-check_function_exists ( memmove HAVE_MEMMOVE )
-check_function_exists ( memset HAVE_MEMSET )
-check_function_exists ( strchr HAVE_STRCHR )
-check_function_exists ( strerror HAVE_STRERROR )
 
 include(CheckTypeSize)
 check_type_size ( "long" SIZEOF_LONG )
@@ -149,7 +134,7 @@ if (CMAKE_C_COMPILER_ID MATCHES "(Clang|Gnu|GNU)")
   # TODO: Set for MSVC and other compilers.
   # TODO: Set -Werror when the build is clean.
 
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -std=c99")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -std=c99 -pedantic")
 endif()
 
 site_name(BUILD_HOSTNAME)

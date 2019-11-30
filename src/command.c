@@ -20,11 +20,8 @@
  */
 
 #include "config.h"
-
 #include <assert.h>
 #include <stdlib.h>
-#include <stdio.h>
-
 #include "librsync.h"
 #include "command.h"
 

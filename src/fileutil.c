@@ -21,15 +21,19 @@
  */
 
 #include "config.h"
-
 #include <assert.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <errno.h>
 #ifdef HAVE_UNISTD_H
 #  include <unistd.h>
 #endif
-#include <stdio.h>
 #ifdef HAVE_FCNTL_H
 #  include <fcntl.h>
+#endif
+#ifdef HAVE_SYS_TYPES_H
+#  include <sys/types.h>
 #endif
 #ifdef HAVE_SYS_FILE_H
 #  include <sys/file.h>
@@ -37,9 +41,6 @@
 #ifdef HAVE_SYS_STAT_H
 #  include <sys/stat.h>
 #endif
-#include <string.h>
-#include <errno.h>
-
 #include "librsync.h"
 #include "trace.h"
 

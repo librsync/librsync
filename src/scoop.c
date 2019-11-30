@@ -54,12 +54,9 @@
  * bzlib does this. */
 
 #include "config.h"
-
 #include <assert.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
-
 #include "librsync.h"
 #include "job.h"
 #include "stream.h"

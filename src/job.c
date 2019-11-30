@@ -34,18 +34,14 @@
  * \sa \ref api_streaming \sa rs_job_iter() \sa ::rs_job */
 
 #include "config.h"
-
-#include <stdlib.h>
 #include <assert.h>
-#include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
-
 #include "librsync.h"
-#include "stream.h"
-#include "util.h"
-#include "sumset.h"
 #include "job.h"
+#include "stream.h"
 #include "trace.h"
+#include "util.h"
 
 static rs_result rs_job_work(rs_job_t *job, rs_buffers_t *buffers);
 

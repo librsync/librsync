@@ -24,19 +24,15 @@
  * Load signatures from a file. */
 
 #include "config.h"
-
 #include <assert.h>
 #include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-
 #include "librsync.h"
-#include "sumset.h"
 #include "job.h"
-#include "trace.h"
-#include "netint.h"
-#include "util.h"
+#include "sumset.h"
 #include "stream.h"
+#include "netint.h"
+#include "trace.h"
+#include "util.h"
 
 static rs_result rs_loadsig_s_weak(rs_job_t *job);
 static rs_result rs_loadsig_s_strong(rs_job_t *job);

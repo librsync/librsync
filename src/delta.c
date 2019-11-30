@@ -89,19 +89,15 @@
  * block. When the tube is blocked, no data can be processed. */
 
 #include "config.h"
-
 #include <assert.h>
 #include <stdlib.h>
-#include <stdio.h>
-
 #include "librsync.h"
-#include "emit.h"
-#include "stream.h"
-#include "util.h"
-#include "sumset.h"
 #include "job.h"
-#include "trace.h"
+#include "sumset.h"
 #include "checksum.h"
+#include "stream.h"
+#include "emit.h"
+#include "trace.h"
 
 static rs_result rs_delta_s_scan(rs_job_t *job);
 static rs_result rs_delta_s_flush(rs_job_t *job);

@@ -32,7 +32,6 @@
 #ifndef _RSYNC_H
 #  define _RSYNC_H
 
-#  include <sys/types.h>
 #  include <stdio.h>
 #  include <stdint.h>
 #  include <time.h>

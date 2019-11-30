@@ -41,6 +41,7 @@
 
 #include "config.h"
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include "librsync.h"
 #include "mdfour.h"
@@ -169,7 +170,7 @@ inline static void copy4( /* @out@ */ unsigned char *out, uint32_t const x)
 
 /* We need this if there is a uint64 */
 /* --robert.weber@Colorado.edu */
-#ifdef HAVE_UINT64
+#ifdef UINT64_MAX
 inline static void copy8( /* @out@ */ unsigned char *out, uint64_t const x)
 {
     out[0] = x;
@@ -181,7 +182,7 @@ inline static void copy8( /* @out@ */ unsigned char *out, uint64_t const x)
     out[6] = x >> 48;
     out[7] = x >> 56;
 }
-#endif                          /* HAVE_UINT64 */
+#endif                          /* UINT64_MAX */
 
 /* We only need this if we are big-endian */
 #ifdef WORDS_BIGENDIAN
@@ -244,7 +245,7 @@ void rs_mdfour_begin(rs_mdfour_t *md)
     md->B = 0xefcdab89;
     md->C = 0x98badcfe;
     md->D = 0x10325476;
-#if HAVE_UINT64
+#ifdef UINT64_MAX
     md->totalN = 0;
 #else
     md->totalN_hi = md->totalN_lo = 0;
@@ -260,24 +261,24 @@ void rs_mdfour_begin(rs_mdfour_t *md)
  * = 512 MB. --Robert.Weber@colorado.edu */
 static void rs_mdfour_tail(rs_mdfour_t *m)
 {
-#ifdef HAVE_UINT64
+#ifdef UINT64_MAX
     uint64_t b;
-#else                           /* HAVE_UINT64 */
+#else                           /* UINT64_MAX */
     uint32_t b[2];
-#endif                          /* HAVE_UINT64 */
+#endif                          /* UINT64_MAX */
     unsigned char buf[8];
     size_t pad_len;
 
     /* convert the totalN byte count into a bit count buffer */
-#ifdef HAVE_UINT64
+#ifdef UINT64_MAX
     b = m->totalN << 3;
     copy8(buf, b);
-#else                           /* HAVE_UINT64 */
+#else                           /* UINT64_MAX */
     b[0] = m->totalN_lo << 3;
     b[1] = ((m->totalN_hi << 3) | (m->totalN_lo >> 29));
     copy4(buf, b[0]);
     copy4(buf + 4, b[1]);
-#endif                          /* HAVE_UINT64 */
+#endif                          /* UINT64_MAX */
 
     /* calculate length and process the padding data */
     pad_len = (m->tail_len < 56) ? (56 - m->tail_len) : (120 - m->tail_len);
@@ -291,12 +292,12 @@ void rs_mdfour_update(rs_mdfour_t *md, void const *in_void, size_t n)
     unsigned char const *in = (unsigned char const *)in_void;
 
     /* increment totalN */
-#ifdef HAVE_UINT64
+#ifdef UINT64_MAX
     md->totalN += n;
-#else                           /* HAVE_UINT64 */
+#else                           /* UINT64_MAX */
     if ((md->totalN_lo += n) < n)
         md->totalN_hi++;
-#endif                          /* HAVE_UINT64 */
+#endif                          /* UINT64_MAX */
 
     /* If there's any leftover data in the tail buffer, then first we have to
        make it up to a whole block to process it. */

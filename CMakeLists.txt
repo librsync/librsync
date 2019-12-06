@@ -238,8 +238,12 @@ add_custom_target(tidyc
 
 add_executable(isprefix_test
     tests/isprefix_test.c src/isprefix.c)
-
 add_test(NAME isprefix_test COMMAND isprefix_test)
+
+add_executable(netint_test
+    tests/netint_test.c src/netint.c src/util.c src/trace.c src/tube.c
+    src/scoop.c src/stream.c)
+add_test(NAME netint_test COMMAND netint_test)
 
 add_executable(rollsum_test
     tests/rollsum_test.c src/rollsum.c)
@@ -292,8 +296,14 @@ else (BUILD_RDIFF)
   set(LAST_TARGET rsync)
 endif (BUILD_RDIFF)
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
-add_dependencies(check ${LAST_TARGET} isprefix_test rollsum_test rabinkarp_test hashtable_test checksum_test sumset_test)
-
+add_dependencies(check ${LAST_TARGET}
+    isprefix_test
+    netint_test
+    rollsum_test
+    rabinkarp_test
+    hashtable_test
+    checksum_test
+    sumset_test)
 
 enable_testing()
 

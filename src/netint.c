@@ -69,7 +69,7 @@ rs_result rs_squirt_netint(rs_job_t *job, rs_long_t val, int len)
     assert(len <= RS_MAX_INT_BYTES);
     /* Fill the output buffer with a bigendian representation of the number. */
     for (i = len - 1; i >= 0; i--) {
-        buf[i] = val;             /* truncated */
+        buf[i] = val;           /* truncated */
         val >>= 8;
     }
     rs_tube_write(job, buf, len);

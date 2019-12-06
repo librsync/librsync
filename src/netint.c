@@ -34,14 +34,9 @@
  * RS_DONE if they have enough data, or RS_BLOCKED if there is not enough input
  * to proceed.
  *
- * All the netint operations are done in a fairly simpleminded way, since we
- * don't want to rely on stdint types that may not be available on some
- * platforms.
- *
- * \todo If we don't have <stdint.h> (or perhaps even if we do), determine
- * endianness and integer size by hand and use that to do our own conversion
- * routines. We possibly need this anyhow to do 64-bit integers, since there
- * seems to be no ntohs() analog. */
+ * The `squirt` routines also return a result code which in theory could be
+ * RS_BLOCKED if there is not enough output space to proceed, but in practice
+ * is always RS_DONE. */
 
 #include "config.h"
 #include <assert.h>
@@ -53,20 +48,20 @@
 #define RS_MAX_INT_BYTES 8
 
 /** Write a single byte to a stream output. */
-rs_result rs_squirt_byte(rs_job_t *job, rs_byte_t v)
+rs_result rs_squirt_byte(rs_job_t *job, rs_byte_t val)
 {
-    rs_tube_write(job, &v, 1);
+    rs_tube_write(job, &val, 1);
     return RS_DONE;
 }
 
 /** Write a variable-length integer to a stream.
  *
- * \param job Job of data.
+ * \param job - Job of data.
  *
- * \param d Datum to write out.
+ * \param val - Value to write out.
  *
- * \param len Length of integer, in bytes. */
-rs_result rs_squirt_netint(rs_job_t *job, rs_long_t v, int len)
+ * \param len - Length of integer, in bytes. */
+rs_result rs_squirt_netint(rs_job_t *job, rs_long_t val, int len)
 {
     rs_byte_t buf[RS_MAX_INT_BYTES];
     int i;
@@ -74,29 +69,29 @@ rs_result rs_squirt_netint(rs_job_t *job, rs_long_t v, int len)
     assert(len <= RS_MAX_INT_BYTES);
     /* Fill the output buffer with a bigendian representation of the number. */
     for (i = len - 1; i >= 0; i--) {
-        buf[i] = v;             /* truncated */
-        v >>= 8;
+        buf[i] = val;             /* truncated */
+        val >>= 8;
     }
     rs_tube_write(job, buf, len);
     return RS_DONE;
 }
 
-rs_result rs_squirt_n4(rs_job_t *job, int v)
+rs_result rs_squirt_n4(rs_job_t *job, int val)
 {
-    return rs_squirt_netint(job, v, 4);
+    return rs_squirt_netint(job, val, 4);
 }
 
-rs_result rs_suck_byte(rs_job_t *job, rs_byte_t *v)
+rs_result rs_suck_byte(rs_job_t *job, rs_byte_t *val)
 {
     rs_result result;
     rs_byte_t *buf;
 
     if ((result = rs_scoop_read(job, 1, (void **)&buf)) == RS_DONE)
-        *v = *buf;
+        *val = *buf;
     return result;
 }
 
-rs_result rs_suck_netint(rs_job_t *job, rs_long_t *v, int len)
+rs_result rs_suck_netint(rs_job_t *job, rs_long_t *val, int len)
 {
     rs_result result;
     rs_byte_t *buf;
@@ -104,32 +99,32 @@ rs_result rs_suck_netint(rs_job_t *job, rs_long_t *v, int len)
 
     assert(len <= RS_MAX_INT_BYTES);
     if ((result = rs_scoop_read(job, len, (void **)&buf)) == RS_DONE) {
-        *v = 0;
+        *val = 0;
         for (i = 0; i < len; i++)
-            *v = *v << 8 | buf[i];
+            *val = *val << 8 | buf[i];
     }
     return result;
 }
 
-rs_result rs_suck_n4(rs_job_t *job, int *v)
+rs_result rs_suck_n4(rs_job_t *job, int *val)
 {
     rs_result result;
-    rs_long_t d;
+    rs_long_t buf;
 
-    if ((result = rs_suck_netint(job, &d, 4)) == RS_DONE)
-        *v = d;
+    if ((result = rs_suck_netint(job, &buf, 4)) == RS_DONE)
+        *val = buf;
     return result;
 }
 
-int rs_int_len(rs_long_t v)
+int rs_int_len(rs_long_t val)
 {
-    assert(v >= 0);
-    if (!(v & ~(rs_long_t)0xff))
+    assert(val >= 0);
+    if (!(val & ~(rs_long_t)0xff))
         return 1;
-    if (!(v & ~(rs_long_t)0xffff))
+    if (!(val & ~(rs_long_t)0xffff))
         return 2;
-    if (!(v & ~(rs_long_t)0xffffffff))
+    if (!(val & ~(rs_long_t)0xffffffff))
         return 4;
-    assert(!(v & ~(rs_long_t)0xffffffffffffffff));
+    assert(!(val & ~(rs_long_t)0xffffffffffffffff));
     return 8;
 }

@@ -42,20 +42,27 @@ if (NOT POPT_FOUND)
   endif (NOT POPT_ROOT_DIR)
 
   ##_____________________________________________________________________________
-  ## Check for the header files
+  ## Check with PkgConfig (to retrieve static dependencies such as iconv)
+  find_package(PkgConfig QUIET)
+  pkg_search_module (POPT QUIET popt)
+  if (NOT POPT_FOUND)
 
-  find_path (POPT_INCLUDE_DIRS popt.h
-    HINTS ${POPT_ROOT_DIR} ${CMAKE_INSTALL_PREFIX} $ENV{programfiles}\\GnuWin32 $ENV{programfiles32}\\GnuWin32
-    PATH_SUFFIXES include
-    )
+    ##_____________________________________________________________________________
+    ## Check for the header files
 
-  ##_____________________________________________________________________________
-  ## Check for the library
+    find_path (POPT_INCLUDE_DIRS popt.h
+      HINTS ${POPT_ROOT_DIR} ${CMAKE_INSTALL_PREFIX} $ENV{programfiles}\\GnuWin32 $ENV{programfiles32}\\GnuWin32
+      PATH_SUFFIXES include
+      )
 
-  find_library (POPT_LIBRARIES popt
-    HINTS ${POPT_ROOT_DIR} ${CMAKE_INSTALL_PREFIX} $ENV{programfiles}\\GnuWin32 $ENV{programfiles32}\\GnuWin32
-    PATH_SUFFIXES lib
-    )
+    ##_____________________________________________________________________________
+    ## Check for the library
+
+    find_library (POPT_LIBRARIES popt
+      HINTS ${POPT_ROOT_DIR} ${CMAKE_INSTALL_PREFIX} $ENV{programfiles}\\GnuWin32 $ENV{programfiles32}\\GnuWin32
+      PATH_SUFFIXES lib
+      )
+  endif (POPT_FOUND)
 
   ##_____________________________________________________________________________
   ## Actions taken when all components have been found

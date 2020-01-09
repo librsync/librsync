@@ -62,12 +62,12 @@ static const char *rs_severities[] = {
  * perhaps, and an error dialog for a browser.
  *
  * \todo Do we really need such fine-grained control, or just yes/no tracing? */
-void rs_trace_to(rs_trace_fn_t *new_impl)
+LIBRSYNC_EXPORT void rs_trace_to(rs_trace_fn_t *new_impl)
 {
     rs_trace_impl = new_impl;
 }
 
-void rs_trace_set_level(rs_loglevel level)
+LIBRSYNC_EXPORT void rs_trace_set_level(rs_loglevel level)
 {
     rs_trace_level = level;
 }
@@ -102,12 +102,12 @@ void rs_log0(int level, char const *fn, char const *fmt, ...)
     va_end(va);
 }
 
-void rs_trace_stderr(rs_loglevel UNUSED(level), char const *msg)
+LIBRSYNC_EXPORT void rs_trace_stderr(rs_loglevel UNUSED(level), char const *msg)
 {
     fputs(msg, stderr);
 }
 
-int rs_supports_trace(void)
+LIBRSYNC_EXPORT int rs_supports_trace(void)
 {
 #ifdef DO_RS_TRACE
     return 1;

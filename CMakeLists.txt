@@ -99,9 +99,11 @@ check_type_size ( "unsigned short" SIZEOF_UNSIGNED_SHORT )
 if(WIN32)
   # CheckCSourceRuns checking for "%zu" succeeds but still gives warnings on win32.
   set(HAVE_PRINTF_Z OFF)
+  # Not using unsupported %zu generates warnings about using %I64 with MinGW.
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-format")
   message (STATUS "Compiling to Win32 - printf \"%zu\" size_t formatting support disabled")
 elseif(CMAKE_CROSSCOMPILING)
-  # CheckCSourceRuns doesn't work when cross-compiling.
+  # CheckCSourceRuns doesn't work when cross-compiling; assume C99 compliant support.
   set(HAVE_PRINTF_Z ON)
   message (STATUS "Cross compiling - assuming printf \"%zu\" size_t formatting support")
 else()
@@ -133,7 +135,6 @@ endif()
 if (CMAKE_C_COMPILER_ID MATCHES "(Clang|Gnu|GNU)")
   # TODO: Set for MSVC and other compilers.
   # TODO: Set -Werror when the build is clean.
-
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -std=c99 -pedantic")
 endif()
 

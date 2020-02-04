@@ -70,7 +70,7 @@ if (NOT POPT_FOUND)
     ## Check the libraries and include dirs and set POPT_FOUND.
     FIND_PACKAGE_HANDLE_STANDARD_ARGS (POPT DEFAULT_MSG POPT_LIBRARIES POPT_INCLUDE_DIRS)
   
-  endif (POPT_FOUND)
+  endif (NOT POPT_FOUND)
 
   ##_____________________________________________________________________________
   ## Actions taken when all components have been found

@@ -53,14 +53,15 @@ typedef struct weaksum {
     union {
         Rollsum rs;
         rabinkarp_t rk;
-    };
+    } sum;
 } weaksum_t;
 
 static inline void weaksum_reset(weaksum_t *sum)
 {
     if (sum->kind == RS_ROLLSUM)
-        return RollsumInit(&sum->rs);
-    return rabinkarp_init(&sum->rk);
+        RollsumInit(&sum->sum.rs);
+    else
+        rabinkarp_init(&sum->sum.rk);
 }
 
 static inline void weaksum_init(weaksum_t *sum, weaksum_kind_t kind)
@@ -72,46 +73,51 @@ static inline void weaksum_init(weaksum_t *sum, weaksum_kind_t kind)
 
 static inline size_t weaksum_count(weaksum_t *sum)
 {
-    /* We take advantage of sum->rs.count overlaying sum->rk.count. */
-    return sum->rs.count;
+    /* We take advantage of sum->sum.rs.count overlaying sum->sum.rk.count. */
+    return sum->sum.rs.count;
 }
 
 static inline void weaksum_update(weaksum_t *sum, const unsigned char *buf,
                                   size_t len)
 {
     if (sum->kind == RS_ROLLSUM)
-        return RollsumUpdate(&sum->rs, buf, len);
-    return rabinkarp_update(&sum->rk, buf, len);
+        RollsumUpdate(&sum->sum.rs, buf, len);
+    else
+        rabinkarp_update(&sum->sum.rk, buf, len);
 }
 
 static inline void weaksum_rotate(weaksum_t *sum, unsigned char out,
                                   unsigned char in)
 {
     if (sum->kind == RS_ROLLSUM)
-        return RollsumRotate(&sum->rs, out, in);
-    return rabinkarp_rotate(&sum->rk, out, in);
+        RollsumRotate(&sum->sum.rs, out, in);
+    else
+        rabinkarp_rotate(&sum->sum.rk, out, in);
 }
 
 static inline void weaksum_rollin(weaksum_t *sum, unsigned char in)
 {
     if (sum->kind == RS_ROLLSUM)
-        return RollsumRollin(&sum->rs, in);
-    return rabinkarp_rollin(&sum->rk, in);
+        RollsumRollin(&sum->sum.rs, in);
+    else
+        rabinkarp_rollin(&sum->sum.rk, in);
 }
 
 static inline void weaksum_rollout(weaksum_t *sum, unsigned char out)
 {
     if (sum->kind == RS_ROLLSUM)
-        return RollsumRollout(&sum->rs, out);
-    return rabinkarp_rollout(&sum->rk, out);
+        RollsumRollout(&sum->sum.rs, out);
+    else
+        rabinkarp_rollout(&sum->sum.rk, out);
 }
 
 static inline rs_weak_sum_t weaksum_digest(weaksum_t *sum)
 {
     if (sum->kind == RS_ROLLSUM)
         /* We apply mix32() to rollsums before using them for matching. */
-        return mix32(RollsumDigest(&sum->rs));
-    return rabinkarp_digest(&sum->rk);
+        return mix32(RollsumDigest(&sum->sum.rs));
+    else
+        return rabinkarp_digest(&sum->sum.rk);
 }
 
 /** Calculate a weaksum.

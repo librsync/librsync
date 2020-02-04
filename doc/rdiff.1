@@ -26,13 +26,18 @@ rdiff \- compute and apply signature-based file differences
 .PP
 \fBrdiff\fP [\fIoptions\fP] \fBdelta\fP \fIsignature-file new-file delta-file\fP
 .PP
-\fBrdiff\fP [\fIoptions\fP] \fBpatch\fP \fIbasis-file delta-file new-file\fP
+\fBrdiff\fP [\fIoptions\fP] \fBpatch\fP \fIold-file delta-file new-file\fP
 .fi
 .SH USAGE
 You can use \fBrdiff\fP to update files, much like \fBrsync\fP does.
 However, unlike \fBrsync\fP, \fBrdiff\fP puts you in control.  There
 are three steps to updating a file: \fBsignature\fP, \fBdelta\fP, and
-\fBpatch\fP.
+\fBpatch\fP. Use the \fBsignature\fP subcommand to generate a small
+\fIsignature-file\fP from the \fIold-file\fP. Use the \fBdelta\fP
+subcommand to generate a small \fIdelta-file\fP from the \fIsignature-file\fP
+to the \fInew-file\fP. Use the \fBpatch\fP subcommand to apply the
+\fIdelta-file\fP to the \fIold-file\fP to regenerate the \fInew-file\fP.
+
 .SH DESCRIPTION
 In every case where a filename must be specified, \- may be used
 instead to mean either standard input or standard output as

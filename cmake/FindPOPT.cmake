@@ -42,26 +42,38 @@ if (NOT POPT_FOUND)
   endif (NOT POPT_ROOT_DIR)
 
   ##_____________________________________________________________________________
-  ## Check for the header files
-
-  find_path (POPT_INCLUDE_DIRS popt.h
-    HINTS ${POPT_ROOT_DIR} ${CMAKE_INSTALL_PREFIX} $ENV{programfiles}\\GnuWin32 $ENV{programfiles32}\\GnuWin32
-    PATH_SUFFIXES include
-    )
-
+  ## Check with PkgConfig (to retrieve static dependencies such as iconv)
+  find_package(PkgConfig QUIET)
+  if (PKG_CONFIG_FOUND)
+    pkg_search_module (POPT QUIET popt)
+  endif (PKG_CONFIG_FOUND)
+  
   ##_____________________________________________________________________________
-  ## Check for the library
+  ## Fallback to searching if PkgConfig didn't work.
+  if (NOT POPT_FOUND)
 
-  find_library (POPT_LIBRARIES popt
-    HINTS ${POPT_ROOT_DIR} ${CMAKE_INSTALL_PREFIX} $ENV{programfiles}\\GnuWin32 $ENV{programfiles32}\\GnuWin32
-    PATH_SUFFIXES lib
-    )
+    ##_____________________________________________________________________________
+    ## Check for the header files
+    find_path (POPT_INCLUDE_DIRS popt.h
+      HINTS ${POPT_ROOT_DIR} ${CMAKE_INSTALL_PREFIX} $ENV{programfiles}\\GnuWin32 $ENV{programfiles32}\\GnuWin32
+      PATH_SUFFIXES include
+      )
+
+    ##_____________________________________________________________________________
+    ## Check for the library
+    find_library (POPT_LIBRARIES popt
+      HINTS ${POPT_ROOT_DIR} ${CMAKE_INSTALL_PREFIX} $ENV{programfiles}\\GnuWin32 $ENV{programfiles32}\\GnuWin32
+      PATH_SUFFIXES lib
+      )
+      
+    ##_____________________________________________________________________________
+    ## Check the libraries and include dirs and set POPT_FOUND.
+    FIND_PACKAGE_HANDLE_STANDARD_ARGS (POPT DEFAULT_MSG POPT_LIBRARIES POPT_INCLUDE_DIRS)
+  
+  endif (NOT POPT_FOUND)
 
   ##_____________________________________________________________________________
   ## Actions taken when all components have been found
-
-  FIND_PACKAGE_HANDLE_STANDARD_ARGS (POPT DEFAULT_MSG POPT_LIBRARIES POPT_INCLUDE_DIRS)
-
   if (POPT_FOUND)
     if (NOT POPT_FIND_QUIETLY)
       message (STATUS "Found components for POPT")
@@ -77,7 +89,6 @@ if (NOT POPT_FOUND)
 
   ##_____________________________________________________________________________
   ## Mark advanced variables
-
   mark_as_advanced (
     POPT_ROOT_DIR
     POPT_INCLUDE_DIRS

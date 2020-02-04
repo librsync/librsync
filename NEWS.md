@@ -4,6 +4,16 @@
 
 NOT RELEASED YET
 
+ * Improved C99 compatibility. Add `-std=c99 -pedantic` to `CMAKE_C_FLAGS` for
+   gcc and clang. Fix all C99 warnings by making all code C99 compliant. Tidy
+   all CMake checks, #cmakedefines, and #includes. Fix 64bit support for
+   mdfour checksums (texierp, dbaarda,
+   https://github.com/librsync/librsync/pull/181,
+   https://github.com/librsync/librsync/pull/182)
+
+ * Usage clarified in rdiff (1) man page. (AaronM04,
+   https://github.com/librsync/librsync/pull/180)
+
 ## librsync 2.2.1
 
 Released 2019-10-16

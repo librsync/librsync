@@ -32,18 +32,15 @@
  * the moment, though, because tails are only used if necessary. */
 
 #include "config.h"
-
-#include <stdlib.h>
-#include <stdio.h>
 #include <assert.h>
-
+#include <stdlib.h>
 #include "librsync.h"
-#include "stream.h"
-#include "util.h"
-#include "sumset.h"
 #include "job.h"
+#include "sumset.h"
+#include "stream.h"
 #include "netint.h"
 #include "trace.h"
+#include "util.h"
 
 /* Possible state functions for signature generation. */
 static rs_result rs_sig_s_header(rs_job_t *);

@@ -23,7 +23,7 @@
 /** \private Internal state while computing an MD4 hash. */
 struct rs_mdfour {
     unsigned int A, B, C, D;
-#if HAVE_UINT64
+#ifdef UINT64_MAX
     uint64_t totalN;
 #else
     uint32_t totalN_hi, totalN_lo;

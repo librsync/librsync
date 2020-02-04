@@ -41,10 +41,6 @@
  * encoding function. */
 
 #include "config.h"
-
-#include <stdlib.h>
-#include <stdio.h>
-
 #include "librsync.h"
 
 char const *rs_strerror(rs_result r)

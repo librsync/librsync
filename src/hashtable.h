@@ -183,7 +183,6 @@ static inline unsigned mix32(unsigned int h)
 #  define NAME_new _JOIN(NAME, _new)
 #  define NAME_free _JOIN(NAME, _free)
 #  define NAME_stats_init _JOIN(NAME, _stats_init)
-#  define NAME_new _JOIN(NAME, _new)
 #  define NAME_add _JOIN(NAME, _add)
 #  define NAME_find _JOIN(NAME, _find)
 #  define NAME_iter _JOIN(NAME, _iter)
@@ -360,7 +359,6 @@ static inline ENTRY_t *NAME_next(hashtable_t *t, int *i)
 #  undef NAME_new
 #  undef NAME_free
 #  undef NAME_stats_init
-#  undef NAME_new
 #  undef NAME_add
 #  undef NAME_find
 #  undef NAME_iter

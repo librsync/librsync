@@ -26,19 +26,15 @@
  * HTTP. */
 
 #include "config.h"
-
 #include <assert.h>
 #include <stdlib.h>
-#include <stdio.h>
-
 #include "librsync.h"
-#include "command.h"
-#include "trace.h"
 #include "emit.h"
-#include "prototab.h"
-#include "netint.h"
-#include "sumset.h"
 #include "job.h"
+#include "netint.h"
+#include "command.h"
+#include "prototab.h"
+#include "trace.h"
 
 /** Write the magic for the start of a delta. */
 void rs_emit_delta_header(rs_job_t *job)

@@ -24,21 +24,16 @@
                                */
 
 #include "config.h"
-
 #include <assert.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
-
 #include "librsync.h"
-#include "util.h"
-#include "trace.h"
-#include "netint.h"
-#include "command.h"
-#include "sumset.h"
-#include "prototab.h"
-#include "stream.h"
 #include "job.h"
+#include "netint.h"
+#include "stream.h"
+#include "command.h"
+#include "prototab.h"
+#include "trace.h"
 
 static rs_result rs_patch_s_cmdbyte(rs_job_t *);
 static rs_result rs_patch_s_params(rs_job_t *);

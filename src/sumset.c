@@ -21,17 +21,13 @@
  */
 
 #include "config.h"
-
 #include <assert.h>
-#include <stddef.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
-
 #include "librsync.h"
 #include "sumset.h"
-#include "util.h"
 #include "trace.h"
+#include "util.h"
 
 static void rs_block_sig_init(rs_block_sig_t *sig, rs_weak_sum_t weak_sum,
                               rs_strong_sum_t *strong_sum, int strong_len)

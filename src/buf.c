@@ -37,18 +37,14 @@
  * \todo Perhaps expose a routine for shuffling the buffers. */
 
 #include "config.h"
-#include <sys/types.h>
-
 #include <assert.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <errno.h>
 #include <string.h>
-
 #include "librsync.h"
-#include "trace.h"
 #include "buf.h"
 #include "job.h"
+#include "trace.h"
 #include "util.h"
 
 struct rs_filebuf {

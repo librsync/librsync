@@ -28,24 +28,15 @@
                                */
 
 #include "config.h"
-
 #include <assert.h>
 #include <stdlib.h>
-#ifdef HAVE_UNISTD_H
-#  include <unistd.h>
-#endif
 #include <stdio.h>
 #include <string.h>
-#include <errno.h>
-
 #include "librsync.h"
-
-#include "trace.h"
+#include "whole.h"
 #include "sumset.h"
 #include "job.h"
 #include "buf.h"
-#include "whole.h"
-#include "util.h"
 
 /** Whole file IO buffer sizes. */
 LIBRSYNC_EXPORT int rs_inbuflen = 0, rs_outbuflen = 0;

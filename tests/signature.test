@@ -28,13 +28,15 @@ srcdir='.'
 
 new=$tmpdir/signature
 
-for hashfunc in md4 blake2; do
-  for rollfunc in rollsum rabinkarp; do
-    for input in "$srcdir/signature.input"/*.in; do
-      for inbuf in $bufsizes; do
-        expect=`echo $input | sed -e 's/.in$/.sig/' -e "s,input,input/$rollfunc-$hashfunc,"`
-        run_test $bindir/rdiff --rollsum=$rollfunc --hash=$hashfunc -I$inbuf -f signature "$input" "$new"
-        check_compare "$expect" "$new"
+for rollfunc in rollsum rabinkarp; do
+  for hashfunc in md4 blake2; do
+    for stronglen in 0 -1 8; do
+      for input in "$srcdir/signature.input"/*.in; do
+        for inbuf in $bufsizes; do
+          expect=`echo $input | sed -e "s/.in\$/-R${rollfunc}-H${hashfunc}-S${stronglen}.sig/"`
+          run_test $bindir/rdiff -R$rollfunc -H$hashfunc -S$stronglen -I$inbuf -f signature "$input" "$new"
+          check_compare "$expect" "$new"
+	done
       done
     done
   done

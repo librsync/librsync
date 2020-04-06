@@ -112,7 +112,7 @@ static rs_result rs_sig_s_generate(rs_job_t *job)
     return rs_sig_do_block(job, block, len);
 }
 
-rs_job_t *rs_sig_begin(size_t new_block_len, size_t strong_sum_len,
+rs_job_t *rs_sig_begin(size_t block_len, size_t strong_len,
                        rs_magic_number sig_magic)
 {
     rs_job_t *job;
@@ -121,7 +121,7 @@ rs_job_t *rs_sig_begin(size_t new_block_len, size_t strong_sum_len,
     job->signature = rs_alloc_struct(rs_signature_t);
     job->job_owns_sig = 1;
     job->sig_magic = sig_magic;
-    job->sig_block_len = new_block_len;
-    job->sig_strong_len = strong_sum_len;
+    job->sig_block_len = block_len;
+    job->sig_strong_len = strong_len;
     return job;
 }

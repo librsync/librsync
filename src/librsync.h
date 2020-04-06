@@ -354,8 +354,17 @@ struct rs_buffers_s {
 /** \sa ::rs_buffers_s */
 typedef struct rs_buffers_s rs_buffers_t;
 
-/** Default block length, if not determined by any other factors. */
+/** Default block length, if not determined by any other factors.
+ *
+ * The 2K default assumes a typical file is about 4MB and should be OK for
+ * files up to 32G with more than 1GB ram. */
 #  define RS_DEFAULT_BLOCK_LEN 2048
+
+/** Default minimum strong sum length, if the filesize is unknown.
+ *
+ * This is conservative, and should be safe for files less than 45TB with a 2KB
+ * block_len, assuming no collision attack with crafted data. */
+#  define RS_DEFAULT_MIN_STRONG_LEN 12
 
 /** Job of work to be done.
  *
@@ -402,23 +411,52 @@ LIBRSYNC_EXPORT const rs_stats_t *rs_job_statistics(rs_job_t *job);
 /** Deallocate job state. */
 LIBRSYNC_EXPORT rs_result rs_job_free(rs_job_t *);
 
+/** Get or check signature arguments for a given file size.
+ *
+ * This can be used to get the recommended arguments for generating a
+ * signature. On calling, old_fsize should be set to the old file size or -1
+ * for "unknown". The magic and block_len arguments should be set to a valid
+ * value or 0 for "recommended". The strong_len input should be set to a valid
+ * value, 0 for "maximum", or -1 for "miniumum". Use strong_len=0 for the best
+ * protection against active hash collision attacks for the given magic type.
+ * Use strong_len=-1 for the smallest signature size that is safe against
+ * random hash collisions for the block_len and old_fsize. On return the 0 or
+ * -1 input args will be set to recommended values and the returned result will
+ * indicate if any inputs were invalid.
+ *
+ * \param old_fsize - the original file size (-1 for "unknown").
+ *
+ * \param *magic - the magic type to use (0 for "recommended").
+ *
+ * \param *block_len - the block length to use (0 for "recommended").
+ *
+ * \param *strong_len - the strongsum length to use (0 for "maximum", -1 for
+ * "minimum").
+ *
+ * \return RS_DONE if all arguments are valid, otherwise an error code. */
+LIBRSYNC_EXPORT rs_result rs_sig_args(rs_long_t old_fsize,
+                                      rs_magic_number * magic,
+                                      size_t *block_len, size_t *strong_len);
+
 /** Start generating a signature.
+ *
+ * It's recommended you use rs_sig_args() to get the recommended arguments for
+ * this based on the original file size.
  *
  * \return A new rs_job_t into which the old file data can be passed.
  *
- * \param sig_magic Indicates the version of signature file format to generate.
+ * \param sig_magic Signature file format to generate (0 for "recommended").
  * See ::rs_magic_number.
  *
- * \param new_block_len Size of checksum blocks. Larger values make the
- * signature shorter, and the delta longer.
+ * \param block_len Checksum block size to use (0 for "recommended"). Larger
+ * values make the signature shorter, and the delta longer.
  *
- * \param strong_sum_len If non-zero, truncate the strong signatures to this
- * many bytes, to make the signature shorter. It's recommended you leave this
- * at zero to get the full strength.
+ * \param strong_len Strongsum length in bytes to use (0 for "maximum", -1 for
+ * "minimum"). Smaller values make the signature shorter but increase the risk
+ * of corruption from hash collisions.
  *
  * \sa rs_sig_file() */
-LIBRSYNC_EXPORT rs_job_t *rs_sig_begin(size_t new_block_len,
-                                       size_t strong_sum_len,
+LIBRSYNC_EXPORT rs_job_t *rs_sig_begin(size_t block_len, size_t strong_len,
                                        rs_magic_number sig_magic);
 
 /** Prepare to compute a streaming delta.

@@ -1,8 +1,29 @@
 # librsync NEWS
 
-## librsync 2.2.2
+## librsync 2.3.0
 
 NOT RELEASED YET
+
+ * Bump minor version from 2.3.1 to 2.3.0 to reflect additional rs_sig_args()
+   and strong_len=-1 support.
+
+ * Add public rs_sig_args() function for getting the recommend signature args
+   from the filesize. Added support to rdiff for `--sum-size=-1` to indicate
+   "use minimum size safe against random block collisions". Added warning
+   output for sum-sizes that are too small to be safe. Fixed possible rdiff
+   bug affecting popt parsing on non-little-endian platforms. (dbaarda,
+   https://github.com/librsync/librsync/pull/109)
+
+ * Fixed yet more compiler warnings for various platforms. (Adsun701, texierp,
+   https://github.com/librsync/librsync/pull/187,
+   https://github.com/librsync/librsync/pull/188)
+
+ * Improved cmake popt handling to find popt dependencies using PkgConfig.
+   (ffontaine, https://github.com/librsync/librsync/pull/186)
+
+ * Tidied internal code and improved tests for netint.[ch], tube.c, and
+   hashtable.h. (dbaarda, https://github.com/librsync/librsync/pull/183
+   https://github.com/librsync/librsync/pull/185).
 
  * Improved C99 compatibility. Add `-std=c99 -pedantic` to `CMAKE_C_FLAGS` for
    gcc and clang. Fix all C99 warnings by making all code C99 compliant. Tidy

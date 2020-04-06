@@ -41,13 +41,136 @@ int main(int argc, char **argv)
     for (i = 0; i < 256; i++)
         buf[i] = i;
 
+    /* Test rs_sig_args() */
+    rs_magic_number magic;
+    size_t block_len, strong_len;
+
+    /* old_fsize=unknown, all recommended. */
+    magic = 0;
+    block_len = 0;
+    strong_len = 0;
+    res = rs_sig_args(-1, &magic, &block_len, &strong_len);
+    assert(res == RS_DONE);
+    assert(magic == RS_RK_BLAKE2_SIG_MAGIC);
+    assert(block_len == 2048);
+    assert(strong_len == 32);
+
+    /* old_fsize=0, all recommended. */
+    magic = 0;
+    block_len = 0;
+    strong_len = 0;
+    res = rs_sig_args(0, &magic, &block_len, &strong_len);
+    assert(res == RS_DONE);
+    assert(magic == RS_RK_BLAKE2_SIG_MAGIC);
+    assert(block_len == 256);
+    assert(strong_len == 32);
+
+    /* old_fsize=100000, magic=rs/md4, block_len=rec, strong_len=rec. */
+    magic = RS_MD4_SIG_MAGIC;
+    block_len = 0;
+    strong_len = 0;
+    res = rs_sig_args(100000, &magic, &block_len, &strong_len);
+    assert(res == RS_DONE);
+    assert(magic == RS_MD4_SIG_MAGIC);
+    assert(block_len == 316);
+    assert(strong_len == 16);
+
+    /* old_fsize=unknown, magic=rk/b2, block_len=rec, strong_len=min. */
+    magic = RS_RK_BLAKE2_SIG_MAGIC;
+    block_len = 0;
+    strong_len = -1;
+    res = rs_sig_args(-1, &magic, &block_len, &strong_len);
+    assert(res == RS_DONE);
+    assert(magic == RS_RK_BLAKE2_SIG_MAGIC);
+    assert(block_len == 2048);
+    assert(strong_len == 12);
+
+    /* old_fsize=unknown, magic=rs/b2, block_len=1000, strong_len=8. */
+    magic = RS_BLAKE2_SIG_MAGIC;
+    block_len = 1000;
+    strong_len = 8;
+    res = rs_sig_args(-1, &magic, &block_len, &strong_len);
+    assert(res == RS_DONE);
+    assert(magic == RS_BLAKE2_SIG_MAGIC);
+    assert(block_len == 1000);
+    assert(strong_len == 8);
+
+    /* old_fsize=0, magic=rs/md4, block_len=rec, strong_len=min. */
+    magic = RS_RK_MD4_SIG_MAGIC;
+    block_len = 0;
+    strong_len = -1;
+    res = rs_sig_args(0, &magic, &block_len, &strong_len);
+    assert(res == RS_DONE);
+    assert(magic == RS_RK_MD4_SIG_MAGIC);
+    assert(block_len == 256);
+    assert(strong_len == 5);
+
+    /* old_fsize=0, magic=rs/md4, block_len=1000, strong_len=8. */
+    magic = RS_MD4_SIG_MAGIC;
+    block_len = 1000;
+    strong_len = 8;
+    res = rs_sig_args(0, &magic, &block_len, &strong_len);
+    assert(res == RS_DONE);
+    assert(magic == RS_MD4_SIG_MAGIC);
+    assert(block_len == 1000);
+    assert(strong_len == 8);
+
+    /* old_fsize=100000, magic=rs/b2, block_len=rec, strong_len=min. */
+    magic = RS_BLAKE2_SIG_MAGIC;
+    block_len = 0;
+    strong_len = -1;
+    res = rs_sig_args(100000, &magic, &block_len, &strong_len);
+    assert(res == RS_DONE);
+    assert(magic == RS_BLAKE2_SIG_MAGIC);
+    assert(block_len == 316);
+    assert(strong_len == 6);
+
+    /* old_fsize=100000, magic=rk/md4, block_len=1000, strong_len=8. */
+    magic = RS_RK_MD4_SIG_MAGIC;
+    block_len = 1000;
+    strong_len = 8;
+    res = rs_sig_args(100000, &magic, &block_len, &strong_len);
+    assert(res == RS_DONE);
+    assert(magic == RS_RK_MD4_SIG_MAGIC);
+    assert(block_len == 1000);
+    assert(strong_len == 8);
+
+    /* magic=bad. */
+    magic = 1;
+    block_len = 0;
+    strong_len = 0;
+    res = rs_sig_args(-1, &magic, &block_len, &strong_len);
+    assert(res == RS_BAD_MAGIC);
+
+    /* strong_len=bad. */
+    magic = RS_RK_BLAKE2_SIG_MAGIC;
+    block_len = 0;
+    strong_len = 33;
+    res = rs_sig_args(-1, &magic, &block_len, &strong_len);
+    assert(res == RS_PARAM_ERROR);
+    magic = RS_BLAKE2_SIG_MAGIC;
+    block_len = 0;
+    strong_len = 33;
+    res = rs_sig_args(-1, &magic, &block_len, &strong_len);
+    assert(res == RS_PARAM_ERROR);
+    magic = RS_RK_MD4_SIG_MAGIC;
+    block_len = 0;
+    strong_len = 17;
+    res = rs_sig_args(-1, &magic, &block_len, &strong_len);
+    assert(res == RS_PARAM_ERROR);
+    magic = RS_MD4_SIG_MAGIC;
+    block_len = 0;
+    strong_len = 17;
+    res = rs_sig_args(-1, &magic, &block_len, &strong_len);
+    assert(res == RS_PARAM_ERROR);
+
     /* Test rs_signature_init() */
-    /* Default zero magic. */
-    res = rs_signature_init(&sig, 0, 16, 6, -1);
+    /* magic=rec, block_len=rec, strong_len=max. */
+    res = rs_signature_init(&sig, 0, 0, 0, -1);
     assert(res == RS_DONE);
     assert(sig.magic == RS_RK_BLAKE2_SIG_MAGIC);
-    assert(sig.block_len == 16);
-    assert(sig.strong_sum_len == 6);
+    assert(sig.block_len == 2048);
+    assert(sig.strong_sum_len == 32);
     assert(sig.count == 0);
     assert(sig.size == 0);
     assert(sig.block_sigs == NULL);
@@ -56,25 +179,33 @@ int main(int argc, char **argv)
     assert(sig.calc_strong_count == 0);
 #endif
 
-    /* Blake2 magic. */
-    res = rs_signature_init(&sig, RS_BLAKE2_SIG_MAGIC, 16, 6, -1);
+    /* Blake2 magic, block_len=rec, strong_len=max. */
+    res = rs_signature_init(&sig, RS_BLAKE2_SIG_MAGIC, 0, 0, -1);
     assert(res == RS_DONE);
     assert(sig.magic == RS_BLAKE2_SIG_MAGIC);
+    assert(sig.block_len == 2048);
+    assert(sig.strong_sum_len == 32);
 
-    /* MD4 magic. */
-    res = rs_signature_init(&sig, RS_MD4_SIG_MAGIC, 16, 6, -1);
+    /* MD4 magic, block_len=rec, strong_len=max. */
+    res = rs_signature_init(&sig, RS_MD4_SIG_MAGIC, 0, 0, -1);
     assert(res == RS_DONE);
     assert(sig.magic == RS_MD4_SIG_MAGIC);
+    assert(sig.block_len == 2048);
+    assert(sig.strong_sum_len == 16);
 
-    /* RabinKarp + Blake2 magic. */
-    res = rs_signature_init(&sig, RS_RK_BLAKE2_SIG_MAGIC, 16, 6, -1);
+    /* RabinKarp + Blake2 magic, block_len=16, strong_len=min. */
+    res = rs_signature_init(&sig, RS_RK_BLAKE2_SIG_MAGIC, 16, -1, -1);
     assert(res == RS_DONE);
     assert(sig.magic == RS_RK_BLAKE2_SIG_MAGIC);
+    assert(sig.block_len == 16);
+    assert(sig.strong_sum_len == 12);
 
-    /* RabinKarp + MD4 magic. */
+    /* RabinKarp + MD4 magic, block_len=16, strong_len=6. */
     res = rs_signature_init(&sig, RS_RK_MD4_SIG_MAGIC, 16, 6, -1);
     assert(res == RS_DONE);
     assert(sig.magic == RS_RK_MD4_SIG_MAGIC);
+    assert(sig.block_len == 16);
+    assert(sig.strong_sum_len == 6);
 
     /* Bad magic. */
     res = rs_signature_init(&sig, 1, 16, 6, -1);

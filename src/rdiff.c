@@ -108,7 +108,7 @@ static void help(void)
            "  -H, --hash=ALG            Hash algorithm: blake2 (default), md4\n"
            "  -R, --rollsum=ALG         Rollsum algorithm: rabinkarp (default), rollsum\n"
            "Delta-encoding options:\n"
-           "  -b, --block-size=BYTES    Signature block size\n"
+           "  -b, --block-size=BYTES    Signature block size, 0 (default) for recommended\n"
            "  -S, --sum-size=BYTES      Signature strength, 0 (default) for max, -1 for min\n"
            "IO options:\n" "  -I, --input-size=BYTES    Input buffer size\n"
            "  -O, --output-size=BYTES   Output buffer size\n"

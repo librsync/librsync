@@ -51,8 +51,8 @@
 #include "librsync.h"
 #include "isprefix.h"
 
-static size_t block_len = 0;
-static size_t strong_len = 0;
+static int block_len = 0;
+static int strong_len = 0;
 
 static int show_stats = 0;
 

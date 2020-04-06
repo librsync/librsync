@@ -117,12 +117,11 @@ static inline int rs_block_sig_idx(const rs_signature_t *sig,
 rs_result rs_sig_args(rs_long_t old_fsize, rs_magic_number * magic,
                       size_t *block_len, size_t *strong_len)
 {
-    size_t max_strong_len;      /* the maximum strong_len for the given magic
-                                   type. */
-    size_t rec_strong_len;      /* the recommended strong_len for the given
-                                   file size. */
-    size_t rec_block_len;       /* the recomended block_len for the given file
-                                   size. */
+    size_t rec_block_len;       /* the recomended block_len for the given
+                                   old_fsize. */
+    size_t min_strong_len;      /* the minimum strong_len for the given
+                                   old_fsize and block_len. */
+    size_t max_strong_len;      /* the maximum strong_len for the given magic. */
 
     /* Check and set default arguments. */
     *magic = *magic ? *magic : RS_RK_BLAKE2_SIG_MAGIC;
@@ -141,8 +140,8 @@ rs_result rs_sig_args(rs_long_t old_fsize, rs_magic_number * magic,
     }
     /* The recommended block_len is sqrt(old_fsize) with a 256 min size to give
        a reasonable compromise between signature size, delta size, and
-       performance. If the old_fsize is unknown or zero, we use the default. */
-    if (old_fsize <= 0) {
+       performance. If the old_fsize is unknown, we use the default. */
+    if (old_fsize < 0) {
         rec_block_len = RS_DEFAULT_BLOCK_LEN;
     } else {
         rec_block_len = old_fsize <= 256 * 256 ? 256 : rs_long_sqrt(old_fsize);
@@ -158,21 +157,26 @@ rs_result rs_sig_args(rs_long_t old_fsize, rs_magic_number * magic,
        byte, add an extra 2 bytes (16 bits) in the strongsum, and assume the
        weaksum is worth another 16 bits, for at least 32 bits extra, giving a
        worst case 1/2^32 chance of having a hash collision per delta. If
-       old_fsize is unknown, we use a conservative default. */
+       old_fsize is unknown we use a conservative default. */
     if (old_fsize < 0) {
-        rec_strong_len = RS_DEFAULT_STRONG_LEN;
+        min_strong_len = RS_DEFAULT_MIN_STRONG_LEN;
     } else {
-        rec_strong_len =
+        min_strong_len =
             2 + (rs_long_ln2(old_fsize + ((rs_long_t)1 << 24)) +
                  rs_long_ln2(old_fsize / *block_len + 1) + 7) / 8;
     }
     if (*strong_len == 0)
         *strong_len = max_strong_len;
-    else if (old_fsize && *strong_len < rec_strong_len)
-        *strong_len = rec_strong_len;
-    else if (*strong_len > max_strong_len) {
-        rs_error("invalid strong_sum_len " FMT_SIZE " for magic %#x",
-                 *strong_len, (int)*magic);
+    else if (*strong_len == -1)
+        *strong_len = min_strong_len;
+    else if (old_fsize >= 0 && *strong_len < min_strong_len) {
+        rs_log(RS_LOG_WARNING,
+               "strong_len=" FMT_SIZE " smaller than recommended minimum "
+               FMT_SIZE " for old_fsize=" FMT_LONG " with block_len=" FMT_SIZE,
+               *strong_len, min_strong_len, old_fsize, *block_len);
+    } else if (*strong_len > max_strong_len) {
+        rs_error("invalid strong_len=" FMT_SIZE " for magic=%#x", *strong_len,
+                 (int)*magic);
         return RS_PARAM_ERROR;
     }
     rs_sig_args_check(*magic, *block_len, *strong_len);
@@ -185,8 +189,8 @@ rs_result rs_signature_init(rs_signature_t *sig, rs_magic_number magic,
 {
     rs_result result;
 
-    /* Check and set default arguments, using old_fsize=0 to keep set args. */
-    if ((result = rs_sig_args(0, &magic, &block_len, &strong_len)) != RS_DONE)
+    /* Check and set default arguments, using old_fsize=-1 for unknown. */
+    if ((result = rs_sig_args(-1, &magic, &block_len, &strong_len)) != RS_DONE)
         return result;
     /* Set attributes from args. */
     sig->magic = magic;

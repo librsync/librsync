@@ -30,7 +30,7 @@ new=$tmpdir/signature
 
 for rollfunc in rollsum rabinkarp; do
   for hashfunc in md4 blake2; do
-    for stronglen in 0 1 8; do
+    for stronglen in 0 -1 8; do
       for input in "$srcdir/signature.input"/*.in; do
         for inbuf in $bufsizes; do
           expect=`echo $input | sed -e "s/.in\$/-R${rollfunc}-H${hashfunc}-S${stronglen}.sig/"`

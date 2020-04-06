@@ -56,9 +56,9 @@ struct rs_signature {
  *
  * \param block_len - the block length to use (0 for "recommended").
  *
- * \param strong_len - the strongsum length to use (0 for "maximum"). Must be
- * <= the max strongsum size for the strongsum type indicated by the magic
- * value.
+ * \param strong_len - the strongsum length to use (0 for "maximum", -1 for
+ * "minimum"). Must be <= the max strongsum size for the strongsum type
+ * indicated by the magic value.
  *
  * \param sig_fsize - the signature file size (-1 for "unknown"). Used to
  * preallocate required storage. */

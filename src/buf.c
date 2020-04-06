@@ -101,7 +101,7 @@ rs_result rs_infilebuf_fill(rs_job_t *job, rs_buffers_t *buf, void *opaque)
         return RS_DONE;
 
     len = fread(fb->buf, 1, fb->buf_len, f);
-    if (len <= 0) {
+    if (len == 0) {
         /* This will happen if file size is a multiple of input block len */
         if (feof(f)) {
             rs_trace("seen end of file on input");

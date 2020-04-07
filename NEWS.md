@@ -2,20 +2,20 @@
 
 ## librsync 2.3.0
 
-NOT RELEASED YET
+Released 2020-04-07
 
- * Bump minor version from 2.3.1 to 2.3.0 to reflect additional rs_sig_args()
+ * Bump minor version from 2.2.1 to 2.3.0 to reflect additional rs_sig_args()
    and strong_len=-1 support.
 
  * Add public rs_sig_args() function for getting the recommend signature args
-   from the filesize. Added support to rdiff for `--sum-size=-1` to indicate
+   from the file size. Added support to rdiff for `--sum-size=-1` to indicate
    "use minimum size safe against random block collisions". Added warning
    output for sum-sizes that are too small to be safe. Fixed possible rdiff
    bug affecting popt parsing on non-little-endian platforms. (dbaarda,
    https://github.com/librsync/librsync/pull/109)
 
- * Fixed yet more compiler warnings for various platforms. (Adsun701, texierp,
-   https://github.com/librsync/librsync/pull/187,
+ * Fixed yet more compiler warnings for various platforms/compilers.
+   (Adsun701, texierp, https://github.com/librsync/librsync/pull/187,
    https://github.com/librsync/librsync/pull/188)
 
  * Improved cmake popt handling to find popt dependencies using PkgConfig.

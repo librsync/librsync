@@ -35,19 +35,19 @@
  * This multiplier has a bit pattern of 1's getting sparser with significance,
  * is the product of 2 large primes, and matches the characterstics for a good
  * LCG multiplier. */
-#  define RABINKARP_MULT 0x08104225
+#  define RABINKARP_MULT 0x08104225U
 
 /** The RabinKarp inverse multiplier.
  *
  * This is the inverse of RABINKARP_MULT modular 2^32. Multiplying by this is
  * equivalent to dividing by RABINKARP_MULT. */
-#  define RABINKARP_INVM 0x98f009ad
+#  define RABINKARP_INVM 0x98f009adU
 
 /** The RabinKarp seed adjustment.
  *
  * This is a factor used to adjust for the seed when rolling out values. It's
  * equal to; (RABINKARP_MULT - 1) * RABINKARP_SEED */
-#  define RABINKARP_ADJ 0x08104224
+#  define RABINKARP_ADJ 0x08104224U
 
 /** The rabinkarp_t state type. */
 typedef struct _rabinkarp {

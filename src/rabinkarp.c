@@ -7,10 +7,10 @@
 #define MULT16(hash,buf) MULT8(MULT8(hash,buf,0),buf,8)
 
 #define DO1(hash,buf,i) {hash = RABINKARP_MULT * hash + buf[i];}
-#define DO2(hash,buf,i)  DO1(buf,i); DO1(buf,i+1);
-#define DO4(hash,buf,i)  DO2(buf,i); DO2(buf,i+2);
-#define DO8(hash,buf,i)  DO4(buf,i); DO4(buf,i+4);
-#define DO16(hash,buf)   DO8(buf,0); DO8(buf,8);
+#define DO2(hash,buf,i)  DO1(hash,buf,i); DO1(hash,buf,i+1);
+#define DO4(hash,buf,i)  DO2(hash,buf,i); DO2(hash,buf,i+2);
+#define DO8(hash,buf,i)  DO4(hash,buf,i); DO4(hash,buf,i+4);
+#define DO16(hash,buf)   DO8(hash,buf,0); DO8(hash,buf,8);
 
 static inline uint32_t uint32_pow(uint32_t m, size_t p)
 {
@@ -28,11 +28,11 @@ static inline uint32_t uint32_pow(uint32_t m, size_t p)
 void rabinkarp_update(rabinkarp_t *sum, const unsigned char *buf, size_t len)
 {
     size_t n = len;
-    uint_fast32_t hash = sum->hash;
+    uint32_t hash = sum->hash;
 
     while (n >= 16) {
-        // hash = MULT16(hash, buf);
-	DO16(hash, buf);
+        hash = MULT16(hash, buf);
+        // DO16(sum->hash,buf);
         buf += 16;
         n -= 16;
     }

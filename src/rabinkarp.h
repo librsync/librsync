@@ -56,19 +56,6 @@ typedef struct _rabinkarp {
     uint32_t mult;              /**< The value of RABINKARP_MULT^count. */
 } rabinkarp_t;
 
-static inline uint32_t uint32_pow(uint32_t m, size_t p)
-{
-    uint32_t ans = 1;
-    while (p) {
-        if (p & 1) {
-            ans *= m;
-        }
-        m *= m;
-        p >>= 1;
-    }
-    return ans;
-}
-
 static inline void rabinkarp_init(rabinkarp_t *sum)
 {
     sum->count = 0;
@@ -76,15 +63,7 @@ static inline void rabinkarp_init(rabinkarp_t *sum)
     sum->mult = 1;
 }
 
-static inline void rabinkarp_update(rabinkarp_t *sum, const unsigned char *buf,
-                                    size_t len)
-{
-    for (size_t i = len; i; i--) {
-        sum->hash = sum->hash * RABINKARP_MULT + *buf++;
-    }
-    sum->count += len;
-    sum->mult *= uint32_pow(RABINKARP_MULT, len);
-}
+void rabinkarp_update(rabinkarp_t *sum, const unsigned char *buf, size_t len);
 
 static inline void rabinkarp_rotate(rabinkarp_t *sum, unsigned char out,
                                     unsigned char in)

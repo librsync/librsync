@@ -251,7 +251,7 @@ add_executable(rollsum_test
 add_test(NAME rollsum_test COMMAND rollsum_test)
 
 add_executable(rabinkarp_test
-    tests/rabinkarp_test.c)
+    tests/rabinkarp_test.c src/rabinkarp.c)
 add_test(NAME rabinkarp_test COMMAND rabinkarp_test)
 
 add_executable(hashtable_test
@@ -259,14 +259,14 @@ add_executable(hashtable_test
 add_test(NAME hashtable_test COMMAND hashtable_test)
 
 add_executable(checksum_test
-    tests/checksum_test.c src/checksum.c src/rollsum.c src/mdfour.c ${blake2_SRCS})
+    tests/checksum_test.c src/checksum.c src/rollsum.c src/rabinkarp.c src/mdfour.c ${blake2_SRCS})
 target_compile_options(checksum_test PRIVATE -DLIBRSYNC_STATIC_DEFINE)
 target_link_libraries(checksum_test ${blake2_LIBS})
 add_test(NAME checksum_test COMMAND checksum_test)
 
 add_executable(sumset_test
     tests/sumset_test.c src/sumset.c src/util.c src/trace.c src/hex.c
-    src/checksum.c src/rollsum.c src/mdfour.c src/hashtable.c ${blake2_SRCS})
+    src/checksum.c src/rollsum.c src/rabinkarp.c src/mdfour.c src/hashtable.c ${blake2_SRCS})
 target_compile_options(sumset_test PRIVATE -DLIBRSYNC_STATIC_DEFINE)
 target_link_libraries(sumset_test ${blake2_LIBS})
 add_test(NAME sumset_test COMMAND sumset_test)
@@ -342,6 +342,7 @@ set(rsync_LIB_SRCS
     src/patch.c
     src/readsums.c
     src/rollsum.c
+    src/rabinkarp.c
     src/scoop.c
     src/stats.c
     src/stream.c

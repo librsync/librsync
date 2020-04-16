@@ -1,16 +1,17 @@
 #include "rabinkarp.h"
 
-/* Constants for RABINKARP_MULT^i. */
-#define RABINKARP_MULT1 RABINKARP_MULT
-#define RABINKARP_MULT2 (RABINKARP_MULT1*RABINKARP_MULT1)
-#define RABINKARP_MULT3 (RABINKARP_MULT1*RABINKARP_MULT2)
-#define RABINKARP_MULT4 (RABINKARP_MULT1*RABINKARP_MULT3)
+/* Constant for RABINKARP_MULT^2. */
+#define RABINKARP_MULT2 (RABINKARP_MULT*RABINKARP_MULT)
 
-/* Macro for doing 4 bytes in parallel. */
-#define DOMULT4(hash, buf) (RABINKARP_MULT4*(hash) + \
-			    RABINKARP_MULT3*buf[0] + \
-			    RABINKARP_MULT2*buf[1] + \
-			    RABINKARP_MULT1*buf[2] + buf[3])
+/* Macros for doing 16 bytes with 2 mults that can be done in parallel. Testing
+   showed this as a performance sweet spot vs 16x1, 8x2, 4x4 1x16 alternative
+   arrangements. */
+#define PAR2X1(hash,buf,i) (RABINKARP_MULT2*(hash) + \
+			    RABINKARP_MULT*buf[i] + \
+			    buf[i+1])
+#define PAR2X2(hash,buf,i) PAR2X1(PAR2X1(hash,buf,i),buf,i+2)
+#define PAR2X4(hash,buf,i) PAR2X2(PAR2X2(hash,buf,i),buf,i+4)
+#define PAR2X8(hash,buf) PAR2X4(PAR2X4(hash,buf,0),buf,8)
 
 /* Table of RABINKARP_MULT^(2^(i+1)) for power lookups. */
 const static uint32_t RABINKARP_MULT_POW2[32] = {
@@ -49,7 +50,8 @@ const static uint32_t RABINKARP_MULT_POW2[32] = {
 };
 
 /* Get the value of RABINKARP_MULT^p. */
-static inline uint32_t rabinkarp_pow(size_t p) {
+static inline uint32_t rabinkarp_pow(size_t p)
+{
     /* Truncate p to 32 bits since higher bits don't affect result. */
     uint32_t n = p;
     uint32_t ans = 1;
@@ -67,14 +69,12 @@ static inline uint32_t rabinkarp_pow(size_t p) {
 void rabinkarp_update(rabinkarp_t *sum, const unsigned char *buf, size_t len)
 {
     size_t n = len;
-    uint_fast32_t hash = sum->hash;
+    uint32_t hash = sum->hash;
 
-    while (n >= 4) {
-        // hash = MULT16(hash, buf);
-        // DO16(sum->hash,buf);
-        hash = DOMULT4(hash, buf);
-        buf += 4;
-        n -= 4;
+    while (n >= 16) {
+        hash = PAR2X8(hash, buf);
+        buf += 16;
+        n -= 16;
     }
     while (n) {
         hash = RABINKARP_MULT * hash + *buf++;

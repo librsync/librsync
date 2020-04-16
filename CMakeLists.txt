@@ -253,6 +253,8 @@ add_test(NAME rollsum_test COMMAND rollsum_test)
 add_executable(rabinkarp_test
     tests/rabinkarp_test.c src/rabinkarp.c)
 add_test(NAME rabinkarp_test COMMAND rabinkarp_test)
+add_executable(rabinkarp_perf
+    tests/rabinkarp_perf.c src/rabinkarp.c)
 
 add_executable(hashtable_test
     tests/hashtable_test.c src/hashtable.c)

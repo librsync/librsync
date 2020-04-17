@@ -43,6 +43,11 @@ CMakeDoxygenDefaults.cmake
 *_test.exe
 *_test.exe.manifest
 
+# Performance benchmark binaries
+*_perf
+*_perf.exe
+*_perf.exe.manifest
+
 *.bak
 
 *.tmp

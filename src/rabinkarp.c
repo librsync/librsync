@@ -69,13 +69,11 @@ const static uint32_t RABINKARP_MULT_POW2[32] = {
     0x00000001U
 };
 
-/* Get the value of RABINKARP_MULT^p. */
-static inline uint32_t rabinkarp_pow(size_t p)
+/* Get the value of RABINKARP_MULT^n. */
+static inline uint32_t rabinkarp_pow(uint32_t n)
 {
-    /* Truncate p to 32 bits since higher bits don't affect result. */
-    uint32_t n = p;
-    uint32_t ans = 1;
     const uint32_t *m = RABINKARP_MULT_POW2;
+    uint32_t ans = 1;
     while (n) {
         if (n & 1) {
             ans *= *m;

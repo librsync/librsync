@@ -35,11 +35,11 @@
 
 /* Table of RABINKARP_MULT^(2^(i+1)) for power lookups. */
 const static uint32_t RABINKARP_MULT_POW2[32] = {
-    0x8104225U,
+    0x08104225U,
     0xa5b71959U,
     0xf9c080f1U,
     0x7c71e2e1U,
-    0xbb409c1U,
+    0x0bb409c1U,
     0x4dc72381U,
     0xd17a8701U,
     0x96260e01U,
@@ -56,17 +56,17 @@ const static uint32_t RABINKARP_MULT_POW2[32] = {
     0x20700001U,
     0x40e00001U,
     0x81c00001U,
-    0x3800001U,
-    0x7000001U,
-    0xe000001U,
+    0x03800001U,
+    0x07000001U,
+    0x0e000001U,
     0x1c000001U,
     0x38000001U,
     0x70000001U,
     0xe0000001U,
     0xc0000001U,
     0x80000001U,
-    0x1U,
-    0x1U
+    0x00000001U,
+    0x00000001U
 };
 
 /* Get the value of RABINKARP_MULT^p. */

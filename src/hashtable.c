@@ -44,8 +44,12 @@ hashtable_t *_hashtable_new(int size)
     for (size2 = 1; size2 < size; size2 <<= 1) ;
     if (!(t = calloc(1, sizeof(hashtable_t)+ size2 * sizeof(unsigned))))
         return NULL;
+    if (!(t->bloom = calloc(size2 / 8, sizeof(unsigned char)))) {
+        _hashtable_free(t);
+        return NULL;
+    }
     if (!(t->etable = calloc(size2, sizeof(void *)))) {
-        free(t);
+        _hashtable_free(t);
         return NULL;
     }
     t->size = size2;

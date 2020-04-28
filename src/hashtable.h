@@ -42,7 +42,8 @@
  * particular entries by more than just their key. There is an iterator for
  * iterating through all entries in the hashtable. There are optional
  * NAME_find() find/match/hashcmp/entrycmp stats counters that can be disabled
- * by defining HASHTABLE_NSTATS.
+ * by defining HASHTABLE_NSTATS. There is an optional simple k=1 bloom filter
+ * for speed that can be disabled by defining HASHTABLE_NBLOOM.
  *
  * The types and methods of the hashtable and its contents are specified by
  * using \#define parameters set to their basenames (the prefixes for the *_t
@@ -136,7 +137,9 @@ typedef struct hashtable {
     long hashcmp_count;         /**< The count of hash compares done. */
     long entrycmp_count;        /**< The count of entry compares done. */
 #  endif
-    unsigned char *bloom;       /**< Bloom filter with k=1. */
+#  ifndef HASHTABLE_NBLOOM
+    unsigned char *kbloom;      /**< Bloom filter of hash keys with k=1. */
+#  endif
     void **etable;              /**< Table of pointers to entries. */
     unsigned ktable[];          /**< Table of hash keys. */
 } hashtable_t;
@@ -145,17 +148,19 @@ typedef struct hashtable {
 hashtable_t *_hashtable_new(int size);
 void _hashtable_free(hashtable_t *t);
 
+#  ifndef HASHTABLE_NBLOOM
 static inline void hashtable_setbloom(hashtable_t *t, const unsigned h)
 {
     const unsigned i = h & (t->size - 1);
-    t->bloom[i / 8] |= 1 << (i % 8);
+    t->kbloom[i / 8] |= 1 << (i % 8);
 }
 
 static inline bool hashtable_getbloom(hashtable_t *t, const unsigned h)
 {
     const unsigned i = h & (t->size - 1);
-    return (t->bloom[i / 8] >> (i % 8)) & 1;
+    return (t->kbloom[i / 8] >> (i % 8)) & 1;
 }
+#  endif
 
 /** MurmurHash3 finalization mix function. */
 static inline unsigned mix32(unsigned h)
@@ -287,7 +292,9 @@ static inline ENTRY_t *NAME_add(hashtable_t *t, ENTRY_t *e)
     assert(e != NULL);
     if (t->count + 1 == t->size)
         return NULL;
+#  ifndef HASHTABLE_NBLOOM
     hashtable_setbloom(t, he);
+#  endif
     _for_probe(t, he, i, h);
     t->count++;
     t->ktable[i] = he;
@@ -311,8 +318,10 @@ static inline ENTRY_t *NAME_find(hashtable_t *t, MATCH_t *m)
     ENTRY_t *e;
 
     _stats_inc(t->find_count);
+#  ifndef HASHTABLE_NBLOOM
     if (!hashtable_getbloom(t, hm))
         return NULL;
+#  endif
     _for_probe(t, hm, i, he) {
         _stats_inc(t->hashcmp_count);
         if (hm == he) {

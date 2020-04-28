@@ -64,6 +64,7 @@ void _hashtable_free(hashtable_t *t)
 {
     if (t) {
         free(t->etable);
+        free(t->bloom);
         free(t);
     }
 }

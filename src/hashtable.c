@@ -29,8 +29,8 @@
    marker for an empty bucket to avoid checking for NULL in the element table.
    If we do get a hash value of zero, we -1 to wrap it around to 0xffff. */
 
-/* Use max 0.8 load factor to avoid bad open addressing performance. */
-#define HASHTABLE_LOADFACTOR_NUM 8
+/* Use max 0.7 load factor to avoid bad open addressing performance. */
+#define HASHTABLE_LOADFACTOR_NUM 7
 #define HASHTABLE_LOADFACTOR_DEN 10
 
 hashtable_t *_hashtable_new(int size)

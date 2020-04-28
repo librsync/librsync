@@ -323,6 +323,8 @@ static inline ENTRY_t *NAME_find(hashtable_t *t, MATCH_t *m)
             }
         }
     }
+    /* Also count the compare for the empty bucket. */
+    _stats_inc(t->hashcmp_count);
     return NULL;
 }
 

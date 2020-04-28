@@ -45,7 +45,7 @@ hashtable_t *_hashtable_new(int size)
     if (!(t = calloc(1, sizeof(hashtable_t)+ size2 * sizeof(unsigned))))
         return NULL;
 #ifndef HASHTABLE_NBLOOM
-    if (!(t->bloom = calloc(size2 / 8, sizeof(unsigned char)))) {
+    if (!(t->kbloom = calloc(size2 / 8, sizeof(unsigned char)))) {
         _hashtable_free(t);
         return NULL;
     }
@@ -67,7 +67,7 @@ void _hashtable_free(hashtable_t *t)
     if (t) {
         free(t->etable);
 #ifndef HASHTABLE_NBLOOM
-        free(t->bloom);
+        free(t->kbloom);
 #endif
         free(t);
     }

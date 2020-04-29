@@ -29,8 +29,8 @@
    marker for an empty bucket to avoid checking for NULL in the element table.
    If we do get a hash value of zero, we -1 to wrap it around to 0xffff. */
 
-/* Use max 0.8 load factor to avoid bad open addressing performance. */
-#define HASHTABLE_LOADFACTOR_NUM 8
+/* Use max 0.7 load factor to avoid bad open addressing performance. */
+#define HASHTABLE_LOADFACTOR_NUM 7
 #define HASHTABLE_LOADFACTOR_DEN 10
 
 hashtable_t *_hashtable_new(int size)
@@ -44,8 +44,14 @@ hashtable_t *_hashtable_new(int size)
     for (size2 = 1; size2 < size; size2 <<= 1) ;
     if (!(t = calloc(1, sizeof(hashtable_t)+ size2 * sizeof(unsigned))))
         return NULL;
+#ifndef HASHTABLE_NBLOOM
+    if (!(t->kbloom = calloc(size2 / 8, sizeof(unsigned char)))) {
+        _hashtable_free(t);
+        return NULL;
+    }
+#endif
     if (!(t->etable = calloc(size2, sizeof(void *)))) {
-        free(t);
+        _hashtable_free(t);
         return NULL;
     }
     t->size = size2;
@@ -60,6 +66,9 @@ void _hashtable_free(hashtable_t *t)
 {
     if (t) {
         free(t->etable);
+#ifndef HASHTABLE_NBLOOM
+        free(t->kbloom);
+#endif
         free(t);
     }
 }

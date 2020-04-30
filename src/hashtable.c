@@ -36,26 +36,29 @@
 hashtable_t *_hashtable_new(int size)
 {
     hashtable_t *t;
-    int size2;
+    int size2, bits2;
 
     /* Adjust requested size to account for max load factor. */
     size = 1 + size * HASHTABLE_LOADFACTOR_DEN / HASHTABLE_LOADFACTOR_NUM;
-    /* Use next power of 2 larger than the requested size. */
-    for (size2 = 1; size2 < size; size2 <<= 1) ;
+    /* Use next power of 2 larger than the requested size and get mask bits. */
+    for (size2 = 1, bits2 = 0; size2 < size; size2 <<= 1, bits2++) ;
     if (!(t = calloc(1, sizeof(hashtable_t)+ size2 * sizeof(unsigned))))
         return NULL;
-#ifndef HASHTABLE_NBLOOM
-    if (!(t->kbloom = calloc(size2 / 8, sizeof(unsigned char)))) {
-        _hashtable_free(t);
-        return NULL;
-    }
-#endif
     if (!(t->etable = calloc(size2, sizeof(void *)))) {
         _hashtable_free(t);
         return NULL;
     }
     t->size = size2;
     t->count = 0;
+    t->tmask = size2 - 1;
+#ifndef HASHTABLE_NBLOOM
+    if (!(t->kbloom = calloc(size2 / 8, sizeof(unsigned char)))) {
+        _hashtable_free(t);
+        return NULL;
+    }
+    t->bshift = sizeof(unsigned) * 8 - bits2;
+    assert(t->tmask == (unsigned)-1 >> t->bshift);
+#endif
 #ifndef HASHTABLE_NSTATS
     t->find_count = t->match_count = t->hashcmp_count = t->entrycmp_count = 0;
 #endif

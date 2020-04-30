@@ -130,6 +130,10 @@
 typedef struct hashtable {
     int size;                   /**< Size of allocated hashtable. */
     int count;                  /**< Number of entries in hashtable. */
+    unsigned tmask;             /**< Mask to get the hashtable index. */
+#  ifndef HASHTABLE_NBLOOM
+    unsigned bshift;            /**< Shift to get the bloomfilter index. */
+#  endif
 #  ifndef HASHTABLE_NSTATS
     /* The following are for accumulating NAME_find() stats. */
     long find_count;            /**< The count of finds tried. */
@@ -151,13 +155,15 @@ void _hashtable_free(hashtable_t *t);
 #  ifndef HASHTABLE_NBLOOM
 static inline void hashtable_setbloom(hashtable_t *t, const unsigned h)
 {
-    const unsigned i = h & (t->size - 1);
+    /* Use upper bits for a "different hash". */
+    const unsigned i = h >> t->bshift;
     t->kbloom[i / 8] |= 1 << (i % 8);
 }
 
 static inline bool hashtable_getbloom(hashtable_t *t, const unsigned h)
 {
-    const unsigned i = h & (t->size - 1);
+    /* Use upper bits for a "different hash". */
+    const unsigned i = h >> t->bshift;
     return (t->kbloom[i / 8] >> (i % 8)) & 1;
 }
 #  endif
@@ -223,9 +229,8 @@ static inline unsigned nozero(unsigned h)
 /* Loop macro for probing table t for key hash hk, iterating with index i and
    entry hash h, terminating at an empty bucket. */
 #  define _for_probe(t, hk, i, h) \
-    const unsigned mask = t->size - 1;\
     unsigned i, s, h;\
-    for (i = hk & mask, s = 0; (h = t->ktable[i]); i = (i + ++s) & mask)
+    for (i = hk & t->tmask, s = 0; (h = t->ktable[i]); i = (i + ++s) & t->tmask)
 
 /* Conditional macro for incrementing stats counters. */
 #  ifndef HASHTABLE_NSTATS

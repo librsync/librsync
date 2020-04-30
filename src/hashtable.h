@@ -151,13 +151,15 @@ void _hashtable_free(hashtable_t *t);
 #  ifndef HASHTABLE_NBLOOM
 static inline void hashtable_setbloom(hashtable_t *t, const unsigned h)
 {
-    const unsigned i = h & (t->size - 1);
+    /* Mix upper 16 bits with lower 16 bits for a "different hash". */
+    const unsigned i = (h ^ (h >> 16)) & (t->size - 1);
     t->kbloom[i / 8] |= 1 << (i % 8);
 }
 
 static inline bool hashtable_getbloom(hashtable_t *t, const unsigned h)
 {
-    const unsigned i = h & (t->size - 1);
+    /* Mix upper 16 bits with lower 16 bits for a "different hash". */
+    const unsigned i = (h ^ (h >> 16)) & (t->size - 1);
     return (t->kbloom[i / 8] >> (i % 8)) & 1;
 }
 #  endif

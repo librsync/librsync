@@ -138,13 +138,15 @@ rs_result rs_sig_args(rs_long_t old_fsize, rs_magic_number * magic,
         rs_error("invalid magic %#x", *magic);
         return RS_BAD_MAGIC;
     }
-    /* The recommended block_len is sqrt(old_fsize) with a 256 min size to give
-       a reasonable compromise between signature size, delta size, and
+    /* The recommended block_len is sqrt(old_fsize) with a 256 min size rounded
+       down to a multiple of the 128 byte blake2b blocksize to give a
+       reasonable compromise between signature size, delta size, and
        performance. If the old_fsize is unknown, we use the default. */
     if (old_fsize < 0) {
         rec_block_len = RS_DEFAULT_BLOCK_LEN;
     } else {
-        rec_block_len = old_fsize <= 256 * 256 ? 256 : rs_long_sqrt(old_fsize);
+        rec_block_len =
+            old_fsize <= 256 * 256 ? 256 : rs_long_sqrt(old_fsize) & ~127;
     }
     if (*block_len == 0)
         *block_len = rec_block_len;

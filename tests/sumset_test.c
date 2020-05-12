@@ -69,10 +69,10 @@ int main(int argc, char **argv)
     magic = RS_MD4_SIG_MAGIC;
     block_len = 0;
     strong_len = 0;
-    res = rs_sig_args(100000, &magic, &block_len, &strong_len);
+    res = rs_sig_args(1000000, &magic, &block_len, &strong_len);
     assert(res == RS_DONE);
     assert(magic == RS_MD4_SIG_MAGIC);
-    assert(block_len == 316);
+    assert(block_len == 896);
     assert(strong_len == 16);
 
     /* old_fsize=unknown, magic=rk/b2, block_len=rec, strong_len=min. */
@@ -119,11 +119,11 @@ int main(int argc, char **argv)
     magic = RS_BLAKE2_SIG_MAGIC;
     block_len = 0;
     strong_len = -1;
-    res = rs_sig_args(100000, &magic, &block_len, &strong_len);
+    res = rs_sig_args(1000000, &magic, &block_len, &strong_len);
     assert(res == RS_DONE);
     assert(magic == RS_BLAKE2_SIG_MAGIC);
-    assert(block_len == 316);
-    assert(strong_len == 6);
+    assert(block_len == 896);
+    assert(strong_len == 7);
 
     /* old_fsize=100000, magic=rk/md4, block_len=1000, strong_len=8. */
     magic = RS_RK_MD4_SIG_MAGIC;

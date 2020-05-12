@@ -420,9 +420,10 @@ LIBRSYNC_EXPORT rs_result rs_job_free(rs_job_t *);
  * value, 0 for "maximum", or -1 for "miniumum". Use strong_len=0 for the best
  * protection against active hash collision attacks for the given magic type.
  * Use strong_len=-1 for the smallest signature size that is safe against
- * random hash collisions for the block_len and old_fsize. On return the 0 or
- * -1 input args will be set to recommended values and the returned result will
- * indicate if any inputs were invalid.
+ * random hash collisions for the block_len and old_fsize. Use strong_len=20
+ * for something probably good enough against attacks with smaller signatures.
+ * On return the 0 or -1 input args will be set to recommended values and the
+ * returned result will indicate if any inputs were invalid.
  *
  * \param old_fsize - the original file size (-1 for "unknown").
  *
@@ -555,15 +556,22 @@ LIBRSYNC_EXPORT extern int rs_inbuflen, rs_outbuflen;
 
 /** Generate the signature of a basis file, and write it out to another.
  *
+ * It's recommended you use rs_sig_args() to get the recommended arguments for
+ * this based on the original file size.
+ *
  * \param old_file Stdio readable file whose signature will be generated.
  *
  * \param sig_file Writable stdio file to which the signature will be written./
  *
- * \param block_len block size for signature generation, in bytes
+ * \param block_len Checksum block size to use (0 for "recommended"). Larger
+ * values make the signature shorter, and the delta longer.
  *
- * \param strong_len truncated length of strong checksums, in bytes
+ * \param strong_len Strongsum length in bytes to use (0 for "maximum", -1 for
+ * "minimum"). Smaller values make the signature shorter but increase the risk
+ * of corruption from hash collisions.
  *
- * \param sig_magic A signature magic number indicating what format to use.
+ * \param sig_magic Signature file format to generate (0 for "recommended").
+ * See ::rs_magic_number.
  *
  * \param stats Optional pointer to receive statistics.
  *

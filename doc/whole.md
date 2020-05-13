@@ -14,10 +14,11 @@ going to do buffering itself.  After creation, the job may be passed
 to rs_whole_run(), which will feed it to and from two FILEs as
 necessary until end of file is reached or the operation completes.
 
+\see rs_sig_args()
 \see rs_sig_file()
 \see rs_loadsig_file()
 \see rs_mdfour_file()
 \see rs_delta_file()
 \see rs_patch_file()
 
-\see api_streaming
+\ref api_streaming

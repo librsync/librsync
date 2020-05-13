@@ -1,8 +1,8 @@
-# Pull stream interface {#api_pull}
+# Callback API {#api_pull}
 
-As an alternative to \ref api_streaming, librsync provides a "pull"-mode
-interface where it will repeatedly call application-provided callbacks
-to get more input data and to accept output data.
+As an alternative to \ref api_streaming, librsync provides a "pull-mode"
+callback interface where it will repeatedly call application-provided
+callbacks to get more input data and to accept output data.
 
 Pull jobs are also created using rs_sig_begin(), rs_loadsig_begin,()
 rs_delta_begin(), rs_patch_begin().

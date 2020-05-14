@@ -6,9 +6,9 @@ NOT RELEASED YET
 
  * Change default block_len to always be a multiple of the blake2b 128 byte
    blocksize for efficiency. Tidy and update docs to explain using
-   rs_sig_args() and rs_build_hash_table(), and add rs_file_*() utils. Remove
-   really obsolete entries in TODO.md. (dbaarda,
-   https://github.com/librsync/librsync/pull/195)
+   rs_sig_args() and rs_build_hash_table(), add rs_file_*() utils, and
+   document new magic types. Remove really obsolete entries in TODO.md. Update
+   to Doxygen 1.8.16. (dbaarda, https://github.com/librsync/librsync/pull/195)
 
  * Improve hashtable performance by adding a small optional bloom filter,
    reducing max loadfactor from 80% to 70%, Fix hashcmp_count stats to include

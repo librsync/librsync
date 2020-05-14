@@ -4,9 +4,8 @@ Some applications do not require the fine-grained control over IO, but
 rather just want to process a whole file with a single call.
 librsync provides whole-file APIs to do exactly that.
 
-These functions open files, process the entire contents, and return an
-overall result. The whole-file operations are the core of the
-\ref rdiff program.
+These functions open files, process the entire contents, and return an overall
+result. The whole-file operations are the core of the \ref page_rdiff.
 
 Processing of a whole file begins with creation of a ::rs_job_t
 object for the appropriate operation, just as if the application was

@@ -29,8 +29,8 @@ Other documentation pages:
 
 The public interface to librsync is librsync.h, and other headers are internal.
 
-The librsync tree also provides the \ref rdiff command-line tool, which
-makes this functionality available to users and scripting languages.
+The librsync tree also provides the \ref page_rdiff, which makes this
+functionality available to users and scripting languages.
 
 ## Naming conventions
 

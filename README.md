@@ -75,9 +75,9 @@ your own code or make use of some other virtual filesystem layer.
 * \ref page_downloads
 * \ref versioning
 * \ref page_install
+* \ref page_rdiff
 * \ref page_api
+* \ref page_formats
 * \ref page_support
 * \ref page_contributing
-* \ref rdiff command line interface
 * \ref NEWS.md
-* \ref page_formats

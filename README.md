@@ -42,10 +42,10 @@ as rsync. You can use librsync in a program you write to do backups,
 distribute binary patches to programs, or sync directories to a server
 or between peers.
 
-This tree also produces the @ref rdiff command-line tool that exposes the key
-operations of librsync: generating file signatures, generating the delta from a
-signature to a new file, and applying the delta to regenerate the new file
-given the old file.
+This tree also produces the \ref page_rdiff that exposes the key operations of
+librsync: generating file signatures, generating the delta from a signature to
+a new file, and applying the delta to regenerate the new file given the old
+file.
 
 librsync was originally written for the rproxy experiment in
 delta-compression for HTTP.

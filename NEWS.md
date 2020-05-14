@@ -4,6 +4,22 @@
 
 NOT RELEASED YET
 
+ * Change default block_len to always be a multiple of the blake2b 128 byte
+   blocksize for efficiency. Tidy and update docs to explain using
+   rs_sig_args() and rs_build_hash_table(), and add rs_file_*() utils. Remove
+   really obsolete entries in TODO.md. (dbaarda,
+   https://github.com/librsync/librsync/pull/195)
+
+ * Improve hashtable performance by adding a small optional bloom filter,
+   reducing max loadfactor from 80% to 70%, Fix hashcmp_count stats to include
+   comparing against empty buckets. This speeds up deltas by 20%~50%.
+   (dbaarda, https://github.com/librsync/librsync/pull/192, 
+   https://github.com/librsync/librsync/pull/193)
+
+ * Optimize rabinkarp_update() by correctly using unsigned constants and
+   manually unrolling the loop for best performance. (dbaarda,
+   https://github.com/librsync/librsync/pull/191)
+
 ## librsync 2.3.0
 
 Released 2020-04-07
@@ -31,7 +47,7 @@ Released 2020-04-07
 
  * Improved C99 compatibility. Add `-std=c99 -pedantic` to `CMAKE_C_FLAGS` for
    gcc and clang. Fix all C99 warnings by making all code C99 compliant. Tidy
-   all CMake checks, #cmakedefines, and #includes. Fix 64bit support for
+   all CMake checks, `#cmakedefines`, and `#includes`. Fix 64bit support for
    mdfour checksums (texierp, dbaarda,
    https://github.com/librsync/librsync/pull/181,
    https://github.com/librsync/librsync/pull/182)

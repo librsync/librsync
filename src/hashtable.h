@@ -229,8 +229,9 @@ static inline unsigned nozero(unsigned h)
 /* Loop macro for probing table t for key hash hk, iterating with index i and
    entry hash h, terminating at an empty bucket. */
 #  define _for_probe(t, hk, i, h) \
+    const unsigned mask = t->tmask;
     unsigned i, s, h;\
-    for (i = hk & t->tmask, s = 0; (h = t->ktable[i]); i = (i + ++s) & t->tmask)
+    for (i = hk & mask, s = 0; (h = t->ktable[i]); i = (i + ++s) & mask)
 
 /* Conditional macro for incrementing stats counters. */
 #  ifndef HASHTABLE_NSTATS

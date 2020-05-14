@@ -36,6 +36,7 @@ matrix:
       compiler: clang
 
     - os: linux
+      dist: bionic
       compiler: clang
       env: CMAKE_GENERATOR="-G Ninja"
       script: ninja check doc

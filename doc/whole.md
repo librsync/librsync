@@ -7,17 +7,15 @@ librsync provides whole-file APIs to do exactly that.
 These functions open files, process the entire contents, and return an overall
 result. The whole-file operations are the core of the \ref page_rdiff.
 
-Processing of a whole file begins with creation of a ::rs_job_t
-object for the appropriate operation, just as if the application was
-going to do buffering itself.  After creation, the job may be passed
-to rs_whole_run(), which will feed it to and from two FILEs as
-necessary until end of file is reached or the operation completes.
+This interface is implemented on top of the \ref api_streaming. Processing of
+a whole file begins with creation of a ::rs_job_t object for the appropriate
+operation, just as if the application was going to do buffering itself.  After
+creation, the job may be passed to rs_whole_run(), which will feed it to and
+from two FILEs as necessary until end of file is reached or the operation
+completes.
 
 \see rs_sig_args()
 \see rs_sig_file()
 \see rs_loadsig_file()
-\see rs_mdfour_file()
 \see rs_delta_file()
 \see rs_patch_file()
-
-\ref api_streaming

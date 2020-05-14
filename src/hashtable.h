@@ -229,7 +229,7 @@ static inline unsigned nozero(unsigned h)
 /* Loop macro for probing table t for key hash hk, iterating with index i and
    entry hash h, terminating at an empty bucket. */
 #  define _for_probe(t, hk, i, h) \
-    const unsigned mask = t->tmask;
+    const unsigned mask = t->tmask;\
     unsigned i, s, h;\
     for (i = hk & mask, s = 0; (h = t->ktable[i]); i = (i + ++s) & mask)
 

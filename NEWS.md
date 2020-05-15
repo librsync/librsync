@@ -14,7 +14,8 @@ NOT RELEASED YET
    reducing max loadfactor from 80% to 70%, Fix hashcmp_count stats to include
    comparing against empty buckets. This speeds up deltas by 20%~50%.
    (dbaarda, https://github.com/librsync/librsync/pull/192, 
-   https://github.com/librsync/librsync/pull/193)
+   https://github.com/librsync/librsync/pull/193,
+   https://github.com/librsync/librsync/pull/196)
 
  * Optimize rabinkarp_update() by correctly using unsigned constants and
    manually unrolling the loop for best performance. (dbaarda,

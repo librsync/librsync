@@ -62,8 +62,8 @@
  *
  * Example: \code
  *   typedef ... mykey_t;
- *   int mykey_hash(const mykey_t *e);
- *   int mykey_cmp(mykey_t *e, const mykey_t *o);
+ *   int mykey_hash(mykey_t const *e);
+ *   int mykey_cmp(mykey_t *e, mykey_t const *o);
  *
  *   typedef struct myentry {
  *     mykey_t key;  // Inherit from mykey_t.
@@ -105,7 +105,7 @@
  *     mykey_t key;  // Inherit from mykey_t;
  *     ...extra match criteria and state data...
  *   } mymatch_t;
- *   int mymatch_cmp(mymatch_t *m, const myentry_t *e);
+ *   int mymatch_cmp(mymatch_t *m, myentry_t const *e);
  *
  *   #define ENTRY myentry
  *   #define KEY mykey
@@ -153,17 +153,17 @@ hashtable_t *_hashtable_new(int size);
 void _hashtable_free(hashtable_t *t);
 
 #  ifndef HASHTABLE_NBLOOM
-static inline void hashtable_setbloom(hashtable_t *t, const unsigned h)
+static inline void hashtable_setbloom(hashtable_t *t, unsigned const h)
 {
     /* Use upper bits for a "different hash". */
-    const unsigned i = h >> t->bshift;
+    unsigned const i = h >> t->bshift;
     t->kbloom[i / 8] |= 1 << (i % 8);
 }
 
-static inline bool hashtable_getbloom(hashtable_t *t, const unsigned h)
+static inline bool hashtable_getbloom(hashtable_t *t, unsigned const h)
 {
     /* Use upper bits for a "different hash". */
-    const unsigned i = h >> t->bshift;
+    unsigned const i = h >> t->bshift;
     return (t->kbloom[i / 8] >> (i % 8)) & 1;
 }
 #  endif
@@ -229,8 +229,10 @@ static inline unsigned nozero(unsigned h)
 /* Loop macro for probing table t for key hash hk, iterating with index i and
    entry hash h, terminating at an empty bucket. */
 #  define _for_probe(t, hk, i, h) \
+    unsigned const *const ktable = t->ktable;\
+    unsigned const tmask = t->tmask;\
     unsigned i, s, h;\
-    for (i = hk & t->tmask, s = 0; (h = t->ktable[i]); i = (i + ++s) & t->tmask)
+    for (i = hk & tmask, s = 0; (h = ktable[i]); i = (i + ++s) & tmask)
 
 /* Conditional macro for incrementing stats counters. */
 #  ifndef HASHTABLE_NSTATS

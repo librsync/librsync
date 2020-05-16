@@ -1,4 +1,4 @@
-# rdiff {#rdiff}
+# rdiff command {#page_rdiff}
 
 Introduction
 ============

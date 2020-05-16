@@ -25,11 +25,7 @@
  *
  * Generating checksums is pretty easy, since we can always just process
  * whatever data is available. When a whole block has arrived, or we've reached
- * the end of the file, we write the checksum out.
- *
- * \todo Perhaps force blocks to be a multiple of 64 bytes, so that we can be
- * sure checksum generation will be more efficient. I guess it will be OK at
- * the moment, though, because tails are only used if necessary. */
+ * the end of the file, we write the checksum out. */
 
 #include "config.h"
 #include <assert.h>

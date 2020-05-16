@@ -1,16 +1,8 @@
+# librsync TODO
+
 * We have a few functions to do with reading a netint, stashing
   it somewhere, then moving into a different state.  Is it worth
   writing generic functions for that, or would it be too confusing?
-
-* Duplicate block handling. Currently duplicate blocks are included in
-  the signature, but we only put the first duplicate block in the
-  hashtable so the delta only includes references to the first block.
-  This can result in sub-optimal copy commands, breaking single large
-  copies with duplicate blocks into multiple copies referencing the
-  earlier copy of the block. However, this could also make patching use
-  the disk cache more effectively. This solution is probably fine,
-  particularly given how small copy instructions are, but there might be
-  solutions for improving copy commands for long runs of duplicate blocks.
 
 * Optimisations and code cleanups;
 
@@ -19,11 +11,11 @@
 
   rsync.h: rs_buffers_s and rs_buffers_t should be one typedef?
 
-  * Just how useful is rs_job_drive anyway?
-
   mdfour.c: This code has a different API to the RSA code in libmd
   and is coupled with librsync in unhealthy ways (trace?). Recommend
   changing to RSA API?
+
+* Just how useful is rs_job_drive anyway?
 
 * Don't use the rs_buffers_t structure.
 
@@ -77,10 +69,6 @@
   Some are more likely to change than others.  We need a chart
   showing which source files depend on which variable.
 
-* Encoding implementation
-
-  * Join up signature commands
-
 * Encoding algorithm
 
   * Self-referential copy commands
@@ -99,48 +87,14 @@
     However, I don't see many files which have repeated 1kB chunks,
     so I don't know if it would be worthwhile.
 
-  * Extended files
-
-    Suppose the new file just has data added to the end.  At the
-    moment, we'll match everything but the last block of the old
-    file.  It won't match, because at the moment the search block
-    size is only reduced at the end of the *new* file.  This is a
-    little inefficient, because ideally we'd know to look for the
-    last block using the shortened length.
-
-    This is a little hard to implement, though perhaps not
-    impossible.  The current rolling search algorithm can only look
-    for one block size at any time.  Can we do better?  Can we look
-    for all block lengths that could match anything?
-
-    Remember also that at the moment we don't send the block length
-    in the signature; it's implied by the length of the new block
-    that it matches.  This is kind of cute, and importantly helps
-    reduce the length of the signature.
-
-  * State-machine searching
-
-    Building a state machine from a regular expression is a brilliant
-    idea.  (I think *The Practice of Programming* walks through the
-    construction of this at a fairly simple level.)
-
-    In particular, we can search for any of a large number of
-    alternatives in a very efficient way, with much less effort than
-    it would take to search for each the hard way.  Remember also the
-    string-searching algorithms and how much time they can take.
-
-    I wonder if we can use similar principles here rather than the
-    current simple rolling-sum mechanism?  Could it let us match
-    variable-length signatures?
-
-* Support gzip compression of the difference stream.  Does this
+* Support compression of the difference stream.  Does this
   belong here, or should it be in the client and librsync just have
   an interface that lets it cleanly plug in?
 
   I think if we're going to just do plain gzip, rather than
   rsync-gzip, then it might as well be external.
 
-* rsync-gzip: preload with the omitted text so as to get better
+  rsync-gzip: preload with the omitted text so as to get better
   compression.  Abo thinks this gets significantly better
   compression.  On the other hand we have to important and maintain
   our own zlib fork, at least until we can persuade the upstream to
@@ -167,20 +121,6 @@
   Will the GNU Lesser GPL work?  Specifically, will it be a problem
   in distributing this with Mozilla or Apache?
 
-* Checksums
-
-  * Do we really need to require that signatures arrive after the
-    data they describe?  Does it make sense in HTTP to resume an
-    interrupted transfer?
-
-    I hope we can do this.  If we can't, however, then we should
-    relax this constraint and allow signatures to arrive before the
-    data they describe.  (Really?  Do we care?)
-
-  * Allow variable-length checksums in the signature; the signature
-    will have to describe the length of the sums and we must compare
-    them taking this into account.
-
 * Testing
 
   * Just more testing in general.
@@ -197,28 +137,11 @@
 
   * Generate random data; do random mutations.
 
-  * Try different block lengths.
-
   * Tests should fail if they can't find their inputs, or have zero
     inputs: at present they tend to succeed by default.
-
-  * Test varying strong-sum inputs: default, short, long.
 
 * Security audit
 
   * If this code was to read differences or sums from random machines
     on the network, then it's a security boundary.  Make sure that
     corrupt input data can't make the program crash or misbehave.
-
-* Long files
-
-  * How do we handle the large signatures required to support large
-    files?  In particular, how do we choose an appropriate block size
-    when the length is unknown?  Perhaps we should allow a way for
-    the signature to scale up as it grows.
-
-* Perhaps make extracted signatures still be wrapped in commands.
-  What would this lead to?
-
-  * We'd know how much signature data we expect to read, rather than
-    requiring it to be terminated by the caller.

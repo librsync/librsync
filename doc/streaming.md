@@ -1,4 +1,4 @@
-# Streaming jobs {#api_streaming}
+# Streaming API {#api_streaming}
 
 A key design requirement for librsync is that it should handle data as
 and when the hosting application requires it.  librsync can be used
@@ -49,18 +49,21 @@ file.
 - rs_patch_begin(): Apply a delta to a basis to recreate the new
 file.
 
+Additionally, the following helper functions can be used to get the
+recommended signature arguments from the input file's size.
+
+- rs_sig_args(): Get the recommended sigature arguments from the file size.
+
+After a signature has been loaded, before it can be used to calculate a delta,
+the hashtable needs to be initialized by calling
+
+- rs_build_hash_table(): Initialized the signature hashtable.
+
 The patch job accepts the patch as input, and uses a callback to look up
 blocks within the basis file.
 
 You must configure read, write and basis callbacks after creating the
 job but before it is run.
-
-You can set job->sig_file_bytes to signature file size or
-job->estimated_signature_count before running the job
-if the signature file size (or the number of chunks) is known in advance.
-If both are set, estimated_signature_count is used.
-This will preallocate the needed memory for signature sums instead of
-calling realloc for each block.
 
 
 ## Running Jobs
@@ -90,7 +93,6 @@ processing.
 
 rs_job_free() does not delete the output of the job, such as the sumset
 loaded into memory. It does delete the job's statistics.
-
 
 
 ## State Machine Internals

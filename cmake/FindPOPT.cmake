@@ -39,7 +39,7 @@
 # Check with PkgConfig (to retrieve static dependencies such as iconv)
 find_package(PkgConfig)
 if (PKG_CONFIG_FOUND)
-  pkg_search_module (POPT QUIET IMPORTED_TARGET poptd)
+  pkg_search_module (POPT QUIET IMPORTED_TARGET popt)
   if (POPT_FOUND)
     # PkgConfig found it, set cached vars to use the imported target it created.
     set(POPT_INCLUDE_DIR "" CACHE PATH "Path to headers for popt.")

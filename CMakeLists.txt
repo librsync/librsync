@@ -17,7 +17,7 @@
 
 
 project(librsync C)
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.6)
 
 INCLUDE(CMakeDependentOption)
 include(GNUInstallDirs)
@@ -147,6 +147,8 @@ message (STATUS "CMAKE_SYSTEM = ${CMAKE_SYSTEM}")
 # Find POPT
 find_package(POPT)
 if (POPT_FOUND)
+  message (STATUS "POPT_INCLUDE_DIRS  = ${POPT_INCLUDE_DIRS}")
+  message (STATUS "POPT_LIBRARIES = ${POPT_LIBRARIES}")
   include_directories(${POPT_INCLUDE_DIRS})
 endif (POPT_FOUND)
 
@@ -158,16 +160,14 @@ cmake_dependent_option(BUILD_RDIFF "Whether or not to build rdiff executable" ON
 # Find BZIP
 find_package (BZip2)
 if (BZIP2_FOUND)
-  message (STATUS "Found components for BZIP2")
-  message (STATUS "BZIP2_INCLUDE_DIR  = ${BZIP2_INCLUDE_DIR}")
+  message (STATUS "BZIP2_INCLUDE_DIRS  = ${BZIP2_INCLUDE_DIRS}")
   message (STATUS "BZIP2_LIBRARIES = ${BZIP2_LIBRARIES}")
-  include_directories(${BZIP2_INCLUDE_DIR})
+  include_directories(${BZIP2_INCLUDE_DIRS})
 endif (BZIP2_FOUND)
 
 # Find ZLIB
 find_package (ZLIB)
 if (ZLIB_FOUND)
-  message (STATUS "Found components for ZLIB")
   message (STATUS "ZLIB_INCLUDE_DIRS  = ${ZLIB_INCLUDE_DIRS}")
   message (STATUS "ZLIB_LIBRARIES = ${ZLIB_LIBRARIES}")
   include_directories(${ZLIB_INCLUDE_DIRS})
@@ -176,7 +176,6 @@ endif (ZLIB_FOUND)
 # Find libb2
 find_package(libb2)
 if (LIBB2_FOUND)
-  message (STATUS "Found components for libb2")
   message (STATUS "LIBB2_INCLUDE_DIRS  = ${LIBB2_INCLUDE_DIRS}")
   message (STATUS "LIBB2_LIBRARIES = ${LIBB2_LIBRARIES}")
 endif (LIBB2_FOUND)

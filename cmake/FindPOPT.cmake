@@ -1,4 +1,3 @@
-
 #--------------------------------------------------------------------------------
 # Copyright (C) 2012-2013, Lars Baehren <lbaehren@gmail.com>
 # Copyright (C) 2015 Adam Schubert <adam.schubert@sg1-game.net>
@@ -27,72 +26,54 @@
 
 # - Check for the presence of POPT
 #
+# The following vars can be set to change behaviour;
+#  POPT_ROOT_DIR - path hint for finding popt.
+#  POPT_INCLUDE_DIR - cached override for POPT_INCLUDE_DIRS.
+#  POPT_LIBRARY_RELEASE - cached override for POPT_LIBRARIES.
+#
 # The following variables are set when POPT is found:
 #  POPT_FOUND      = Set to true, if all components of POPT have been found.
-#  POPT_INCLUDE_DIRS   = Include path for the header files of POPT
-#  POPT_LIBRARIES  = Link these to use POPT
-#  POPT_LFLAGS     = Linker flags (optional)
+#  POPT_INCLUDE_DIRS   = Include path for the header files of POPT.
+#  POPT_LIBRARIES  = Link these to use POPT.
 
-
-INCLUDE(FindPackageHandleStandardArgs)
-if (NOT POPT_FOUND)
-
-  if (NOT POPT_ROOT_DIR)
-    set (POPT_ROOT_DIR ${CMAKE_INSTALL_PREFIX})
-  endif (NOT POPT_ROOT_DIR)
-
-  ##_____________________________________________________________________________
-  ## Check with PkgConfig (to retrieve static dependencies such as iconv)
-  find_package(PkgConfig QUIET)
-  if (PKG_CONFIG_FOUND)
-    pkg_search_module (POPT QUIET popt)
-  endif (PKG_CONFIG_FOUND)
-  
-  ##_____________________________________________________________________________
-  ## Fallback to searching if PkgConfig didn't work.
-  if (NOT POPT_FOUND)
-
-    ##_____________________________________________________________________________
-    ## Check for the header files
-    find_path (POPT_INCLUDE_DIRS popt.h
-      HINTS ${POPT_ROOT_DIR} ${CMAKE_INSTALL_PREFIX} $ENV{programfiles}\\GnuWin32 $ENV{programfiles32}\\GnuWin32
-      PATH_SUFFIXES include
-      )
-
-    ##_____________________________________________________________________________
-    ## Check for the library
-    find_library (POPT_LIBRARIES popt
-      HINTS ${POPT_ROOT_DIR} ${CMAKE_INSTALL_PREFIX} $ENV{programfiles}\\GnuWin32 $ENV{programfiles32}\\GnuWin32
-      PATH_SUFFIXES lib
-      )
-      
-    ##_____________________________________________________________________________
-    ## Check the libraries and include dirs and set POPT_FOUND.
-    FIND_PACKAGE_HANDLE_STANDARD_ARGS (POPT DEFAULT_MSG POPT_LIBRARIES POPT_INCLUDE_DIRS)
-  
-  endif (NOT POPT_FOUND)
-
-  ##_____________________________________________________________________________
-  ## Actions taken when all components have been found
+# Check with PkgConfig (to retrieve static dependencies such as iconv)
+find_package(PkgConfig)
+if (PKG_CONFIG_FOUND)
+  pkg_search_module (POPT QUIET IMPORTED_TARGET popt)
   if (POPT_FOUND)
-    if (NOT POPT_FIND_QUIETLY)
-      message (STATUS "Found components for POPT")
-      message (STATUS "POPT_ROOT_DIR  = ${POPT_ROOT_DIR}")
-      message (STATUS "POPT_INCLUDE_DIRS  = ${POPT_INCLUDE_DIRS}")
-      message (STATUS "POPT_LIBRARIES = ${POPT_LIBRARIES}")
-    endif (NOT POPT_FIND_QUIETLY)
-  else (POPT_FOUND)
-    if (POPT_FIND_REQUIRED)
-      message (FATAL_ERROR "Could not find POPT!")
-    endif (POPT_FIND_REQUIRED)
+    # PkgConfig found it, set cached vars to use the imported target it created.
+    set(POPT_INCLUDE_DIR "" CACHE PATH "Path to headers for popt.")
+    set(POPT_LIBRARY_RELEASE PkgConfig::POPT CACHE FILEPATH "Path to library for popt.")
   endif (POPT_FOUND)
+endif (PKG_CONFIG_FOUND)
 
-  ##_____________________________________________________________________________
-  ## Mark advanced variables
-  mark_as_advanced (
-    POPT_ROOT_DIR
-    POPT_INCLUDE_DIRS
-    POPT_LIBRARIES
-    )
-
+# Fallback to searching for path and library if PkgConfig didn't work.
+if (NOT POPT_FOUND)
+  find_path (POPT_INCLUDE_DIR popt.h
+    HINTS ${POPT_ROOT_DIR} ${CMAKE_INSTALL_PREFIX} $ENV{programfiles}\\GnuWin32 $ENV{programfiles32}\\GnuWin32
+    PATH_SUFFIXES include)
+  find_library (POPT_LIBRARY_RELEASE popt
+    HINTS ${POPT_ROOT_DIR} ${CMAKE_INSTALL_PREFIX} $ENV{programfiles}\\GnuWin32 $ENV{programfiles32}\\GnuWin32
+    PATH_SUFFIXES lib)
 endif (NOT POPT_FOUND)
+
+# Check library and paths and set POPT_FOUND appropriately.
+INCLUDE(FindPackageHandleStandardArgs)
+if (TARGET "${POPT_LIBRARY_RELEASE}")
+  # The library is a taget created by PkgConfig.
+  FIND_PACKAGE_HANDLE_STANDARD_ARGS(POPT
+    REQUIRED_VARS POPT_LIBRARY_RELEASE
+    VERSION_VAR POPT_VERSION)
+else ()
+  # The library is a library file and header include path.
+  FIND_PACKAGE_HANDLE_STANDARD_ARGS(POPT DEFAULT_MSG POPT_LIBRARY_RELEASE POPT_INCLUDE_DIR)
+endif ()
+
+# Set output vars from auto-detected/cached vars.
+if (POPT_FOUND)
+  set(POPT_INCLUDE_DIRS "${POPT_INCLUDE_DIR}")
+  set(POPT_LIBRARIES "${POPT_LIBRARY_RELEASE}")
+endif (POPT_FOUND)
+
+# Mark cache vars as advanced.
+mark_as_advanced (POPT_INCLUDE_DIR POPT_LIBRARY_RELEASE)

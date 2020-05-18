@@ -1,4 +1,4 @@
-#! /bin/bash -ex
+#! /bin/sh -ex
 
 # librsync -- the library for network deltas
 

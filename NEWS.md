@@ -2,7 +2,13 @@
 
 ## librsync 2.3.1
 
-NOT RELEASED YET
+Released 2020-05-19
+
+ * Fix #198 cmake popt detection using pkg-config and #199 test scripts on
+   FreeBSD. Fixes and tidies FindPOPT.cmake and Findlibb2.cmake to use
+   pkg-config correctly and behave more like official FindPackage() cmake
+   modules. Makes all test scripts use /bin/sh instead of /bin/bash. (dbaarda,
+   mandree https://github.com/librsync/librsync/pull/200)
 
  * Change default block_len to always be a multiple of the blake2b 128 byte
    blocksize for efficiency. Tidy and update docs to explain using

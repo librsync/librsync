@@ -1,5 +1,9 @@
 # librsync NEWS
 
+## librsync 2.3.2
+
+NOT RELEASED YET
+
 ## librsync 2.3.1
 
 Released 2020-05-19
@@ -19,7 +23,7 @@ Released 2020-05-19
  * Improve hashtable performance by adding a small optional bloom filter,
    reducing max loadfactor from 80% to 70%, Fix hashcmp_count stats to include
    comparing against empty buckets. This speeds up deltas by 20%~50%.
-   (dbaarda, https://github.com/librsync/librsync/pull/192, 
+   (dbaarda, https://github.com/librsync/librsync/pull/192,
    https://github.com/librsync/librsync/pull/193,
    https://github.com/librsync/librsync/pull/196)
 

@@ -172,10 +172,9 @@ rs_result rs_sig_args(rs_long_t old_fsize, rs_magic_number * magic,
     else if (*strong_len == -1)
         *strong_len = min_strong_len;
     else if (old_fsize >= 0 && *strong_len < min_strong_len) {
-        rs_log(RS_LOG_WARNING,
-               "strong_len=" FMT_SIZE " smaller than recommended minimum "
-               FMT_SIZE " for old_fsize=" FMT_LONG " with block_len=" FMT_SIZE,
-               *strong_len, min_strong_len, old_fsize, *block_len);
+        rs_warn("strong_len=" FMT_SIZE " smaller than recommended minimum "
+                FMT_SIZE " for old_fsize=" FMT_LONG " with block_len=" FMT_SIZE,
+                *strong_len, min_strong_len, old_fsize, *block_len);
     } else if (*strong_len > max_strong_len) {
         rs_error("invalid strong_len=" FMT_SIZE " for magic=%#x", *strong_len,
                  (int)*magic);

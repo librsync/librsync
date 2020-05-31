@@ -71,6 +71,7 @@ void rs_log0(int level, char const *fn, char const *fmt, ...)
 #endif                          /* !DO_RS_TRACE */
 
 #define rs_log(l, ...) rs_log0((l), __func__, __VA_ARGS__)
+#define rs_warn(...) rs_log0(RS_LOG_WARNING, __func__, __VA_ARGS__)
 #define rs_error(...) rs_log0(RS_LOG_ERR,  __func__, __VA_ARGS__)
 #define rs_fatal(...) do { \
     rs_log0(RS_LOG_CRIT, __func__, __VA_ARGS__); \

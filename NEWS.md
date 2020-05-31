@@ -4,6 +4,12 @@
 
 NOT RELEASED YET
 
+ * Fix a bug so patch will now fail returning RS_CORRUPT on encountering a
+   zero length copy command instead of hanging. Make copy_cb() copying more
+   data than requested an assert-fail on debug builds, and a log-warning for
+   release builds. Make trace output a little less spammy about copy_cb()
+   return values. (dbaarda, https://github.com/librsync/librsync/pull/206)
+
 ## librsync 2.3.1
 
 Released 2020-05-19

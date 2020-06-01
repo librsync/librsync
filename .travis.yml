@@ -22,7 +22,7 @@ addons:
     update: true
 
 script:
-  - cmake --build . --target check
+  - cmake --build . --config Debug --target check
 
 matrix:
   include:

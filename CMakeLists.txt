@@ -100,7 +100,7 @@ if(WIN32)
   # CheckCSourceRuns checking for "%zu" succeeds but still gives warnings on win32.
   set(HAVE_PRINTF_Z OFF)
   # Not using unsupported %zu generates warnings about using %I64 with MinGW.
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-format")
+  # set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-format")
   message (STATUS "Compiling to Win32 - printf \"%zu\" size_t formatting support disabled")
 elseif(CMAKE_CROSSCOMPILING)
   # CheckCSourceRuns doesn't work when cross-compiling; assume C99 compliant support.

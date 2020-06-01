@@ -26,6 +26,8 @@ script:
 
 matrix:
   include:
+    - os: windows
+
     - os: osx
       compiler: clang
 

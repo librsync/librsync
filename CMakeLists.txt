@@ -297,7 +297,7 @@ if (BUILD_RDIFF)
 else (BUILD_RDIFF)
   set(LAST_TARGET rsync)
 endif (BUILD_RDIFF)
-add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
+add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} -C Debug)
 add_dependencies(check ${LAST_TARGET}
     isprefix_test
     netint_test

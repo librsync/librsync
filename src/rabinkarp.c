@@ -21,7 +21,7 @@
 #include "rabinkarp.h"
 
 /* Constant for RABINKARP_MULT^2. */
-#define RABINKARP_MULT2 (RABINKARP_MULT*RABINKARP_MULT)
+#define RABINKARP_MULT2 0xa5b71959U
 
 /* Macros for doing 16 bytes with 2 mults that can be done in parallel. Testing
    showed this as a performance sweet spot vs 16x1, 8x2, 4x4 1x16 alternative

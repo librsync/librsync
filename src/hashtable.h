@@ -182,7 +182,7 @@ static inline unsigned mix32(unsigned h)
 /** Ensure hash's are never zero. */
 static inline unsigned nozero(unsigned h)
 {
-    return h ? h : -1;
+    return h ? h : (unsigned)-1;
 }
 
 #endif                          /* _HASHTABLE_H_ */

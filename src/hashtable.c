@@ -36,7 +36,7 @@
 hashtable_t *_hashtable_new(int size)
 {
     hashtable_t *t;
-    int size2, bits2;
+    unsigned size2, bits2;
 
     /* Adjust requested size to account for max load factor. */
     size = 1 + size * HASHTABLE_LOADFACTOR_DEN / HASHTABLE_LOADFACTOR_NUM;
@@ -48,7 +48,7 @@ hashtable_t *_hashtable_new(int size)
         _hashtable_free(t);
         return NULL;
     }
-    t->size = size2;
+    t->size = (int)size2;
     t->count = 0;
     t->tmask = size2 - 1;
 #ifndef HASHTABLE_NBLOOM

@@ -63,10 +63,10 @@
 static void rs_tube_catchup_write(rs_job_t *job)
 {
     rs_buffers_t *stream = job->stream;
-    int len = job->write_len;
+    size_t len = job->write_len;
 
     assert(len > 0);
-    if ((size_t)len > stream->avail_out)
+    if (len > stream->avail_out)
         len = stream->avail_out;
     if (!stream->avail_out) {
         rs_trace("no output space available");
@@ -80,7 +80,8 @@ static void rs_tube_catchup_write(rs_job_t *job)
         /* Still something left in the tube, shuffle it to the front. */
         memmove(job->write_buf, job->write_buf + len, job->write_len);
     }
-    rs_trace("wrote %d bytes from tube, %d remaining", len, job->write_len);
+    rs_trace("wrote " FMT_SIZE " bytes from tube, " FMT_SIZE " remaining", len,
+             job->write_len);
 }
 
 /** Execute a copy command, taking data from the scoop.
@@ -102,9 +103,9 @@ static void rs_tube_copy_from_scoop(rs_job_t *job)
     job->scoop_avail -= len;
     job->scoop_next += len;
     job->copy_len -= len;
-    rs_trace("caught up on " FMT_SIZE " copied bytes from scoop, " FMT_SIZE
-             " remain there, " FMT_LONG " remain to be copied", len,
-             job->scoop_avail, job->copy_len);
+    rs_trace("copied " FMT_SIZE " bytes from scoop, " FMT_SIZE
+             " left in scoop, " FMT_SIZE " left to copy", len, job->scoop_avail,
+             job->copy_len);
 }
 
 /** Catch up on an outstanding copy command.
@@ -122,10 +123,11 @@ static void rs_tube_catchup_copy(rs_job_t *job)
     }
     /* If there's more to copy and we emptied the scoop, send input. */
     if (job->copy_len && !job->scoop_avail) {
-        size_t this_copy = rs_buffers_copy(job->stream, job->copy_len);
-        job->copy_len -= this_copy;
-        rs_trace("copied " FMT_SIZE " bytes from input buffer, " FMT_LONG
-                 " remain to be copied", this_copy, job->copy_len);
+        size_t len = rs_buffers_copy(job->stream, job->copy_len);
+        job->copy_len -= len;
+        rs_trace("copied " FMT_SIZE " bytes from stream, " FMT_SIZE
+                 "left in stream, " FMT_SIZE " left to copy", len,
+                 job->stream->avail_in, job->copy_len);
     }
 }
 
@@ -133,7 +135,7 @@ static void rs_tube_catchup_copy(rs_job_t *job)
  *
  * \return RS_DONE if the tube is now empty and ready to accept another
  * command, RS_BLOCKED if there is still stuff waiting to go out. */
-int rs_tube_catchup(rs_job_t *job)
+rs_result rs_tube_catchup(rs_job_t *job)
 {
     if (job->write_len) {
         rs_tube_catchup_write(job);
@@ -146,8 +148,7 @@ int rs_tube_catchup(rs_job_t *job)
         if (job->copy_len) {
             if (job->stream->eof_in && !job->stream->avail_in
                 && !job->scoop_avail) {
-                rs_error
-                    ("reached end of file while copying literal data through buffers");
+                rs_error("reached end of file while copying data");
                 return RS_INPUT_ENDED;
             }
             return RS_BLOCKED;
@@ -175,7 +176,7 @@ int rs_tube_is_idle(rs_job_t const *job)
  * \todo Try to do the copy immediately, and return a result. Then, people can
  * try to continue if possible. Is this really required? Callers can just go
  * out and back in again after flushing the tube. */
-void rs_tube_copy(rs_job_t *job, int len)
+void rs_tube_copy(rs_job_t *job, size_t len)
 {
     assert(job->copy_len == 0);
 

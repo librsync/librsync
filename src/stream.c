@@ -93,45 +93,27 @@
  * This always does the copy immediately. Most functions should call
  * rs_tube_copy() to cause the copy to happen gradually as space becomes
  * available. */
-int rs_buffers_copy(rs_buffers_t *stream, int max_len)
+size_t rs_buffers_copy(rs_buffers_t *stream, size_t len)
 {
-    int len = max_len;
-
     assert(len > 0);
 
-    if ((unsigned)len > stream->avail_in) {
+    if (len > stream->avail_in) {
         rs_trace("copy limited to " FMT_SIZE " available input bytes",
                  stream->avail_in);
         len = stream->avail_in;
     }
-
-    if ((unsigned)len > stream->avail_out) {
+    if (len > stream->avail_out) {
         rs_trace("copy limited to " FMT_SIZE " available output bytes",
                  stream->avail_out);
         len = stream->avail_out;
     }
-
     if (!len)
         return 0;
     /* rs_trace("stream copied chunk of %d bytes", len); */
-
     memcpy(stream->next_out, stream->next_in, len);
-
     stream->next_out += len;
     stream->avail_out -= len;
-
     stream->next_in += len;
     stream->avail_in -= len;
-
     return len;
-}
-
-/** Assert input is empty or output is full.
- *
- * Whenever a stream processing function exits, it should have done so because
- * it has either consumed all the input or has filled the output buffer. This
- * function checks that simple postcondition. */
-void rs_buffers_check_exit(rs_buffers_t const *stream)
-{
-    assert(stream->avail_in == 0 || stream->avail_out == 0);
 }

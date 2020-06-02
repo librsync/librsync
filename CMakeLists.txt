@@ -242,7 +242,7 @@ add_test(NAME isprefix_test COMMAND isprefix_test)
 
 add_executable(netint_test
     tests/netint_test.c src/netint.c src/util.c src/trace.c src/tube.c
-    src/scoop.c src/stream.c)
+    src/scoop.c)
 add_test(NAME netint_test COMMAND netint_test)
 
 add_executable(rollsum_test
@@ -346,7 +346,6 @@ set(rsync_LIB_SRCS
     src/rabinkarp.c
     src/scoop.c
     src/stats.c
-    src/stream.c
     src/sumset.c
     src/trace.c
     src/tube.c

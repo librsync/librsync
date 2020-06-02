@@ -122,53 +122,42 @@ static rs_result rs_patch_s_run(rs_job_t *job)
 /** Called when trying to copy through literal data. */
 static rs_result rs_patch_s_literal(rs_job_t *job)
 {
-    rs_long_t len = job->param1;
+    const rs_long_t len = job->param1;
     rs_stats_t *stats = &job->stats;
 
-    rs_trace("LITERAL(len=" FMT_LONG ")", len);
-
+    rs_trace("LITERAL(length=" FMT_LONG ")", len);
     if (len < 0) {
         rs_error("invalid length=" FMT_LONG " on LITERAL command", len);
         return RS_CORRUPT;
     }
-
     stats->lit_cmds++;
     stats->lit_bytes += len;
     stats->lit_cmdbytes += 1 + job->cmd->len_1;
-
     rs_tube_copy(job, len);
-
     job->statefn = rs_patch_s_cmdbyte;
     return RS_RUNNING;
 }
 
 static rs_result rs_patch_s_copy(rs_job_t *job)
 {
-    rs_long_t where, len;
+    const rs_long_t pos = job->param1;
+    const rs_long_t len = job->param2;
     rs_stats_t *stats = &job->stats;
 
-    where = job->param1;
-    len = job->param2;
-
-    rs_trace("COPY(where=" FMT_LONG ", len=" FMT_LONG ")", where, len);
-
+    rs_trace("COPY(position=" FMT_LONG ", length=" FMT_LONG ")", pos, len);
     if (len <= 0) {
         rs_error("invalid length=" FMT_LONG " on COPY command", len);
         return RS_CORRUPT;
     }
-
-    if (where < 0) {
-        rs_error("invalid where=" FMT_LONG " on COPY command", where);
+    if (pos < 0) {
+        rs_error("invalid position=" FMT_LONG " on COPY command", pos);
         return RS_CORRUPT;
     }
-
-    job->basis_pos = where;
-    job->basis_len = len;
-
     stats->copy_cmds++;
     stats->copy_bytes += len;
     stats->copy_cmdbytes += 1 + job->cmd->len_1 + job->cmd->len_2;
-
+    job->basis_pos = pos;
+    job->basis_len = len;
     job->statefn = rs_patch_s_copying;
     return RS_RUNNING;
 }
@@ -186,19 +175,16 @@ static rs_result rs_patch_s_copying(rs_job_t *job)
     /* We are blocked if there is no space left to copy into. */
     if (!len)
         return RS_BLOCKED;
-
     /* Adjust lengths to min of amount requested and space available. */
     req = len = (len < req) ? len : req;
     rs_trace("copy " FMT_SIZE " bytes from basis at offset " FMT_LONG "", len,
              job->basis_pos);
-
     result = (job->copy_cb) (job->copy_arg, job->basis_pos, &len, &ptr);
     if (result != RS_DONE) {
         rs_trace("copy callback returned %s", rs_strerror(result));
         return result;
     }
     rs_trace("got " FMT_SIZE " bytes back from basis callback", len);
-
     /* Actual copied length cannot be greater than requested length. */
     assert(len <= req);
     /* Backwards-compatible defensively handle this for NDEBUG builds. */
@@ -206,17 +192,14 @@ static rs_result rs_patch_s_copying(rs_job_t *job)
         rs_warn("copy_cb() returned more than the requested length");
         len = req;
     }
-
     /* copy back to out buffer only if the callback has used its own buffer */
     if (ptr != buffs->next_out)
         memcpy(buffs->next_out, ptr, len);
-
     /* Update buffs and copy for copied data. */
     buffs->next_out += len;
     buffs->avail_out -= len;
     job->basis_pos += len;
     job->basis_len -= len;
-
     if (!job->basis_len) {
         /* Nothing left to copy, we are done! */
         job->statefn = rs_patch_s_cmdbyte;

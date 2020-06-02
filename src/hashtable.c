@@ -56,7 +56,7 @@ hashtable_t *_hashtable_new(int size)
         _hashtable_free(t);
         return NULL;
     }
-    t->bshift = sizeof(unsigned) * 8 - bits2;
+    t->bshift = (unsigned)sizeof(unsigned) * 8 - bits2;
     assert(t->tmask == (unsigned)-1 >> t->bshift);
 #endif
 #ifndef HASHTABLE_NSTATS

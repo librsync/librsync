@@ -68,17 +68,14 @@ static void rs_tube_catchup_write(rs_job_t *job)
     assert(len > 0);
     if (len > stream->avail_out)
         len = stream->avail_out;
-    if (!stream->avail_out) {
-        rs_trace("no output space available");
-        return;
-    }
-    memcpy(stream->next_out, job->write_buf, len);
-    stream->next_out += len;
-    stream->avail_out -= len;
-    job->write_len -= len;
-    if (job->write_len > 0) {
-        /* Still something left in the tube, shuffle it to the front. */
-        memmove(job->write_buf, job->write_buf + len, job->write_len);
+    if (len) {
+        memcpy(stream->next_out, job->write_buf, len);
+        stream->next_out += len;
+        stream->avail_out -= len;
+        job->write_len -= len;
+        if (job->write_len > 0)
+            /* Still something left in the tube, shuffle it to the front. */
+            memmove(job->write_buf, job->write_buf + len, job->write_len);
     }
     rs_trace("wrote " FMT_SIZE " bytes from tube, " FMT_SIZE " left to write",
              len, job->write_len);

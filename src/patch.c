@@ -50,19 +50,15 @@ static rs_result rs_patch_s_cmdbyte(rs_job_t *job)
 
     if ((result = rs_suck_byte(job, &job->op)) != RS_DONE)
         return result;
-
     job->cmd = &rs_prototab[job->op];
-
-    rs_trace("got command %#04x (%s), len_1=" FMT_SIZE "", job->op,
-             rs_op_kind_name(job->cmd->kind), job->cmd->len_1);
-
+    rs_trace("got command %#04x (%s), len_1=%d, len_2=%d", job->op,
+             rs_op_kind_name(job->cmd->kind), job->cmd->len_1, job->cmd->len_2);
     if (job->cmd->len_1)
         job->statefn = rs_patch_s_params;
     else {
         job->param1 = job->cmd->immediate;
         job->statefn = rs_patch_s_run;
     }
-
     return RS_RUNNING;
 }
 
@@ -71,27 +67,22 @@ static rs_result rs_patch_s_cmdbyte(rs_job_t *job)
 static rs_result rs_patch_s_params(rs_job_t *job)
 {
     rs_result result;
-    int len = job->cmd->len_1 + job->cmd->len_2;
+    const size_t len = job->cmd->len_1 + job->cmd->len_2;
     void *p;
 
     assert(len);
-
     result = rs_scoop_readahead(job, len, &p);
     if (result != RS_DONE)
         return result;
-
     /* we now must have LEN bytes buffered */
     result = rs_suck_netint(job, &job->param1, job->cmd->len_1);
     /* shouldn't fail, since we already checked */
     assert(result == RS_DONE);
-
     if (job->cmd->len_2) {
         result = rs_suck_netint(job, &job->param2, job->cmd->len_2);
         assert(result == RS_DONE);
     }
-
     job->statefn = rs_patch_s_run;
-
     return RS_RUNNING;
 }
 
@@ -99,20 +90,16 @@ static rs_result rs_patch_s_params(rs_job_t *job)
 static rs_result rs_patch_s_run(rs_job_t *job)
 {
     rs_trace("running command %#04x", job->op);
-
     switch (job->cmd->kind) {
     case RS_KIND_LITERAL:
         job->statefn = rs_patch_s_literal;
         return RS_RUNNING;
-
     case RS_KIND_END:
         return RS_DONE;
         /* so we exit here; trying to continue causes an error */
-
     case RS_KIND_COPY:
         job->statefn = rs_patch_s_copy;
         return RS_RUNNING;
-
     default:
         rs_error("bogus command %#04x", job->op);
         return RS_CORRUPT;
@@ -168,7 +155,7 @@ static rs_result rs_patch_s_copying(rs_job_t *job)
 {
     rs_result result;
     rs_buffers_t *buffs = job->stream;
-    size_t req = job->basis_len;
+    rs_long_t req = job->basis_len;
     size_t len = buffs->avail_out;
     void *ptr = buffs->next_out;
 
@@ -176,7 +163,7 @@ static rs_result rs_patch_s_copying(rs_job_t *job)
     if (!len)
         return RS_BLOCKED;
     /* Adjust lengths to min of amount requested and space available. */
-    req = len = (len < req) ? len : req;
+    req = len = (len < req) ? len : (size_t)req;
     rs_trace("copy " FMT_SIZE " bytes from basis at offset " FMT_LONG "", len,
              job->basis_pos);
     result = (job->copy_cb) (job->copy_arg, job->basis_pos, &len, &ptr);
@@ -215,16 +202,13 @@ static rs_result rs_patch_s_header(rs_job_t *job)
 
     if ((result = rs_suck_n4(job, &v)) != RS_DONE)
         return result;
-
     if (v != RS_DELTA_MAGIC) {
         rs_error("got magic number %#x rather than expected value %#x", v,
                  RS_DELTA_MAGIC);
         return RS_BAD_MAGIC;
     } else
         rs_trace("got patch magic %#x", v);
-
     job->statefn = rs_patch_s_cmdbyte;
-
     return RS_RUNNING;
 }
 
@@ -234,8 +218,6 @@ rs_job_t *rs_patch_begin(rs_copy_cb * copy_cb, void *copy_arg)
 
     job->copy_cb = copy_cb;
     job->copy_arg = copy_arg;
-
     rs_mdfour_begin(&job->output_md4);
-
     return job;
 }

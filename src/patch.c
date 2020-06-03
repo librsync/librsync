@@ -113,14 +113,14 @@ static rs_result rs_patch_s_literal(rs_job_t *job)
     rs_stats_t *stats = &job->stats;
 
     rs_trace("LITERAL(length=" FMT_LONG ")", len);
-    if (len < 0) {
+    if (len <= 0 || len > SIZE_MAX) {
         rs_error("invalid length=" FMT_LONG " on LITERAL command", len);
         return RS_CORRUPT;
     }
     stats->lit_cmds++;
     stats->lit_bytes += len;
     stats->lit_cmdbytes += 1 + job->cmd->len_1;
-    rs_tube_copy(job, len);
+    rs_tube_copy(job, (size_t)len);
     job->statefn = rs_patch_s_cmdbyte;
     return RS_RUNNING;
 }

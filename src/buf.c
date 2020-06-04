@@ -60,7 +60,6 @@ rs_filebuf_t *rs_filebuf_new(FILE *f, size_t buf_len)
     pf->buf = rs_alloc(buf_len, "file buffer");
     pf->buf_len = buf_len;
     pf->f = f;
-
     return pf;
 }
 
@@ -92,7 +91,6 @@ rs_result rs_infilebuf_fill(rs_job_t *job, rs_buffers_t *buf, void *opaque)
 
     if (buf->eof_in || (buf->eof_in = feof(f))) {
         rs_trace("seen end of file on input");
-        buf->eof_in = 1;
         return RS_DONE;
     }
 
@@ -119,9 +117,7 @@ rs_result rs_infilebuf_fill(rs_job_t *job, rs_buffers_t *buf, void *opaque)
     }
     buf->avail_in = len;
     buf->next_in = fb->buf;
-
     job->stats.in_bytes += len;
-
     return RS_DONE;
 }
 
@@ -129,7 +125,6 @@ rs_result rs_infilebuf_fill(rs_job_t *job, rs_buffers_t *buf, void *opaque)
    some buffered output now. Write this out to F, and reset the buffer cursor. */
 rs_result rs_outfilebuf_drain(rs_job_t *job, rs_buffers_t *buf, void *opaque)
 {
-    int present;
     rs_filebuf_t *fb = (rs_filebuf_t *)opaque;
     FILE *f = fb->f;
 
@@ -137,10 +132,8 @@ rs_result rs_outfilebuf_drain(rs_job_t *job, rs_buffers_t *buf, void *opaque)
        buffer could possibly be BUF. */
     if (buf->next_out == NULL) {
         assert(buf->avail_out == 0);
-
         buf->next_out = fb->buf;
         buf->avail_out = fb->buf_len;
-
         return RS_DONE;
     }
 
@@ -148,23 +141,16 @@ rs_result rs_outfilebuf_drain(rs_job_t *job, rs_buffers_t *buf, void *opaque)
     assert(buf->next_out >= fb->buf);
     assert(buf->next_out <= fb->buf + fb->buf_len);
 
-    present = buf->next_out - fb->buf;
+    size_t present = buf->next_out - fb->buf;
     if (present > 0) {
-        int result;
-
-        assert(present > 0);
-
-        result = fwrite(fb->buf, 1, present, f);
+        size_t result = fwrite(fb->buf, 1, present, f);
         if (present != result) {
             rs_error("error draining buf to file: %s", strerror(errno));
             return RS_IO_ERROR;
         }
-
         buf->next_out = fb->buf;
         buf->avail_out = fb->buf_len;
-
         job->stats.out_bytes += result;
     }
-
     return RS_DONE;
 }

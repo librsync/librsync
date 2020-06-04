@@ -100,5 +100,5 @@ void rabinkarp_update(rabinkarp_t *sum, const unsigned char *buf, size_t len)
     }
     sum->hash = hash;
     sum->count += len;
-    sum->mult *= rabinkarp_pow(len);
+    sum->mult *= rabinkarp_pow((uint32_t)len);
 }

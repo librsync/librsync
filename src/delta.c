@@ -305,7 +305,7 @@ static inline rs_result rs_appendflush(rs_job_t *job)
         /* else if last is a miss, emit and process it */
     } else if (job->scoop_pos) {
         rs_trace("got " FMT_SIZE " bytes of literal data", job->scoop_pos);
-        rs_emit_literal_cmd(job, job->scoop_pos);
+        rs_emit_literal_cmd(job, (int)job->scoop_pos);
         return rs_processmiss(job);
     }
     /* otherwise, nothing to flush so we are done */
@@ -360,7 +360,7 @@ static rs_result rs_delta_s_slack(rs_job_t *job)
 
     if (avail) {
         rs_trace("emit slack delta for " FMT_SIZE " available bytes", avail);
-        rs_emit_literal_cmd(job, avail);
+        rs_emit_literal_cmd(job, (int)avail);
         rs_tube_copy(job, avail);
         return RS_RUNNING;
     } else if (rs_job_input_is_ending(job)) {

@@ -41,7 +41,7 @@ hashtable_t *_hashtable_new(int size)
     /* Adjust requested size to account for max load factor. */
     size = 1 + size * HASHTABLE_LOADFACTOR_DEN / HASHTABLE_LOADFACTOR_NUM;
     /* Use next power of 2 larger than the requested size and get mask bits. */
-    for (size2 = 2, bits2 = 1; size2 < size; size2 <<= 1, bits2++) ;
+    for (size2 = 2, bits2 = 1; (int)size2 < size; size2 <<= 1, bits2++) ;
     if (!(t = calloc(1, sizeof(hashtable_t)+ size2 * sizeof(unsigned))))
         return NULL;
     if (!(t->etable = calloc(size2, sizeof(void *)))) {

@@ -133,9 +133,12 @@ if(APPLE)
 endif()
 
 if (CMAKE_C_COMPILER_ID MATCHES "(Clang|Gnu|GNU)")
-  # TODO: Set for MSVC and other compilers.
   # TODO: Set -Werror when the build is clean.
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -std=c99 -pedantic")
+  #set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wconversion")
+  #set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-sign-conversion")
+elseif(CMAKE_C_COMPILER_ID MATCHES "MSVC")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /D_CRT_SECURE_NO_WARNINGS")
 endif()
 
 site_name(BUILD_HOSTNAME)

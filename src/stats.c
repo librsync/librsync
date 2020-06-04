@@ -41,7 +41,7 @@ char *rs_format_stats(rs_stats_t const *stats, char *buf, size_t size)
 {
     char const *op = stats->op;
     int len, sec;
-    double mbps_in, mbps_out;
+    double mb_in, mb_out;
 
     if (!op)
         op = "noop";
@@ -50,7 +50,7 @@ char *rs_format_stats(rs_stats_t const *stats, char *buf, size_t size)
 
     if (stats->lit_cmds) {
         len +=
-            snprintf(buf + len, size - len,
+            snprintf(buf + len, size - (size_t)len,
                      "literal[%d cmds, " FMT_LONG " bytes, " FMT_LONG
                      " cmdbytes] ", stats->lit_cmds, stats->lit_bytes,
                      stats->lit_cmdbytes);
@@ -58,14 +58,14 @@ char *rs_format_stats(rs_stats_t const *stats, char *buf, size_t size)
 
     if (stats->sig_cmds) {
         len +=
-            snprintf(buf + len, size - len,
+            snprintf(buf + len, size - (size_t)len,
                      "in-place-signature[" FMT_LONG " cmds, " FMT_LONG
                      " bytes] ", stats->sig_cmds, stats->sig_bytes);
     }
 
     if (stats->copy_cmds || stats->false_matches) {
         len +=
-            snprintf(buf + len, size - len,
+            snprintf(buf + len, size - (size_t)len,
                      "copy[" FMT_LONG " cmds, " FMT_LONG " bytes, " FMT_LONG
                      " cmdbytes, %d false]", stats->copy_cmds,
                      stats->copy_bytes, stats->copy_cmdbytes,
@@ -74,21 +74,20 @@ char *rs_format_stats(rs_stats_t const *stats, char *buf, size_t size)
 
     if (stats->sig_blocks) {
         len +=
-            snprintf(buf + len, size - len,
+            snprintf(buf + len, size - (size_t)len,
                      "signature[" FMT_LONG " blocks, " FMT_SIZE
                      " bytes per block]", stats->sig_blocks, stats->block_len);
     }
 
-    sec = (stats->end - stats->start);
+    sec = (int)(stats->end - stats->start);
     if (sec == 0)
         sec = 1;                // avoid division by zero
-    mbps_in = stats->in_bytes / 1e6 / sec;
-    mbps_out = stats->out_bytes / 1e6 / sec;
+    mb_in = (double)stats->in_bytes / 1e6;
+    mb_out = (double)stats->out_bytes / 1e6;
     len +=
-        snprintf(buf + len, size - len,
+        snprintf(buf + len, size - (size_t)len,
                  " speed[%.1f MB (%.1f MB/s) in, %.1f MB (%.1f MB/s) out, %d sec]",
-                 (stats->in_bytes / 1e6), mbps_in, (stats->out_bytes / 1e6),
-                 mbps_out, sec);
+                 mb_in, mb_in / sec, mb_out, mb_out / sec, sec);
 
     return buf;
 }

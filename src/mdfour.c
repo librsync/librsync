@@ -322,7 +322,7 @@ void rs_mdfour_update(rs_mdfour_t *md, void const *in_void, size_t n)
     /* Put remaining bytes onto tail */
     if (n) {
         memcpy(&md->tail[md->tail_len], in, n);
-        md->tail_len += n;
+        md->tail_len += (int)n;
     }
 }
 

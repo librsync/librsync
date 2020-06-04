@@ -67,7 +67,7 @@ static rs_result rs_patch_s_cmdbyte(rs_job_t *job)
 static rs_result rs_patch_s_params(rs_job_t *job)
 {
     rs_result result;
-    const size_t len = job->cmd->len_1 + job->cmd->len_2;
+    const size_t len = (size_t)(job->cmd->len_1 + job->cmd->len_2);
     void *p;
 
     assert(len);
@@ -162,10 +162,12 @@ static rs_result rs_patch_s_copying(rs_job_t *job)
     /* We are blocked if there is no space left to copy into. */
     if (!len)
         return RS_BLOCKED;
-    /* Adjust lengths to min of amount requested and space available. */
-    req = len = (len < req) ? len : (size_t)req;
-    rs_trace("copy " FMT_SIZE " bytes from basis at offset " FMT_LONG "", len,
+    /* Adjust request to min of amount requested and space available. */
+    if (len < req)
+        req = (rs_long_t)len;
+    rs_trace("copy " FMT_LONG " bytes from basis at offset " FMT_LONG "", req,
              job->basis_pos);
+    len = (size_t)req;
     result = (job->copy_cb) (job->copy_arg, job->basis_pos, &len, &ptr);
     if (result != RS_DONE) {
         rs_trace("copy callback returned %s", rs_strerror(result));
@@ -177,7 +179,7 @@ static rs_result rs_patch_s_copying(rs_job_t *job)
     /* Backwards-compatible defensively handle this for NDEBUG builds. */
     if (len > req) {
         rs_warn("copy_cb() returned more than the requested length");
-        len = req;
+        len = (size_t)req;
     }
     /* copy back to out buffer only if the callback has used its own buffer */
     if (ptr != buffs->next_out)
@@ -185,8 +187,8 @@ static rs_result rs_patch_s_copying(rs_job_t *job)
     /* Update buffs and copy for copied data. */
     buffs->next_out += len;
     buffs->avail_out -= len;
-    job->basis_pos += len;
-    job->basis_len -= len;
+    job->basis_pos += (rs_long_t)len;
+    job->basis_len -= (rs_long_t)len;
     if (!job->basis_len) {
         /* Nothing left to copy, we are done! */
         job->statefn = rs_patch_s_cmdbyte;

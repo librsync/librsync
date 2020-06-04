@@ -83,12 +83,12 @@ rs_long_t rs_signature_find_match(rs_signature_t *sig, rs_weak_sum_t weak_sum,
  * We don't use a static inline function here so that assert failure output
  * points at where rs_sig_args_check() was called from. */
 #define rs_sig_args_check(magic, block_len, strong_len) do {\
-    assert(((magic) & 0xffffff00) == (RS_MD4_SIG_MAGIC & 0xffffff00));\
+    assert(((magic) & ~0xff) == (RS_MD4_SIG_MAGIC & ~0xff));\
     assert(((magic) & 0xf0) == 0x30 || ((magic) & 0xf0) == 0x40);\
     assert((((magic) & 0x0f) == 0x06 &&\
-	    (strong_len) <= RS_MD4_SUM_LENGTH) ||\
+	    (int)(strong_len) <= RS_MD4_SUM_LENGTH) ||\
 	   (((magic) & 0x0f) == 0x07 &&\
-	    (strong_len) <= RS_BLAKE2_SUM_LENGTH));\
+	    (int)(strong_len) <= RS_BLAKE2_SUM_LENGTH));\
     assert(0 < (block_len));\
     assert(0 < (strong_len) && (strong_len) <= RS_MAX_STRONG_SUM_LENGTH);\
 } while (0)

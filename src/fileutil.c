@@ -41,6 +41,9 @@
 #ifdef HAVE_SYS_STAT_H
 #  include <sys/stat.h>
 #endif
+#ifdef HAVE_IO_H
+#  include <io.h>
+#endif
 #include "librsync.h"
 #include "trace.h"
 
@@ -68,8 +71,8 @@
 #  define S_ISREG(x) ((x) & _S_IFREG)
 #endif
 
-/* Use _fileno if it exists and fileno doesn't. */
-#if !defined(HAVE_FILENO) && defined(HAVE__FILENO)
+/* Use and prefer _fileno if it exists. */
+#ifdef HAVE__FILENO
 #  define fileno(f) _fileno((f))
 #endif
 

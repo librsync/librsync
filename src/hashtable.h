@@ -157,7 +157,7 @@ static inline void hashtable_setbloom(hashtable_t *t, unsigned const h)
 {
     /* Use upper bits for a "different hash". */
     unsigned const i = h >> t->bshift;
-    t->kbloom[i / 8] |= 1 << (i % 8);
+    t->kbloom[i / 8] |= (unsigned char)(1 << (i % 8));
 }
 
 static inline bool hashtable_getbloom(hashtable_t *t, unsigned const h)
@@ -182,7 +182,7 @@ static inline unsigned mix32(unsigned h)
 /** Ensure hash's are never zero. */
 static inline unsigned nozero(unsigned h)
 {
-    return h ? h : -1;
+    return h ? h : (unsigned)-1;
 }
 
 #endif                          /* _HASHTABLE_H_ */

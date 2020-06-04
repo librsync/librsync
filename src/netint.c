@@ -69,7 +69,7 @@ rs_result rs_squirt_netint(rs_job_t *job, rs_long_t val, int len)
     assert(len <= RS_MAX_INT_BYTES);
     /* Fill the output buffer with a bigendian representation of the number. */
     for (i = len - 1; i >= 0; i--) {
-        buf[i] = val;           /* truncated */
+        buf[i] = (rs_byte_t)val;       /* truncated */
         val >>= 8;
     }
     rs_tube_write(job, buf, len);
@@ -101,7 +101,7 @@ rs_result rs_suck_netint(rs_job_t *job, rs_long_t *val, int len)
     if ((result = rs_scoop_read(job, len, (void **)&buf)) == RS_DONE) {
         *val = 0;
         for (i = 0; i < len; i++)
-            *val = *val << 8 | buf[i];
+            *val = (*val << 8) | (rs_long_t)buf[i];
     }
     return result;
 }
@@ -112,7 +112,7 @@ rs_result rs_suck_n4(rs_job_t *job, int *val)
     rs_long_t buf;
 
     if ((result = rs_suck_netint(job, &buf, 4)) == RS_DONE)
-        *val = buf;
+        *val = (int)buf;
     return result;
 }
 

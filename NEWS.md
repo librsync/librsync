@@ -4,6 +4,16 @@
 
 NOT RELEASED YET
 
+ * Add Travis Windows checks and improve compatibility. Turn on `-Wconversion
+   -Wno-sign-conversion` warnings for clang. Add MSVC compiler flags to turn
+   off posix warnings. Make all code compile clean with no warnings on all
+   Travis platforms. Added cmake config checking for windows `io.h` and
+   improve `fileutil.c` for MSVC. Fix broken error handling in
+   `rs_file_copy_cb()`. Improved trace output, making it less spamy and more
+   consistent. Add patch checking for invalid literal lengths. Improve
+   internal variable and argument types. Add explicit type conversions.
+   (dbaarda, https://github.com/librsync/librsync/pull/208)
+
  * Fix a bug so patch will now fail returning RS_CORRUPT on encountering a
    zero length copy command instead of hanging. Make copy_cb() copying more
    data than requested an assert-fail on debug builds, and a log-warning for

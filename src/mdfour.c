@@ -52,8 +52,8 @@
 #define lshift(x,s) (((x)<<(s)) | ((x)>>(32-(s))))
 
 #define ROUND1(a,b,c,d,k,s) a = lshift(a + F(b,c,d) + X[k], s)
-#define ROUND2(a,b,c,d,k,s) a = lshift(a + G(b,c,d) + X[k] + 0x5A827999,s)
-#define ROUND3(a,b,c,d,k,s) a = lshift(a + H(b,c,d) + X[k] + 0x6ED9EBA1,s)
+#define ROUND2(a,b,c,d,k,s) a = lshift(a + G(b,c,d) + X[k] + 0x5A827999U, s)
+#define ROUND3(a,b,c,d,k,s) a = lshift(a + H(b,c,d) + X[k] + 0x6ED9EBA1U, s)
 
 /** padding data used for finalising */
 static unsigned char PADDING[64] = {
@@ -162,10 +162,10 @@ static void rs_mdfour64(rs_mdfour_t *m, const void *p)
  * instead. */
 inline static void copy4( /* @out@ */ unsigned char *out, uint32_t const x)
 {
-    out[0] = x;
-    out[1] = x >> 8;
-    out[2] = x >> 16;
-    out[3] = x >> 24;
+    out[0] = (unsigned char)(x);
+    out[1] = (unsigned char)(x >> 8);
+    out[2] = (unsigned char)(x >> 16);
+    out[3] = (unsigned char)(x >> 24);
 }
 
 /* We need this if there is a uint64 */
@@ -173,14 +173,14 @@ inline static void copy4( /* @out@ */ unsigned char *out, uint32_t const x)
 #ifdef UINT64_MAX
 inline static void copy8( /* @out@ */ unsigned char *out, uint64_t const x)
 {
-    out[0] = x;
-    out[1] = x >> 8;
-    out[2] = x >> 16;
-    out[3] = x >> 24;
-    out[4] = x >> 32;
-    out[5] = x >> 40;
-    out[6] = x >> 48;
-    out[7] = x >> 56;
+    out[0] = (unsigned char)(x);
+    out[1] = (unsigned char)(x >> 8);
+    out[2] = (unsigned char)(x >> 16);
+    out[3] = (unsigned char)(x >> 24);
+    out[4] = (unsigned char)(x >> 32);
+    out[5] = (unsigned char)(x >> 40);
+    out[6] = (unsigned char)(x >> 48);
+    out[7] = (unsigned char)(x >> 56);
 }
 #endif                          /* UINT64_MAX */
 
@@ -191,7 +191,9 @@ inline static void copy64( /* @out@ */ uint32_t *M, unsigned char const *in)
     int i = 16;
 
     while (i--) {
-        *M++ = (in[3] << 24) | (in[2] << 16) | (in[1] << 8) | in[0];
+        *M++ =
+            (((uint32_t)in[3] << 24) | ((uint32_t)in[2] << 16) |
+             ((uint32_t)in[1] << 8) | (uint32_t)in[0]);
         in += 4;
     }
 }
@@ -241,10 +243,10 @@ inline static void rs_mdfour_block(rs_mdfour_t *md, void const *p)
 void rs_mdfour_begin(rs_mdfour_t *md)
 {
     memset(md, 0, sizeof(*md));
-    md->A = 0x67452301;
-    md->B = 0xefcdab89;
-    md->C = 0x98badcfe;
-    md->D = 0x10325476;
+    md->A = 0x67452301U;
+    md->B = 0xefcdab89U;
+    md->C = 0x98badcfeU;
+    md->D = 0x10325476U;
 #ifdef UINT64_MAX
     md->totalN = 0;
 #else
@@ -320,7 +322,7 @@ void rs_mdfour_update(rs_mdfour_t *md, void const *in_void, size_t n)
     /* Put remaining bytes onto tail */
     if (n) {
         memcpy(&md->tail[md->tail_len], in, n);
-        md->tail_len += n;
+        md->tail_len += (int)n;
     }
 }
 

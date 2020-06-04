@@ -61,6 +61,7 @@ check_include_files ( sys/file.h HAVE_SYS_FILE_H )
 check_include_files ( sys/stat.h HAVE_SYS_STAT_H )
 check_include_files ( sys/types.h HAVE_SYS_TYPES_H )
 check_include_files ( unistd.h HAVE_UNISTD_H )
+check_include_files ( io.h HAVE_IO_H )
 check_include_files ( fcntl.h HAVE_FCNTL_H )
 check_include_files ( mcheck.h HAVE_MCHECK_H )
 check_include_files ( zlib.h HAVE_ZLIB_H )
@@ -100,7 +101,7 @@ if(WIN32)
   # CheckCSourceRuns checking for "%zu" succeeds but still gives warnings on win32.
   set(HAVE_PRINTF_Z OFF)
   # Not using unsupported %zu generates warnings about using %I64 with MinGW.
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-format")
+  # set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-format")
   message (STATUS "Compiling to Win32 - printf \"%zu\" size_t formatting support disabled")
 elseif(CMAKE_CROSSCOMPILING)
   # CheckCSourceRuns doesn't work when cross-compiling; assume C99 compliant support.
@@ -133,9 +134,14 @@ if(APPLE)
 endif()
 
 if (CMAKE_C_COMPILER_ID MATCHES "(Clang|Gnu|GNU)")
-  # TODO: Set for MSVC and other compilers.
   # TODO: Set -Werror when the build is clean.
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -std=c99 -pedantic")
+  if (CMAKE_C_COMPILER_ID MATCHES "Clang")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wconversion")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-sign-conversion")
+  endif()
+elseif(CMAKE_C_COMPILER_ID MATCHES "MSVC")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /D_CRT_SECURE_NO_WARNINGS")
 endif()
 
 site_name(BUILD_HOSTNAME)
@@ -242,7 +248,8 @@ add_test(NAME isprefix_test COMMAND isprefix_test)
 
 add_executable(netint_test
     tests/netint_test.c src/netint.c src/util.c src/trace.c src/tube.c
-    src/scoop.c src/stream.c)
+    src/scoop.c)
+target_compile_options(netint_test PRIVATE -DLIBRSYNC_STATIC_DEFINE)
 add_test(NAME netint_test COMMAND netint_test)
 
 add_executable(rollsum_test
@@ -297,7 +304,7 @@ if (BUILD_RDIFF)
 else (BUILD_RDIFF)
   set(LAST_TARGET rsync)
 endif (BUILD_RDIFF)
-add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
+add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND} -C Debug)
 add_dependencies(check ${LAST_TARGET}
     isprefix_test
     netint_test
@@ -346,7 +353,6 @@ set(rsync_LIB_SRCS
     src/rabinkarp.c
     src/scoop.c
     src/stats.c
-    src/stream.c
     src/sumset.c
     src/trace.c
     src/tube.c

@@ -35,7 +35,7 @@ int main(int argc, char **argv)
 
     /* Initialize buf for use by tests. */
     for (int i = 0; i < 256; i++)
-        buf[i] = i;
+        buf[i] = (unsigned char)i;
 
     /* RS_ROLLSUM weaksum tests. */
 

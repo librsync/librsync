@@ -70,7 +70,7 @@ int main(int argc, char **argv)
 
     /* Test rabinkarp_update() */
     for (i = 0; i < 256; i++)
-        buf[i] = i;
+        buf[i] = (unsigned char)i;
     rabinkarp_update(&r, buf, 256);
     assert(rabinkarp_digest(&r) == 0xc1972381);
     return 0;

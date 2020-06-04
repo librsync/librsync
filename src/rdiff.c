@@ -195,7 +195,7 @@ static rs_result rdiff_sig(poptContext opcon)
     FILE *basis_file, *sig_file;
     rs_stats_t stats;
     rs_result result;
-    rs_long_t sig_magic;
+    rs_magic_number sig_magic;
 
     basis_file = rs_file_open(poptGetArg(opcon), "rb", file_force);
     sig_file = rs_file_open(poptGetArg(opcon), "wb", file_force);

@@ -41,20 +41,18 @@ size_t rs_unbase64(char *s)
         idx = (int)(p - b64);
         byte_offset = (i * 6) / 8;
         bit_offset = (i * 6) % 8;
-        d[byte_offset] &= ~((1 << (8 - bit_offset)) - 1);
+        d[byte_offset] &= (unsigned char)~((1 << (8 - bit_offset)) - 1);
         if (bit_offset < 3) {
-            d[byte_offset] |= (idx << (2 - bit_offset));
+            d[byte_offset] |= (unsigned char)(idx << (2 - bit_offset));
             n = byte_offset + 1;
         } else {
-            d[byte_offset] |= (idx >> (bit_offset - 2));
-            d[byte_offset + 1] = 0;
-            d[byte_offset + 1] |= (idx << (8 - (bit_offset - 2))) & 0xFF;
+            d[byte_offset] |= (unsigned char)(idx >> (bit_offset - 2));
+            d[byte_offset + 1] = (unsigned char)(idx << (8 - (bit_offset - 2)));
             n = byte_offset + 2;
         }
         s++;
         i++;
     }
-
     return n;
 }
 

@@ -72,7 +72,7 @@ int main(int argc, char **argv)
 
     /* Test RollsumUpdate() */
     for (i = 0; i < 256; i++)
-        buf[i] = i;
+        buf[i] = (unsigned char)i;
     RollsumUpdate(&r, buf, 256);
     assert(RollsumDigest(&r) == 0x3a009e80);
     return 0;

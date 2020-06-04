@@ -82,11 +82,11 @@ struct rs_job {
 
     /** If USED is >0, then buf contains that much write data to be sent out. */
     rs_byte_t write_buf[36];
-    int write_len;
+    size_t write_len;
 
     /** If \p copy_len is >0, then that much data should be copied through
      * from the input. */
-    rs_long_t copy_len;
+    size_t copy_len;
 
     /** Copy from the basis position. */
     rs_long_t basis_pos, basis_len;
@@ -94,7 +94,6 @@ struct rs_job {
     /** Callback used to copy data from the basis into the output. */
     rs_copy_cb *copy_cb;
     void *copy_arg;
-
 };
 
 rs_job_t *rs_job_new(const char *, rs_result (*statefn)(rs_job_t *));

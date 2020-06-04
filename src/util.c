@@ -90,5 +90,5 @@ int rs_long_sqrt(rs_long_t v)
         if (n * n > v)
             n ^= b;
     }
-    return n;
+    return (int)n;
 }

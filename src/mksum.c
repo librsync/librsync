@@ -117,7 +117,7 @@ rs_job_t *rs_sig_begin(size_t block_len, size_t strong_len,
     job->signature = rs_alloc_struct(rs_signature_t);
     job->job_owns_sig = 1;
     job->sig_magic = sig_magic;
-    job->sig_block_len = block_len;
-    job->sig_strong_len = strong_len;
+    job->sig_block_len = (int)block_len;
+    job->sig_strong_len = (int)strong_len;
     return job;
 }

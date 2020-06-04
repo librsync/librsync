@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 
     /* Initialize test buffer. */
     for (i = 0; i < 256; i++)
-        buf[i] = i;
+        buf[i] = (unsigned char)i;
 
     /* Test rs_sig_args() */
     rs_magic_number magic;

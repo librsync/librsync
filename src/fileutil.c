@@ -132,23 +132,20 @@ rs_long_t rs_file_size(FILE *f)
 
 rs_result rs_file_copy_cb(void *arg, rs_long_t pos, size_t *len, void **buf)
 {
-    int got;
     FILE *f = (FILE *)arg;
 
     if (fseek(f, pos, SEEK_SET)) {
         rs_error("seek failed: %s", strerror(errno));
         return RS_IO_ERROR;
     }
-
-    got = fread(*buf, 1, *len, f);
-    if (got == -1) {
+    *len = fread(*buf, 1, *len, f);
+    if (*len) {
+        return RS_DONE;
+    } else if (ferror(f)) {
         rs_error("read error: %s", strerror(errno));
         return RS_IO_ERROR;
-    } else if (got == 0) {
+    } else {
         rs_error("unexpected eof on fd%d", fileno(f));
         return RS_INPUT_ENDED;
-    } else {
-        *len = got;
-        return RS_DONE;
     }
 }

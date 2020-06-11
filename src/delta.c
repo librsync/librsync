@@ -458,11 +458,12 @@ rs_job_t *rs_delta_begin(rs_signature_t *sig)
 {
     /* We initialize the job with gen=NULL and set it after, because we need
        the job to create the deltagen, since it needs the job to send its
-       output. */
+       output and stats. */
     rs_job_t *job = rs_job_delta(sig, NULL, (rs_genmark_t *)rs_deltagen_mark,
                                  (rs_gendata_t *)rs_deltagen_match,
                                  (rs_gendata_t *)rs_deltagen_miss);
-    rs_deltagen_t *gen = rs_deltagen_new(job, (rs_send_t *)rs_jobstream_send);
+    rs_deltagen_t *gen =
+        rs_deltagen_new(job, (rs_send_t *)rs_jobstream_send, &job->stats);
     job->gen = gen;
     return job;
 }

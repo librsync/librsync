@@ -23,9 +23,7 @@
  * encoding output routines.
  *
  * \todo Pluggable encoding formats: gdiff-style, rsync 24, ed (text), Delta
- * HTTP.
- *
- * \todo Figure out how to update stats with new callback API. */
+ * HTTP. */
 
 #include "config.h"
 #include <assert.h>
@@ -67,9 +65,6 @@ int rs_put_literal_cmd(int len, rs_byte_t *buf)
     *buf++ = (rs_byte_t)cmd;
     if (param_len)
         rs_put_netint(len, param_len, buf);
-    /* job->stats.lit_cmds++; */
-    /* job->stats.lit_bytes += len; */
-    /* job->stats.lit_cmdbytes += cmd_len; */
     return 1 + param_len;
 }
 
@@ -108,9 +103,6 @@ int rs_put_copy_cmd(rs_long_t pos, rs_long_t len, rs_byte_t *buf)
     *buf++ = (rs_byte_t)cmd;
     buf += rs_put_netint(pos, pos_bytes, buf);
     buf += rs_put_netint(len, len_bytes, buf);
-    /* job->stats.copy_cmds++; */
-    /* job->stats.copy_bytes += len; */
-    /* job->stats.copy_cmdbytes += cmd_len; */
     return 1 + pos_bytes + len_bytes;
 }
 

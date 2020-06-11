@@ -88,8 +88,9 @@ typedef struct rs_deltagen_s {
     int data_len;               /**< The data length left to output. */
     int cmd_len;                /**< The cmd length to send. */
     rs_byte_t cmd_buf[64];      /**< The cmd buffer to send. */
+    rs_stats_t *stats;          /**< The stats object to update. */
 } rs_deltagen_t;
-rs_deltagen_t *rs_deltagen_new(void *out, rs_send_t *send);
+rs_deltagen_t *rs_deltagen_new(void *out, rs_send_t *send, rs_stats_t *stats);
 void rs_deltagen_free(rs_deltagen_t *gen);
 int rs_deltagen_mark(rs_deltagen_t *gen, int mark);
 int rs_deltagen_match(rs_deltagen_t *gen, rs_long_t pos, int len,

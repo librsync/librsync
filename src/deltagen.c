@@ -31,18 +31,60 @@
 #include "prototab.h"
 #include "trace.h"
 
-rs_deltagen_t *rs_deltagen_new(void *out, rs_send_t *send)
+rs_deltagen_t *rs_deltagen_new(void *out, rs_send_t *send, rs_stats_t *stats)
 {
     rs_deltagen_t *gen = rs_alloc_struct(rs_deltagen_t);
 
     gen->out = out;
     gen->send = send;
+    gen->stats = stats;
     return gen;
 }
 
 void rs_deltagen_free(rs_deltagen_t *gen)
 {
     free(gen);
+}
+
+static inline void rs_deltagen_put_header(rs_deltagen_t *gen)
+{
+    /* There is nothing queued before init. */
+    assert(gen->cmd_len == 0);
+    assert(gen->data_len == 0);
+    gen->cmd_len = rs_put_delta_header(gen->cmd_buf);
+}
+
+static inline void rs_deltagen_put_literal_cmd(rs_deltagen_t *gen, int len)
+{
+    rs_stats_t *const stats = gen->stats;
+
+    /* There should be nothing queued before emitting a literal cmd. */
+    assert(gen->cmd_len == 0);
+    assert(gen->data_len == 0);
+    gen->cmd_len = rs_put_literal_cmd(len, gen->cmd_buf);
+    stats->lit_cmds++;
+    stats->lit_bytes += len;
+    stats->lit_cmdbytes += gen->cmd_len;
+}
+
+static inline void rs_deltagen_put_copy_cmd(rs_deltagen_t *gen, rs_long_t pos,
+                                            rs_long_t len)
+{
+    rs_stats_t *const stats = gen->stats;
+
+    /* There should be nothing queued before emitting a copy cmd. */
+    assert(gen->cmd_len == 0);
+    assert(gen->data_len == 0);
+    gen->cmd_len = rs_put_copy_cmd(pos, len, gen->cmd_buf);
+    stats->copy_cmds++;
+    stats->copy_bytes += len;
+    stats->copy_cmdbytes += gen->cmd_len;
+}
+
+static inline void rs_deltagen_put_end_cmd(rs_deltagen_t *gen)
+{
+    /* This could be appended after another queued cmd. */
+    gen->cmd_len += rs_put_end_cmd(gen->cmd_buf + gen->cmd_len);
 }
 
 /* Macro for a deltagen to try send and return on errors or blocked. */
@@ -55,6 +97,7 @@ void rs_deltagen_free(rs_deltagen_t *gen)
    if ((ret = rs_deltagen_mark(gen, mark)) <= 0) \
        return ret
 
+/* Handler for sending all data or marks. */
 static inline int rs_deltagen_data(rs_deltagen_t *gen, rs_long_t pos, int len,
                                    const void *buf)
 {
@@ -121,17 +164,14 @@ int rs_deltagen_mark(rs_deltagen_t *gen, int mark)
     assert(gen->data_len == 0);
     /* If we have a previous accumulated match, queue and clear it. */
     if (gen->match_len) {
-        gen->cmd_len =
-            rs_put_copy_cmd(gen->match_pos, gen->match_len, gen->cmd_buf);
+        rs_deltagen_put_copy_cmd(gen, gen->match_pos, gen->match_len);
         gen->match_len = 0;
     }
     /* Handle sending headers/footers. */
     if (mark == RS_SEND_INIT) {
-        /* There is nothing queued before init. */
-        gen->cmd_len = rs_put_delta_header(gen->cmd_buf);
+        rs_deltagen_put_header(gen);
     } else if (mark == RS_SEND_DONE) {
-        /* Note this could be appended after a queued match cmd. */
-        gen->cmd_len += rs_put_end_cmd(gen->cmd_buf + gen->cmd_len);
+        rs_deltagen_put_end_cmd(gen);
     } else {
         assert(mark == RS_SEND_SYNC);
         /* There is no cmd data for a sync. */
@@ -169,8 +209,7 @@ int rs_deltagen_miss(rs_deltagen_t *gen, rs_long_t pos, int len,
         TRY_DELTAGEN_MARK(RS_SEND_SYNC, sent_len);
     /* If there is no pending miss output, emit the literal cmd. */
     if (!gen->data_len) {
-        /* This could be appended after a queued match cmd. */
-        gen->cmd_len += rs_put_literal_cmd(len, gen->cmd_buf + gen->cmd_len);
+        rs_deltagen_put_literal_cmd(gen, len);
     }
     return rs_deltagen_data(gen, pos, len, buf);
 }

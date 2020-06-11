@@ -74,8 +74,6 @@
  * output. This may well use up all the remaining stream space, in which case
  * nothing else can be done. */
 
-size_t rs_buffers_copy(rs_buffers_t *stream, size_t len);
-
 rs_result rs_tube_catchup(rs_job_t *job);
 int rs_tube_is_idle(rs_job_t const *job);
 void rs_tube_write(rs_job_t *job, void const *buf, size_t len);

@@ -182,7 +182,7 @@ int rs_buffers_send(rs_buffers_t *buffers, int len, const void *buf)
     /* There is never anything to flush. */
     if (len < 0)
         return 1;
-    if (len > buffers->avail_out)
+    if ((size_t)len > buffers->avail_out)
         len = (int)buffers->avail_out;
     if (len) {
         memcpy(buffers->next_out, buf, (size_t)len);

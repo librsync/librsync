@@ -308,7 +308,12 @@ static inline rs_result rs_appendmiss(rs_job_t *job, size_t miss_len)
     return result;
 }
 
-/** Flush any accumulating hit or miss, appending it to the delta. */
+/** Flush any accumulating hit or miss.
+ *
+ * This works by setting match_pos, match_len, and miss_len to indicate the
+ * match or miss data for processing with rs_putoutput(). It also resets
+ * basis_len to clear the last match, and clears scoop_pos ready for after the
+ * data has been processed and consumed. */
 static inline rs_result rs_appendflush(rs_job_t *job)
 {
     /* Set flush match or miss pos/len to the last match or miss */
@@ -330,15 +335,14 @@ static inline rs_result rs_appendflush(rs_job_t *job)
 
 /** Process matching data in the scoop.
  *
- * The scoop contains match data at scoop_next of length scoop_pos. This
+ * The scoop contains match data at match_pos of length match_len. This
  * function processes that match data, returning RS_DONE if it completes, or
- * RS_BLOCKED if it gets blocked. After it completes scoop_pos is reset to
- * still point at the next unscanned data.
+ * RS_BLOCKED if it gets blocked. It removes data from the scoop and updates
+ * input_pos match_pos, and match_len to reflect any data processesed.
  *
- * This function currently just removes data from the scoop and adjusts
- * scoop_pos appropriately. In the future this could be used for something like
- * context compressing of miss data. Note that it also calls rs_tube_catchup to
- * output any pending output. */
+ * This uses the match_cb() generator callback to process the data, allowing
+ * different generator backends to do different things like generate different
+ * output formats, apply compression, trigger state machines, etc. */
 static inline rs_result rs_processmatch(rs_job_t *job)
 {
     rs_long_t pos = job->match_pos;
@@ -359,17 +363,14 @@ static inline rs_result rs_processmatch(rs_job_t *job)
 
 /** Process miss data in the scoop.
  *
- * The scoop contains miss data at scoop_next of length scoop_pos. This
- * function processes that miss data, returning RS_DONE if it completes, or
- * RS_BLOCKED if it gets blocked. After it completes scoop_pos is reset to
- * still point at the next unscanned data.
+ * The scoop contains miss data at scoop_next of length miss_len. This function
+ * processes that miss data, returning RS_DONE if it completes, or RS_BLOCKED
+ * if it gets blocked. It removes data from the scoop and updates input_pos and
+ * miss_len to reflect any data processesed.
  *
- * This function uses rs_tube_copy to queue copying from the scoop into output.
- * and uses rs_tube_catchup to do the copying. This automaticly removes data
- * from the scoop, but this can block. While rs_tube_catchup is blocked,
- * scoop_pos does not point at legit data, so scanning can also not proceed.
- *
- * In the future this could do compression of miss data before outputing it. */
+ * This uses the miss_cb() generator callback to process the data, allowing
+ * different generator backends to do different things like generate different
+ * output formats, apply compression, trigger state machines, etc. */
 static inline rs_result rs_processmiss(rs_job_t *job)
 {
     rs_long_t pos = job->input_pos;

@@ -107,21 +107,6 @@ int rs_jobstream_send(rs_job_t *job, int len, const void *buf);
 /* A rs_send_t function that can write to a filo. */
 int rs_file_send(FILE *out, int len, const void *buf);
 
-#  define RS_BUFOUT_LEN 64
-/** An output writer that wraps another writer and adds a buffer.
- *
- * This writer adds a small buffer to guarantee that writes smaller than 64
- * bytes are atomic and will write all or nothing. This means small cmd writes
- * that block can be just re-tried without needing to handle partial writes. */
-typedef struct rs_bufout {
-    void *out;
-    rs_send_t *send;
-    int len;
-    rs_byte_t buf[RS_BUFOUT_LEN];
-} rs_bufout_t;
-void rs_bufout_init(rs_bufout_t *bufout, void *out, rs_send_t *send);
-int rs_bufout_send(rs_bufout_t *bufout, int len, const void *buf);
-
 /* Create a mksig job using generator for creating the delta output. */
 rs_job_t *rs_job_mksig(void *gen, rs_genmark_t *mark_cb,
                        rs_gendata_t *block_cb);

@@ -38,7 +38,7 @@
  * and see if there is any block in the signature hash table that has the same
  * weak sum. If there is one, then we also compute the strong sum of the new
  * block, and cross check that. If they're the same, then we can assume we have
- * a match.
+ * a match. This is all done inside the rs_signature_find_match() call.
  *
  * The final block of the file has to be handled a little differently, because
  * it may be a short match. Short blocks in the signature don't include their
@@ -48,19 +48,10 @@
  * to send it with a length that is the same as the block matched, and not the
  * block length from the signature.
  *
- * Profiling results as of v1.26, 2001-03-18:
- *
- * If everything matches, then we spend almost all our time in rs_mdfour64 and
- * rs_weak_sum, which is unavoidable and therefore a good profile.
- *
- * If nothing matches, it is not so good.
- *
- * 2002-06-26: Donovan Baarda
- *
- * The following is based entirely on pysync. It is much cleaner than the
- * previous incarnation of this code. It is slightly complicated because in
- * this case the output can block, so the main delta loop needs to stop when
- * this happens.
+ * The following was based on pysync, but has been extended to use generator
+ * callbacks that can block for generating the output. It is slightly
+ * complicated because the callbacks can process only part of the data and
+ * block, so the main delta loop needs to stop when this happens.
  *
  * In pysync a 'last' attribute is used to hold the last miss or match for
  * extending if possible. In this code, basis_len and scoop_pos are used
@@ -77,16 +68,22 @@
  * just terminating delta calculation, so a flush based API can in some ways be
  * more flexible...
  *
- * The input data is first scanned, then processed. Scanning identifies input
- * data as misses or matches, and emits the instruction stream. Processing the
- * data consumes it off the input scoop and outputs the processed miss data
- * into the tube.
+ * Before any data is scanned the mark_cb(gen, RS_SEND_INIT) generator callback
+ * is called to initialize the generator. Then input data is first scanned,
+ * then processed. Scanning identifies input data as misses or matches, and
+ * calls the miss_cb() or mark_cb() generator callbacks. These callbacks can
+ * block or consume only part of the data, and they will be called repeatedly
+ * each iteration until all the data is processed. Processing the data consumes
+ * it off the input scoop and passes it to the generator callbacks to process
+ * and handle. After all the input data has been processed mark_cb(gen,
+ * RS_SEND_DONE) is called to finalize the generator. Note mark_cb(gen,
+ * RS_SEND_SYNC) could be used for a flush-api.
  *
  * The scoop contains all data yet to be processed. The scoop_pos is an index
  * into the scoop that indicates the point scanned to. As data is scanned,
  * scoop_pos is incremented. As data is processed, it is removed from the scoop
- * and scoop_pos adjusted. Everything gets complicated because the tube can
- * block. When the tube is blocked, no data can be processed. */
+ * and scoop_pos adjusted. If the generator callbacks block, no more data can
+ * be processed in this iteration. */
 
 #include "config.h"
 #include <assert.h>

@@ -126,13 +126,19 @@ rs_result rs_delta_file(rs_signature_t *sig, FILE *new_file, FILE *delta_file,
 {
     rs_job_t *job;
     rs_result r;
+    rs_stats_t nstats;
 
-    job = rs_delta_begin(sig);
+    if (!stats)
+        stats = &nstats;
+    rs_deltagen_t *gen =
+        rs_deltagen_new(delta_file, (rs_send_t *)rs_file_send, stats);
+    job =
+        rs_job_delta(sig, gen, (rs_genmark_t *)rs_deltagen_mark,
+                     (rs_gendata_t *)rs_deltagen_match,
+                     (rs_gendata_t *)rs_deltagen_miss);
     /* Size inbuf for 1 block, outbuf for literal cmd + 4 blocks. */
     r = rs_whole_run(job, new_file, delta_file, sig->block_len,
                      10 + 4 * sig->block_len);
-    if (stats)
-        memcpy(stats, &job->stats, sizeof *stats);
     rs_job_free(job);
     return r;
 }

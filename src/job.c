@@ -139,6 +139,37 @@ static rs_result rs_job_work(rs_job_t *job, rs_buffers_t *buffers)
     }
 }
 
+int rs_job_send(rs_job_t *job, int len, const void *buf)
+{
+    rs_result result;
+    rs_buffers_t stream;
+
+    rs_job_check(job);
+    assert(job->statefn);
+    if (len == RS_SEND_DONE) {
+        stream.avail_in = 0;
+        stream.eof_in = 1;
+    } else {
+        stream.avail_in = len;
+        stream.eof_in = 0;
+    }
+    stream.next_in = (char *)buf;
+    stream.avail_out = 0;
+    stream.next_out = NULL;
+    job->stream = &stream;
+    do {
+        result = job->statefn(job);
+    } while (result == RS_RUNNING);
+    if (result != RS_BLOCKED) {
+        /* The job is done so clear statefn. */
+        job->statefn = NULL;
+        result = rs_job_complete(job, result);
+    }
+    return (result == RS_DONE
+            || result ==
+            RS_BLOCKED) ? len - (int)stream.avail_in : -(int)result;
+}
+
 const rs_stats_t *rs_job_statistics(rs_job_t *job)
 {
     return &job->stats;

@@ -21,12 +21,18 @@ addons:
       - popt
     update: true
 
+cache:
+    directories:
+        - $HOME/AppData/Local/Temp/chocolatey
+
 script:
   - cmake --build . --target check
 
 matrix:
   include:
     - os: windows
+      before_install:
+        - choco install gnuwin
 
     - os: osx
       compiler: clang

@@ -32,7 +32,7 @@ matrix:
   include:
     - os: windows
       before_install:
-        - choco install gnuwin
+        - choco install -y gnuwin
 
     - os: osx
       compiler: clang

@@ -52,7 +52,7 @@ hashtable_t *_hashtable_new(int size)
     t->count = 0;
     t->tmask = size2 - 1;
 #ifndef HASHTABLE_NBLOOM
-    if (!(t->kbloom = calloc(size2 / 8, sizeof(unsigned char)))) {
+    if (!(t->kbloom = calloc((size2 + 7) / 8, sizeof(unsigned char)))) {
         _hashtable_free(t);
         return NULL;
     }

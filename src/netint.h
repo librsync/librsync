@@ -20,6 +20,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+int rs_put_netint(rs_long_t val, int len, rs_byte_t *buf);
+
 rs_result rs_squirt_byte(rs_job_t *job, rs_byte_t val);
 rs_result rs_squirt_netint(rs_job_t *job, rs_long_t val, int len);
 rs_result rs_squirt_n4(rs_job_t *job, int val);

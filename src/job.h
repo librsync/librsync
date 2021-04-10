@@ -21,6 +21,7 @@
 
 #include "mdfour.h"
 #include "checksum.h"
+#include "deltagen.h"
 
 /** The contents of this structure are private. */
 struct rs_job {
@@ -33,6 +34,12 @@ struct rs_job {
 
     /** Callback for each processing step. */
     rs_result (*statefn)(rs_job_t *);
+
+    /** Callbacks for generating delta output using stream. */
+    void *gen;
+    rs_genmark_t *mark_cb;
+    rs_gendata_t *match_cb;
+    rs_gendata_t *miss_cb;
 
     /** Final result of processing job. Used by rs_job_s_failed(). */
     rs_result final_result;
@@ -88,8 +95,12 @@ struct rs_job {
      * from the input. */
     size_t copy_len;
 
-    /** Copy from the basis position. */
-    rs_long_t basis_pos, basis_len;
+    rs_long_t basis_pos;        /**< Current match position found. */
+    int basis_len;              /**< Current match length found. */
+    rs_long_t input_pos;        /**< The input position flushed upto. */
+    rs_long_t match_pos;        /**< Match position to flush. */
+    int match_len;              /**< Match length to flush. */
+    int miss_len;               /**< Miss length to flush. */
 
     /** Callback used to copy data from the basis into the output. */
     rs_copy_cb *copy_cb;

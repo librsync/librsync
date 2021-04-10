@@ -72,8 +72,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/%{name}*
 
 %changelog
-* Tue May 19 2020 Donovan Baarda <abo@minkirri.apana.org.au>
-- Prepared SPEC file for librsync 2.3.2
+* Sat Apr 10 2021 Donovan Baarda <abo@minkirri.apana.org.au>
+- Updated SPEC file for librsync 2.3.2
 * Tue May 19 2020 Donovan Baarda <abo@minkirri.apana.org.au>
 - Updated SPEC file for librsync 2.3.1
 * Tue Apr 07 2020 Donovan Baarda <abo@minkirri.apana.org.au>

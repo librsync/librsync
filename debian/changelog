@@ -1,3 +1,42 @@
+librsync (2.0.0-2) unstable; urgency=low
+
+  * Fix debian packaging script. (Chilledheart, #96)
+
+ -- John Goerzen <jgoerzen@complete.org>  Wed, 30 Nov 2015 11:25:03 -0500
+
+librsync (2.0.0-1) unstable; urgency=low
+
+  * Bump librsync version number to 2.0, to match the library
+    soname/dylib version. (Martin Pool, #48)
+
+ -- John Goerzen <jgoerzen@complete.org>  Wed, 30 Nov 2015 11:25:03 -0500
+
+librsync (1.0.1-1) unstable; urgency=low
+
+  * Better performance on large files. (Victor Denisov)
+  * Add comment on usage of rs_build_hash_table(), and assert correct use.
+  Callers must call rs_build_hash_table() after loading the signature,
+  and before calling rs_delta_begin(). (Paul Harris, paulharris@computer.org)
+  * Switch from autoconf to CMake. (Adam Schubert)
+
+ -- John Goerzen <jgoerzen@complete.org>  Fri, 11 Nov 2015 11:25:03 -0500
+
+librsync (1.0.0-1) unstable; urgency=low
+
+  * SECURITY: CVE-2014-8242 (#5)
+  * Various build fixes. (Timothy Gu)
+  * Improved rdiff man page from Debian.
+  * Improved librsync.spec file for building RPMs.
+  * Fixed bug #1110812 'internal error: job made no progress'; on large
+  files.
+  * Moved hosting to https://github.com/librsync/librsync/
+  * Travis-CI.org integration test at https://travis-ci.org/librsync/librsync/
+  * Remove bundled copy of popt; it must be installed separately.
+  * You can set $LIBTOOLIZE before running autogen.sh, for example on
+  OS X Homebrew where it is called glibtoolize.
+
+ -- John Goerzen <jgoerzen@complete.org>  Sat, 24 Jan 2015 11:25:03 -0500
+
 librsync (0.9.6-2) unstable; urgency=low
 
   * Manually install the rdiff bin because it wasn't anymore.

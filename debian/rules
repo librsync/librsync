@@ -6,7 +6,7 @@
 #export DH_VERBOSE=1
 
 # This is the debhelper compatability version to use.
-export DH_COMPAT=3
+export DH_COMPAT=9
 
 # shared library versions, option 1
 version=2.0.5
@@ -21,12 +21,12 @@ configure: configure-stamp
 configure-stamp:
 	dh_testdir
 	# Add here commands to configure the package.
-	./configure --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --enable-shared
+	cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr .
 
 	touch configure-stamp
 
 build: build-stamp
-build-stamp: configure-stamp 
+build-stamp: configure-stamp
 	dh_testdir
 
 	# Add here commands to compile the package.
@@ -51,9 +51,8 @@ install: build
 	dh_installdirs
 
 	# Add here commands to install the package into debian/tmp
-	$(MAKE) install prefix=$(CURDIR)/debian/tmp/usr
-	-mkdir debian/tmp/usr/bin
-	cp .libs/rdiff debian/tmp/usr/bin
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
+	cp rdiff debian/tmp/usr/bin
 
 # Build architecture-independent files here.
 binary-indep: build install
@@ -65,7 +64,7 @@ binary-arch: build install
 	dh_testroot
 	dh_movefiles
 
-#	dh_installdebconf	
+#	dh_installdebconf
 	dh_installdocs
 	dh_installexamples
 	dh_installmenu
@@ -78,7 +77,7 @@ binary-arch: build install
 	dh_installman
 	dh_installinfo
 #	dh_undocumented
-	dh_installchangelogs NEWS
+	dh_installchangelogs NEWS.md
 	dh_link
 	dh_strip
 	dh_compress

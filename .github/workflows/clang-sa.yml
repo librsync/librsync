@@ -1,0 +1,39 @@
+name: clang-sa
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install package dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y cmake libpopt-dev
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install python test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install scan-build
+
+      - name: Prepare
+        run: |
+          mkdir "$HOME/work/build"
+          echo "BUILD_DIR=$HOME/work/build" >> $GITHUB_ENV
+
+      - name: Configure
+        run: |
+          cmake -B "$BUILD_DIR" -S "$GITHUB_WORKSPACE" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+      - name: Run checks
+        run: |
+          analyze-build --help-checkers-verbose
+          analyze-build --cdb "$BUILD_DIR/compile_commands.json" -v

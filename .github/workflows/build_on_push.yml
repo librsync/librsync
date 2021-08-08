@@ -3,6 +3,22 @@ name: continuous integration
 on: [push, pull_request]
 
 jobs:
+  windows:
+    runs-on: windows-2019
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Configure
+        run: |
+          cmake .
+
+      - name: Build
+        env:
+          CTEST_OUTPUT_ON_FAILURE: 1
+        run: |
+          cmake --build . --parallel 4 --target check
+
   build:
     runs-on: ${{ matrix.os }}
     strategy:

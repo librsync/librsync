@@ -1,0 +1,82 @@
+name: continuous integration
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # os: [ubuntu-20.04, macos-10.15, windows-2019]
+        os: [ubuntu-20.04, macos-10.15]
+        compiler: [clang, gcc]
+        generator: ["Unix Makefiles", "Ninja"]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install package dependencies
+        if:  startsWith( matrix.os, 'ubuntu' )
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y cmake libpopt-dev doxygen ninja-build
+
+      - name: Install package dependencies
+        if:  startsWith( matrix.os, 'macos' )
+        run: |
+          brew install cmake popt doxygen ninja
+
+      - name: Prepare
+        run: |
+          mkdir "$HOME/work/build"
+          mkdir "$HOME/work/install"
+          echo "BUILD_DIR=$HOME/work/build" >> $GITHUB_ENV
+          echo "INSTALL_DIR=$HOME/work/install" >> $GITHUB_ENV
+
+      - name: Configure
+        run: |
+          cmake -B "$BUILD_DIR" \
+              -S "$GITHUB_WORKSPACE" \
+              -G "${{ matrix.generator }}" \
+              -DCMAKE_C_COMPILER=${{ matrix.compiler }} \
+              -DCMAKE_INSTALL_PREFIX:PATH="$INSTALL_DIR"
+
+      - name: Build
+        env:
+          CTEST_OUTPUT_ON_FAILURE: 1
+        run: |
+          cmake --build "$BUILD_DIR" --parallel 4 --target check
+          cmake --build "$BUILD_DIR" --parallel 4 --target install
+
+  options:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        options: ["-D BUILD_SHARED_LIBS=OFF", "-D BUILD_RDIFF=OFF"]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install package dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y cmake libpopt-dev doxygen ninja-build
+
+      - name: Prepare
+        run: |
+          mkdir "$HOME/work/build"
+          echo "BUILD_DIR=$HOME/work/build" >> $GITHUB_ENV
+
+      - name: Configure
+        run: |
+          cmake -B "$BUILD_DIR" -S "$GITHUB_WORKSPACE" ${{ matrix.options }}
+
+      - name: Build
+        env:
+          CTEST_OUTPUT_ON_FAILURE: 1
+        run: |
+          cmake --build "$BUILD_DIR" --parallel 4 --target check

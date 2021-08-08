@@ -18,7 +18,7 @@ jobs:
         run: |
           mkdir "$HOME/work/build"
           echo "BUILD_DIR=$HOME/work/build" >> $GITHUB_ENV
-          echo "/usr/lib/llvm-10/share/clang/:$PATH" >> $GITHUB_PATH
+          echo "/usr/lib/llvm-10/share/clang/" >> $GITHUB_PATH
 
       - name: Configure
         run: |

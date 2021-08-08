@@ -1,0 +1,29 @@
+name: clang-tidy
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install package dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y cmake libpopt-dev clang-tidy
+
+      - name: Prepare
+        run: |
+          mkdir "$HOME/work/build"
+          echo "BUILD_DIR=$HOME/work/build" >> $GITHUB_ENV
+          echo "/usr/lib/llvm-10/share/clang/:$PATH" >> $GITHUB_PATH
+
+      - name: Configure
+        run: |
+          cmake -B "$BUILD_DIR" -S "$GITHUB_WORKSPACE" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+      - name: Run checks
+        run: |
+          run-clang-tidy.py -p="$BUILD_DIR"

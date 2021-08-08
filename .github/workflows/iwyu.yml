@@ -1,0 +1,42 @@
+name: include what you use
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install package dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y cmake libpopt-dev clang-10 libclang-10-dev llvm-10-dev
+
+      - name: Checkout iwyu
+        uses: actions/checkout@v2
+        with:
+          repository: include-what-you-use/include-what-you-use.git
+          path: iwyu-src
+          ref: 0.14
+
+      - name: Build iwyu
+        run: |
+          mkdir iwyu-build iwyu-install
+          cmake -B iwyu-build -S iwyu-src -DCMAKE_PREFIX_PATH=/usr/lib/llvm-10 -DCMAKE_INSTALL_PREFIX:PATH=$HOME/work/iwyu-install
+          cmake --build iwyu-build --parallel 4 --target all
+          cmake --build iwyu-build --parallel 4 --target install
+          mkdir -p $HOME/work/iwyu-install/lib/clang/10.0.0
+          ln -s `clang-10 -print-resource-dir`/include $HOME/work/iwyu-install/lib/clang/10.0.0/include
+
+      - name: Configure
+        env:
+          CC: clang-10
+          CXX: clang++-10
+        run: |
+          cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .
+
+      - name: Run checks
+        run: |
+          python $HOME/work/iwyu-install/bin/iwyu_tool.py -p .

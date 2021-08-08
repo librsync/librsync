@@ -24,16 +24,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install scan-build
 
-      - name: Prepare
-        run: |
-          mkdir "$HOME/work/build"
-          echo "BUILD_DIR=$HOME/work/build" >> $GITHUB_ENV
-
       - name: Configure
         run: |
-          cmake -B "$BUILD_DIR" -S "$GITHUB_WORKSPACE" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+          cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
       - name: Run checks
         run: |
           analyze-build --help-checkers-verbose
-          analyze-build --cdb "$BUILD_DIR/compile_commands.json" -v
+          analyze-build --cdb ./compile_commands.json -v

@@ -6,25 +6,19 @@
 # modify it under the terms of the GNU Lesser General Public License
 # as published by the Free Software Foundation; either version 2.1 of
 # the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful, but
 # WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # Lesser General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU Lesser General Public
 # License along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-
-# For CMake tests
-bindir=$1
-if [ -z "$bindir" ]
-then
-   # Fallback to automake tests
-   bindir='..'
-fi
-echo "BINDIR $bindir"
+# For CMake tests we pass in the full path to rdiff as $1.
+RDIFF=${1:-../rdiff}
+echo "RDIFF $RDIFF"
 
 testinputdir=$srcdir/$test_base.input
 tmpdir=`mktemp -d -t librsynctest_XXXXXXXX`
@@ -54,12 +48,12 @@ delta_instr="
 bufsizes='0 1 2 3 7 15 100 10000 200000'
 
 run_test () {
-    if :|| test -n "$VERBOSE" 
+    if :|| test -n "$VERBOSE"
     then
 	echo "    $@" >&2
     fi
 
-    "$@" || fail_test "$?" "$@" 
+    "$@" || fail_test "$?" "$@"
 }
 
 fail_test () {
@@ -86,11 +80,11 @@ triple_test () {
     old="$2"
     new="$3"
     hashopt="$4"
-    
-    run_test $bindir/rdiff $debug $hashopt -f -I$buf -O$buf $stats signature --block-size=$block_len \
+
+    run_test ${RDIFF} $debug $hashopt -f -I$buf -O$buf $stats signature --block-size=$block_len \
              $old $tmpdir/sig
-    run_test $bindir/rdiff $debug $hashopt -f -I$buf -O$buf $stats delta $tmpdir/sig $new $tmpdir/delta
-    run_test $bindir/rdiff $debug $hashopt -f -I$buf -O$buf $stats patch $old $tmpdir/delta $tmpdir/new
+    run_test ${RDIFF} $debug $hashopt -f -I$buf -O$buf $stats delta $tmpdir/sig $new $tmpdir/delta
+    run_test ${RDIFF} $debug $hashopt -f -I$buf -O$buf $stats patch $old $tmpdir/delta $tmpdir/new
     check_compare $new $tmpdir/new "triple -f -I$buf -O$buf $old $new"
 }
 

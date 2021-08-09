@@ -27,7 +27,7 @@
 srcdir='.'
 . $srcdir/testcommon.sh
 
-# Note $1 is used to specify "BINDIR" by cmake tests, so we use
+# Note $1 is used to specify "RDIFF" by cmake tests, so we use
 # arguments after that.
 
 # Allow a data directory to be specified in $2 to use persistent
@@ -39,7 +39,7 @@ echo "DATADIR $datadir"
 run_test () {
   echo $1 blocks of 1K size.
   echo ========================
-  $srcdir/largefile.test $bindir $1 $2
+  $srcdir/largefile.test $RDIFF $1 $2
   echo
 }
 

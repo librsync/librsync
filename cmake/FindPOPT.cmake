@@ -27,7 +27,6 @@
 # - Check for the presence of POPT
 #
 # The following vars can be set to change behaviour;
-#  POPT_ROOT_DIR - path hint for finding popt.
 #  POPT_INCLUDE_DIR - cached override for POPT_INCLUDE_DIRS.
 #  POPT_LIBRARY_RELEASE - cached override for POPT_LIBRARIES.
 #
@@ -49,12 +48,8 @@ endif (PKG_CONFIG_FOUND)
 
 # Fallback to searching for path and library if PkgConfig didn't work.
 if (NOT POPT_FOUND)
-  find_path (POPT_INCLUDE_DIR popt.h
-    HINTS ${POPT_ROOT_DIR} ${CMAKE_INSTALL_PREFIX} $ENV{programfiles}\\GnuWin32 $ENV{programfiles32}\\GnuWin32
-    PATH_SUFFIXES include)
-  find_library (POPT_LIBRARY_RELEASE popt
-    HINTS ${POPT_ROOT_DIR} ${CMAKE_INSTALL_PREFIX} $ENV{programfiles}\\GnuWin32 $ENV{programfiles32}\\GnuWin32
-    PATH_SUFFIXES lib)
+  find_path (POPT_INCLUDE_DIR popt.h)
+  find_library (POPT_LIBRARY_RELEASE popt)
 endif (NOT POPT_FOUND)
 
 # Check library and paths and set POPT_FOUND appropriately.

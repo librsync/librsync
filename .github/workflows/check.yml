@@ -32,10 +32,7 @@ jobs:
            options: "-DBUILD_RDIFF=OFF"
          - os: ubuntu-latest
            build: Release
-           options: "-DCMAKE_C_COMPILER=clang"
-         - os: ubuntu-latest
-           build: Release
-           options: "-G Ninja"
+           options: "-G Ninja -DCMAKE_C_COMPILER=clang"
          - os: ubuntu-latest
            build: Debug
 

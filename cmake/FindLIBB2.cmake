@@ -12,8 +12,8 @@
 find_path (LIBB2_INCLUDE_DIR blake2.h)
 find_library (LIBB2_LIBRARY_RELEASE b2)
 
-INCLUDE(FindPackageHandleStandardArgs)
-FIND_PACKAGE_HANDLE_STANDARD_ARGS (LIBB2 DEFAULT_MSG LIBB2_LIBRARY_RELEASE LIBB2_INCLUDE_DIR)
+include (FindPackageHandleStandardArgs)
+find_package_handle_standard_args (LIBB2 DEFAULT_MSG LIBB2_LIBRARY_RELEASE LIBB2_INCLUDE_DIR)
 
 # Set output vars from auto-detected/cached vars.
 if (LIBB2_FOUND)

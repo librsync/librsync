@@ -180,7 +180,7 @@ if (ZLIB_FOUND)
 endif (ZLIB_FOUND)
 
 # Find libb2
-find_package(libb2)
+find_package(LIBB2)
 if (LIBB2_FOUND)
   message (STATUS "LIBB2_INCLUDE_DIRS  = ${LIBB2_INCLUDE_DIRS}")
   message (STATUS "LIBB2_LIBRARIES = ${LIBB2_LIBRARIES}")

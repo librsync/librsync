@@ -33,7 +33,7 @@ for delta in $inputdir/*.delta
 do
     for inbuf in $bufsizes
     do
-        cmd="$bindir/rdiff -I$inbuf -f patch /dev/null $delta $new"
+        cmd="${RDIFF} -I$inbuf -f patch /dev/null $delta $new"
         run_test $cmd
         expect=$inputdir/`basename $delta .delta`.expect
 	check_compare $expect $new
@@ -50,7 +50,7 @@ ret=0
 # Change $new and rerun last test to check it won't be reverted
 echo "$output_expect" > $expect
 echo "$output_expect" > $new
-cmd="$bindir/rdiff patch /dev/null $delta $new"
+cmd="${RDIFF} patch /dev/null $delta $new"
 echo "    $cmd" >&2
 output="`$cmd 2>&1`" || ret=$?
 [ "$ret" -eq "$RS_IO_ERROR" ] ||

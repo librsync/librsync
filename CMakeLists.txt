@@ -41,8 +41,13 @@ endif()
 
 option(BUILD_SHARED_LIBS "Build librsync as a shared library." ON)
 
+# Option ENABLE_TRACE defaults to ON for Debug builds.
+if (CMAKE_BUILD_TYPE MATCHES Debug)
+  option(ENABLE_TRACE "Compile in detailed trace messages" ON)
+else ()
+  option(ENABLE_TRACE "Compile in detailed trace messages" OFF)
+endif()
 set(DO_RS_TRACE 0)
-option(ENABLE_TRACE "Compile in detailed trace messages" OFF)
 if (ENABLE_TRACE)
     set(DO_RS_TRACE 1)
 endif (ENABLE_TRACE)

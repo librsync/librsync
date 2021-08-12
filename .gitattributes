@@ -1,0 +1,6 @@
+# Data files used for tests.
+*.data binary
+*.in binary
+*.sig binary
+*.delta binary
+*.expect binary

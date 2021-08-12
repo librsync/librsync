@@ -1,4 +1,4 @@
-#! /bin/sh -ex
+#! /bin/sh -e
 
 # librsync -- the library for network deltas
 
@@ -21,8 +21,11 @@
 
 # Bad command-line options return an error and print a message.
 
-errout=`mktemp -t rdiff_bad_option_test_XXXXXXX`
-trap "rm $errout" EXIT
-! $1/rdiff --imaginary-option 2>"$errout"
+srcdir='.'
+. $srcdir/testcommon.sh
+
+errout=$tmpdir/rdiff.err
+set -x
+! ${RDIFF} --imaginary-option 2>"$errout"
 cat "$errout"
 grep 'unknown option: --imaginary-option' "$errout"

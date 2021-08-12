@@ -34,7 +34,7 @@ for rollfunc in rollsum rabinkarp; do
       for input in "$srcdir/signature.input"/*.in; do
         for inbuf in $bufsizes; do
           expect=`echo $input | sed -e "s/.in\$/-R${rollfunc}-H${hashfunc}-S${stronglen}.sig/"`
-          run_test $bindir/rdiff -R$rollfunc -H$hashfunc -S$stronglen -I$inbuf -f signature "$input" "$new"
+          run_test ${RDIFF} -R$rollfunc -H$hashfunc -S$stronglen -I$inbuf -f signature "$input" "$new"
           check_compare "$expect" "$new"
 	done
       done

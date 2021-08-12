@@ -27,7 +27,7 @@
 srcdir='.'
 . $srcdir/testcommon.sh
 
-# Note $1 is used to specify "BINDIR" by cmake tests, so we use
+# Note $1 is used to specify "RDIFF" by cmake tests, so we use
 # arguments after that.
 
 # Allow the number of blocks to be specified in $2 in the form '64K'.
@@ -57,8 +57,8 @@ if [ ! -f "$old" ]; then
    dd bs=$blocks count=256 skip=640 if="$old" >>"$new"
 fi
 
-run_test time $bindir/rdiff $debug -f -s -b $blocksize -S 8 signature $old $sig
-run_test time $bindir/rdiff $debug -f -s delta $sig $new $delta
-run_test time $bindir/rdiff $debug -f -s patch $old $delta $out
+run_test time ${RDIFF} $debug -f -s -b $blocksize -S 8 signature $old $sig
+run_test time ${RDIFF} $debug -f -s delta $sig $new $delta
+run_test time ${RDIFF} $debug -f -s patch $old $delta $out
 check_compare $new $out "large files"
 true

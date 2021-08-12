@@ -39,10 +39,19 @@ if (NOT CMAKE_SYSTEM_NAME)
 	message(FATAL_ERROR "No target OS set")
 endif()
 
+# Set CMAKE_BUILD_TYPE if unset.
+include(BuildType)
+message (STATUS "CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}")
+
 option(BUILD_SHARED_LIBS "Build librsync as a shared library." ON)
 
+# Option ENABLE_TRACE defaults to ON for Debug builds.
+if (CMAKE_BUILD_TYPE MATCHES Debug)
+  option(ENABLE_TRACE "Compile in detailed trace messages" ON)
+else ()
+  option(ENABLE_TRACE "Compile in detailed trace messages" OFF)
+endif()
 set(DO_RS_TRACE 0)
-option(ENABLE_TRACE "Compile in detailed trace messages" OFF)
 if (ENABLE_TRACE)
     set(DO_RS_TRACE 1)
 endif (ENABLE_TRACE)
@@ -180,7 +189,7 @@ if (ZLIB_FOUND)
 endif (ZLIB_FOUND)
 
 # Find libb2
-find_package(libb2)
+find_package(LIBB2)
 if (LIBB2_FOUND)
   message (STATUS "LIBB2_INCLUDE_DIRS  = ${LIBB2_INCLUDE_DIRS}")
   message (STATUS "LIBB2_LIBRARIES = ${LIBB2_LIBRARIES}")
@@ -279,20 +288,37 @@ target_compile_options(sumset_test PRIVATE -DLIBRSYNC_STATIC_DEFINE)
 target_link_libraries(sumset_test ${blake2_LIBS})
 add_test(NAME sumset_test COMMAND sumset_test)
 
+# On Windows we need to explicitly execute bash for scripts.
+if (WIN32)
+    set(WIN_BASH bash -e)
+endif (WIN32)
+
 # Disable rdiff specific tests
 if (BUILD_RDIFF)
     add_test(NAME rdiff_bad_option
-             COMMAND rdiff_bad_option.sh ${CMAKE_CURRENT_BINARY_DIR}
-             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
-
-    add_test(NAME Help COMMAND help.test ${CMAKE_CURRENT_BINARY_DIR} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
-
-    add_test(NAME Mutate COMMAND mutate.test ${CMAKE_CURRENT_BINARY_DIR} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
-    add_test(NAME Signature COMMAND signature.test ${CMAKE_CURRENT_BINARY_DIR} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
-    add_test(NAME Sources COMMAND sources.test ${CMAKE_CURRENT_BINARY_DIR} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
-    add_test(NAME Triple COMMAND triple.test ${CMAKE_CURRENT_BINARY_DIR} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
-    add_test(NAME Delta COMMAND delta.test ${CMAKE_CURRENT_BINARY_DIR} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
-    add_test(NAME Changes COMMAND changes.test ${CMAKE_CURRENT_BINARY_DIR} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+        COMMAND ${WIN_BASH} rdiff_bad_option.test $<TARGET_FILE:rdiff>
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+    add_test(NAME Help
+        COMMAND ${WIN_BASH} help.test $<TARGET_FILE:rdiff>
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+    add_test(NAME Mutate
+        COMMAND ${WIN_BASH} mutate.test $<TARGET_FILE:rdiff>
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+    add_test(NAME Signature
+        COMMAND ${WIN_BASH} signature.test $<TARGET_FILE:rdiff>
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+    add_test(NAME Sources
+        COMMAND ${WIN_BASH} sources.test $<TARGET_FILE:rdiff>
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+    add_test(NAME Triple
+        COMMAND ${WIN_BASH} triple.test $<TARGET_FILE:rdiff>
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+    add_test(NAME Delta
+        COMMAND ${WIN_BASH} delta.test $<TARGET_FILE:rdiff>
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
+    add_test(NAME Changes
+        COMMAND ${WIN_BASH} changes.test $<TARGET_FILE:rdiff>
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
 endif (BUILD_RDIFF)
 
 

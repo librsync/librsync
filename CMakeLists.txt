@@ -39,6 +39,10 @@ if (NOT CMAKE_SYSTEM_NAME)
 	message(FATAL_ERROR "No target OS set")
 endif()
 
+# Set CMAKE_BUILD_TYPE if unset.
+include(BuildType)
+message (STATUS "CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}")
+
 option(BUILD_SHARED_LIBS "Build librsync as a shared library." ON)
 
 # Option ENABLE_TRACE defaults to ON for Debug builds.

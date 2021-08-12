@@ -292,7 +292,7 @@ endif (WIN32)
 # Disable rdiff specific tests
 if (BUILD_RDIFF)
     add_test(NAME rdiff_bad_option
-        COMMAND ${WIN_BASH} rdiff_bad_option.sh $<TARGET_FILE:rdiff>
+        COMMAND ${WIN_BASH} rdiff_bad_option.test $<TARGET_FILE:rdiff>
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests)
     add_test(NAME Help
         COMMAND ${WIN_BASH} help.test $<TARGET_FILE:rdiff>

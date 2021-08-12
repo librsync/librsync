@@ -286,7 +286,7 @@ add_test(NAME sumset_test COMMAND sumset_test)
 
 # On Windows we need to explicitly execute bash for scripts.
 if (WIN32)
-    set(WIN_BASH "bash -e")
+    set(WIN_BASH bash -e)
 endif (WIN32)
 
 # Disable rdiff specific tests

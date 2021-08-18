@@ -31,7 +31,7 @@ set(LIBRSYNC_VERSION
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-# Turn on generating compile_commands.json for clang-tidy, clang-sa, and iwyu.
+# Turn on generating compile_commands.json for clang-tidy and iwyu.
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 if (NOT CMAKE_SYSTEM_PROCESSOR)

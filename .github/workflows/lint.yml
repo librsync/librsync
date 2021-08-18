@@ -13,7 +13,7 @@ jobs:
       # Unfortunately available Marketplace Actions for this are in a mess, so we do it manually.
       run: |
         sudo apt-get update -y
-        sudo apt-get install -y libpopt-dev libb2-dev clang-tools iwyu
+        sudo apt-get install -y libpopt-dev libb2-dev clang-tidy iwyu
 
     - name: Configure CMake
       run: cmake .

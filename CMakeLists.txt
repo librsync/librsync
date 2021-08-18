@@ -259,6 +259,13 @@ add_custom_target(clang-tidy
     VERBATIM
 )
 
+# clang-tidy target to check code for errors.
+add_custom_target(iwyu
+    COMMENT "Check #includes for correctness using iwyu_tool."
+    COMMAND iwyu_tool -p ${CMAKE_CURRENT_BINARY_DIR}
+    VERBATIM
+)
+
 # Testing
 
 add_executable(isprefix_test

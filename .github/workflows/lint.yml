@@ -1,0 +1,25 @@
+name: Lint
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Dependencies
+      # Unfortunately available Marketplace Actions for this are in a mess, so we do it manually.
+      run: |
+        sudo apt-get update -y
+        sudo apt-get install -y libpopt-dev libb2-dev clang-tools iwyu
+
+    - name: Configure CMake
+      run: cmake .
+
+    - name: clang-tidy
+      run: cmake --build . --target clang-tidy
+
+    - name: iwyu
+      run: cmake --build . --target iwyu

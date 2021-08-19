@@ -84,10 +84,8 @@ char *rs_format_stats(rs_stats_t const *stats, char *buf, size_t size)
         sec = 1;                // avoid division by zero
     mb_in = (double)stats->in_bytes / 1e6;
     mb_out = (double)stats->out_bytes / 1e6;
-    len +=
-        snprintf(buf + len, size - (size_t)len,
-                 " speed[%.1f MB (%.1f MB/s) in, %.1f MB (%.1f MB/s) out, %d sec]",
-                 mb_in, mb_in / sec, mb_out, mb_out / sec, sec);
-
+    snprintf(buf + len, size - (size_t)len,
+             " speed[%.1f MB (%.1f MB/s) in, %.1f MB (%.1f MB/s) out, %d sec]",
+             mb_in, mb_in / sec, mb_out, mb_out / sec, sec);
     return buf;
 }

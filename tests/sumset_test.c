@@ -238,15 +238,18 @@ int main(int argc, char **argv)
 
     /* Test rs_signature_calc_strong_sum(). */
     res = rs_signature_init(&sig, RS_MD4_SIG_MAGIC, 16, 6, -1);
+    assert(res == RS_DONE);
     rs_signature_calc_strong_sum(&sig, &buf, 256, &strong);
     assert(memcmp(&strong, "\x29\x8a\x05\xbc\x50\x6e", 6) == 0);
 
     res = rs_signature_init(&sig, RS_BLAKE2_SIG_MAGIC, 16, 6, -1);
+    assert(res == RS_DONE);
     rs_signature_calc_strong_sum(&sig, &buf, 256, &strong);
     assert(memcmp(&strong, "\x39\xa7\xeb\x9f\xed\xc1", 6) == 0);
 
     /* Test rs_signature_add_block(). */
     res = rs_signature_init(&sig, 0, 16, 6, -1);
+    assert(res == RS_DONE);
     rs_signature_add_block(&sig, weak, &strong);
     assert(sig.count == 1);
     assert(sig.size == 16);
@@ -258,6 +261,7 @@ int main(int argc, char **argv)
 
     /* Prepare rs_build_hash_table() and rs_signature_find_match() tests. */
     res = rs_signature_init(&sig, 0, 16, 6, -1);
+    assert(res == RS_DONE);
     for (i = 0; i < 256; i += 16) {
         weak = rs_signature_calc_weak_sum(&sig, &buf[i], 16);
         rs_signature_calc_strong_sum(&sig, &buf[i], 16, &strong);

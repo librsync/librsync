@@ -23,7 +23,6 @@
                                  | On heroin, I have all the answers.
                                  */
 
-#include "config.h"
 #include <stdlib.h>
 #include <string.h>
 #include "librsync.h"

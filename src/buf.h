@@ -21,6 +21,9 @@
 #ifndef BUF_H
 #  define BUF_H
 
+#  include <stdio.h>
+#  include "librsync.h"
+
 typedef struct rs_filebuf rs_filebuf_t;
 
 rs_filebuf_t *rs_filebuf_new(FILE *f, size_t buf_len);

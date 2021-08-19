@@ -21,11 +21,11 @@
 
 /* Force DEBUG on so that tests can use assert(). */
 #undef NDEBUG
-#include "config.h"
 #include <string.h>
 #include <assert.h>
 #include "librsync.h"
 #include "sumset.h"
+#include "hashtable.h"
 
 /* Test driver for sumset.c. */
 int main(int argc, char **argv)

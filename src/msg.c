@@ -40,7 +40,6 @@
  * description of a job, including only the fields relevant to the current
  * encoding function. */
 
-#include "config.h"
 #include "librsync.h"
 
 char const *rs_strerror(rs_result r)

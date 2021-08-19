@@ -22,6 +22,9 @@
 #ifndef UTIL_H
 #  define UTIL_H
 
+#  include <stddef.h>
+#  include "librsync.h"
+
 void *rs_alloc(size_t size, char const *name);
 void *rs_realloc(void *ptr, size_t size, char const *name);
 void *rs_alloc_struct0(size_t size, char const *name);

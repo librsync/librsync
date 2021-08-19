@@ -39,8 +39,6 @@
  * 2004-09-09: Simon Law <sfllaw@debian.org> handle little-endian machines that
  * can't do unaligned access (e.g. ia64, pa-risc). */
 
-#include "config.h"
-#include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
 #include "librsync.h"

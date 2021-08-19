@@ -21,8 +21,11 @@
 #ifndef JOB_H
 #  define JOB_H
 
+#  include <assert.h>
+#  include <stddef.h>
 #  include "mdfour.h"
 #  include "checksum.h"
+#  include "librsync.h"
 
 /** The contents of this structure are private. */
 struct rs_job {

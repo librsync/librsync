@@ -43,11 +43,12 @@
  *
  * \todo Add an option for delta to check whether the files are identical. */
 
-#include "config.h"
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
 #include <popt.h>
+#include <stdio.h>
+#include "config.h"
 #include "librsync.h"
 #include "isprefix.h"
 

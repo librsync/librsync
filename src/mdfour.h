@@ -22,6 +22,8 @@
 #ifndef MDFOUR_H
 #  define MDFOUR_H
 
+#  include <stdint.h>
+
 /** \private Internal state while computing an MD4 hash. */
 struct rs_mdfour {
     unsigned int A, B, C, D;

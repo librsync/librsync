@@ -21,9 +21,10 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "config.h"
+#include <stdint.h>
 #include "checksum.h"
 #include "blake2.h"
+#include "librsync_export.h"
 
 LIBRSYNC_EXPORT const int RS_MD4_SUM_LENGTH = 16;
 LIBRSYNC_EXPORT const int RS_BLAKE2_SUM_LENGTH = 32;

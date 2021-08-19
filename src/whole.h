@@ -21,6 +21,9 @@
 #ifndef WHOLE_H
 #  define WHOLE_H
 
+#  include <stdio.h>
+#  include "librsync.h"
+
 rs_result rs_whole_run(rs_job_t *job, FILE *in_file, FILE *out_file,
                        int inbuflen, int outbuflen);
 

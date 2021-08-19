@@ -35,6 +35,8 @@
 #  define TRACE_H
 
 #  include <inttypes.h>
+#  include "config.h"
+
 /* Printf format patters for standard librsync types. */
 #  define FMT_LONG "%"PRIdMAX
 #  define FMT_WEAKSUM "%08"PRIx32

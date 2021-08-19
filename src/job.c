@@ -33,7 +33,6 @@
  *
  * \sa \ref api_streaming \sa rs_job_iter() \sa ::rs_job */
 
-#include "config.h"
 #include <assert.h>
 #include <stdlib.h>
 #include <time.h>

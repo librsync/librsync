@@ -22,6 +22,8 @@
 #ifndef NETINT_H
 #  define NETINT_H
 
+#  include "librsync.h"
+
 rs_result rs_squirt_byte(rs_job_t *job, rs_byte_t val);
 rs_result rs_squirt_netint(rs_job_t *job, rs_long_t val, int len);
 rs_result rs_squirt_n4(rs_job_t *job, int val);

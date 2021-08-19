@@ -21,7 +21,6 @@
 /* Force DEBUG on so that tests can use assert(). */
 #undef NDEBUG
 #include <assert.h>
-#include <stdlib.h>
 #include <stdint.h>
 #include "librsync.h"
 #include "netint.h"

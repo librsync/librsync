@@ -122,8 +122,6 @@
 #ifndef HASHTABLE_H
 #  define HASHTABLE_H
 
-#  include <assert.h>
-#  include <stdlib.h>
 #  include <stdbool.h>
 
 /** The hashtable type. */
@@ -189,6 +187,9 @@ static inline unsigned nozero(unsigned h)
 
 /* If ENTRY is defined, define type-dependent static inline methods. */
 #ifdef ENTRY
+
+#  include <assert.h>
+#  include <stddef.h>
 
 #  define _JOIN2(x, y) x##y
 #  define _JOIN(x, y) _JOIN2(x, y)

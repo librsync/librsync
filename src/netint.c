@@ -38,9 +38,7 @@
  * RS_BLOCKED if there is not enough output space to proceed, but in practice
  * is always RS_DONE. */
 
-#include "config.h"
 #include <assert.h>
-#include <stdlib.h>
 #include "librsync.h"
 #include "netint.h"
 #include "stream.h"

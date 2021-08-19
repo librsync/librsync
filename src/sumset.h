@@ -23,8 +23,10 @@
 #  define SUMSET_H
 
 #  include <assert.h>
+#  include <stddef.h>
 #  include "hashtable.h"
 #  include "checksum.h"
+#  include "librsync.h"
 
 /** Signature of a single block. */
 typedef struct rs_block_sig {

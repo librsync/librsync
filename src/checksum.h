@@ -20,7 +20,9 @@
  */
 #ifndef CHECKSUM_H
 #  define CHECKSUM_H
+
 #  include <assert.h>
+#  include <stddef.h>
 #  include "librsync.h"
 #  include "rollsum.h"
 #  include "rabinkarp.h"

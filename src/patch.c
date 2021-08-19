@@ -23,10 +23,10 @@
                                | This is Tranquility Base.
                                */
 
-#include "config.h"
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 #include "librsync.h"
 #include "job.h"
 #include "netint.h"

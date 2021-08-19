@@ -23,9 +23,6 @@
 /** \file readsums.c
  * Load signatures from a file. */
 
-#include "config.h"
-#include <assert.h>
-#include <stdlib.h>
 #include "librsync.h"
 #include "job.h"
 #include "sumset.h"

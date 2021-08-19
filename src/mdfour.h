@@ -34,4 +34,4 @@ struct rs_mdfour {
     unsigned char tail[64];
 };
 
-endif                           /* !MDFOUR_H */
+#endif                          /* !MDFOUR_H */

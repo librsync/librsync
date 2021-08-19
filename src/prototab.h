@@ -300,4 +300,4 @@ enum {
     RS_OP_RESERVED_255 = 0xff
 };
 
-endif                           /* !PROTOTAB_H */
+#endif                          /* !PROTOTAB_H */

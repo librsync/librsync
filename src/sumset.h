@@ -135,4 +135,4 @@ static inline void rs_signature_calc_strong_sum(rs_signature_t const *sig,
     rs_calc_strong_sum(rs_signature_strongsum_kind(sig), buf, len, sum);
 }
 
-endif                           /* !SUMSET_H */
+#endif                          /* !SUMSET_H */

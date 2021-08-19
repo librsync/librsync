@@ -24,4 +24,4 @@
 rs_result rs_whole_run(rs_job_t *job, FILE *in_file, FILE *out_file,
                        int inbuflen, int outbuflen);
 
-endif                           /* !WHOLE_H */
+#endif                          /* !WHOLE_H */

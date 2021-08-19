@@ -23,4 +23,4 @@
 /** Return true if TIP is a prefix of ICEBERG. */
 int isprefix(char const *tip, char const *iceberg);
 
-endif                           /* !ISPREFIX_H */
+#endif                          /* !ISPREFIX_H */

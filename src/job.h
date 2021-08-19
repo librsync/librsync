@@ -113,4 +113,4 @@ int rs_job_input_is_ending(rs_job_t *job);
     assert(job->dogtag == RS_JOB_TAG);\
 } while (0)
 
-endif                           /* !JOB_H */
+#endif                          /* !JOB_H */

@@ -43,4 +43,4 @@ int rs_long_sqrt(rs_long_t v);
 #    define UNUSED(x) x
 #  endif                        /* !__GNUC__ && !__LCLINT__ */
 
-endif                           /* !UTIL_H */
+#endif                          /* !UTIL_H */

@@ -32,4 +32,4 @@ rs_result rs_suck_n4(rs_job_t *job, int *val);
 
 int rs_int_len(rs_long_t val);
 
-endif                           /* !NETINT_H */
+#endif                          /* !NETINT_H */

@@ -87,4 +87,4 @@ enum {
 
 extern int rs_trace_level;
 
-endif                           /* !TRACE_H */
+#endif                          /* !TRACE_H */

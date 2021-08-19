@@ -259,10 +259,18 @@ add_custom_target(clang-tidy
     VERBATIM
 )
 
-# clang-tidy target to check code for errors.
+# iwyu target to check includes for correctness.
 add_custom_target(iwyu
     COMMENT "Check #includes for correctness using iwyu_tool."
     COMMAND iwyu_tool -p ${CMAKE_CURRENT_BINARY_DIR}
+    VERBATIM
+)
+
+# iwyu-fix target to fix includes for correctness.
+# Note fileutil.c gets mangled by this and is excluded.
+add_custom_target(iwyu-fix
+    COMMENT "Fix #includes for correctness using iwyu_tool and fix_include."
+    COMMAND iwyu_tool -p ${CMAKE_CURRENT_BINARY_DIR} | fix_include --noblank_lines --ignore_re=fileutil.c
     VERBATIM
 )
 

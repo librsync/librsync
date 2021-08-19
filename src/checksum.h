@@ -18,8 +18,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-#ifndef _CHECKSUM_H_
-#  define _CHECKSUM_H_
+#ifndef CHECKSUM_H
+#  define CHECKSUM_H
 #  include <assert.h>
 #  include "librsync.h"
 #  include "rollsum.h"
@@ -133,4 +133,4 @@ rs_weak_sum_t rs_calc_weak_sum(weaksum_kind_t kind, void const *buf,
 void rs_calc_strong_sum(strongsum_kind_t kind, void const *buf, size_t len,
                         rs_strong_sum_t *sum);
 
-#endif                          /* _CHECKSUM_H_ */
+#endif                          /* !CHECKSUM_H */

@@ -17,12 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. */
-#ifndef HASHTABLE_H
-#  define HASHTABLE_H
-
-#  include <assert.h>
-#  include <stdlib.h>
-#  include <stdbool.h>
 
 /** \file hashtable.h
  * A generic open addressing hashtable.
@@ -125,6 +119,12 @@
  * can mutate the mymatch_t object for doing things like deferred and cached
  * evaluation of expensive match data. It can also access the whole myentry_t
  * object to match against more than just the key. */
+#ifndef HASHTABLE_H
+#  define HASHTABLE_H
+
+#  include <assert.h>
+#  include <stdlib.h>
+#  include <stdbool.h>
 
 /** The hashtable type. */
 typedef struct hashtable {

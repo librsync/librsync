@@ -19,10 +19,12 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+#ifndef SUMSET_H
+#  define SUMSET_H
 
-#include <assert.h>
-#include "hashtable.h"
-#include "checksum.h"
+#  include <assert.h>
+#  include "hashtable.h"
+#  include "checksum.h"
 
 /** Signature of a single block. */
 typedef struct rs_block_sig {
@@ -43,9 +45,9 @@ struct rs_signature {
     void *block_sigs;           /**< The packed block_sigs for all blocks. */
     hashtable_t *hashtable;     /**< The hashtable for finding matches. */
     /* The is extra stats not included in the hashtable stats. */
-#ifndef HASHTABLE_NSTATS
+#  ifndef HASHTABLE_NSTATS
     long calc_strong_count;     /**< The count of strongsum calcs done. */
-#endif
+#  endif
 };
 
 /** Initialize an rs_signature instance.
@@ -82,7 +84,7 @@ rs_long_t rs_signature_find_match(rs_signature_t *sig, rs_weak_sum_t weak_sum,
  *
  * We don't use a static inline function here so that assert failure output
  * points at where rs_sig_args_check() was called from. */
-#define rs_sig_args_check(magic, block_len, strong_len) do {\
+#  define rs_sig_args_check(magic, block_len, strong_len) do {\
     assert(((magic) & ~0xff) == (RS_MD4_SIG_MAGIC & ~0xff));\
     assert(((magic) & 0xf0) == 0x30 || ((magic) & 0xf0) == 0x40);\
     assert((((magic) & 0x0f) == 0x06 &&\
@@ -97,7 +99,7 @@ rs_long_t rs_signature_find_match(rs_signature_t *sig, rs_weak_sum_t weak_sum,
  *
  * We don't use a static inline function here so that assert failure output
  * points at where rs_signature_check() was called from. */
-#define rs_signature_check(sig) do {\
+#  define rs_signature_check(sig) do {\
     rs_sig_args_check((sig)->magic, (sig)->block_len, (sig)->strong_sum_len);\
     assert(0 <= (sig)->count && (sig)->count <= (sig)->size);\
     assert(!(sig)->hashtable || (sig)->hashtable->count <= (sig)->count);\
@@ -132,3 +134,5 @@ static inline void rs_signature_calc_strong_sum(rs_signature_t const *sig,
 {
     rs_calc_strong_sum(rs_signature_strongsum_kind(sig), buf, len, sum);
 }
+
+endif                           /* !SUMSET_H */

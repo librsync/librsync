@@ -25,6 +25,8 @@
  *
  * The vague idea is that eventually this file will be more abstract than
  * protocol.h, but it's not clear that will ever be required. */
+#ifndef COMMAND_H
+#  define COMMAND_H
 
 /** Classes of operation that can be present. Each may have several different
  * possible representations. */
@@ -47,3 +49,5 @@ typedef struct rs_op_kind_name {
 } rs_op_kind_name_t;
 
 char const *rs_op_kind_name(enum rs_op_kind);
+
+#endif                          /* !COMMAND_H */

@@ -17,6 +17,10 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+#ifndef ISPREFIX_H
+#  define ISPREFIX_H
 
 /** Return true if TIP is a prefix of ICEBERG. */
 int isprefix(char const *tip, char const *iceberg);
+
+endif                           /* !ISPREFIX_H */

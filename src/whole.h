@@ -18,6 +18,10 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+#ifndef WHOLE_H
+#  define WHOLE_H
 
 rs_result rs_whole_run(rs_job_t *job, FILE *in_file, FILE *out_file,
                        int inbuflen, int outbuflen);
+
+endif                           /* !WHOLE_H */

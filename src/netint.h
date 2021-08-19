@@ -19,6 +19,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+#ifndef NETINT_H
+#  define NETINT_H
 
 rs_result rs_squirt_byte(rs_job_t *job, rs_byte_t val);
 rs_result rs_squirt_netint(rs_job_t *job, rs_long_t val, int len);
@@ -29,3 +31,5 @@ rs_result rs_suck_netint(rs_job_t *job, rs_long_t *val, int len);
 rs_result rs_suck_n4(rs_job_t *job, int *val);
 
 int rs_int_len(rs_long_t val);
+
+endif                           /* !NETINT_H */

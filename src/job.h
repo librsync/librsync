@@ -18,9 +18,11 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+#ifndef JOB_H
+#  define JOB_H
 
-#include "mdfour.h"
-#include "checksum.h"
+#  include "mdfour.h"
+#  include "checksum.h"
 
 /** The contents of this structure are private. */
 struct rs_job {
@@ -101,12 +103,14 @@ rs_job_t *rs_job_new(const char *, rs_result (*statefn)(rs_job_t *));
 int rs_job_input_is_ending(rs_job_t *job);
 
 /** Magic job tag number for checking jobs have been initialized. */
-#define RS_JOB_TAG 20010225
+#  define RS_JOB_TAG 20010225
 
 /** Assert that a job is valid.
  *
  * We don't use a static inline function here so that assert failure output
  * points at where rs_job_check() was called from. */
-#define rs_job_check(job) do {\
+#  define rs_job_check(job) do {\
     assert(job->dogtag == RS_JOB_TAG);\
 } while (0)
+
+endif                           /* !JOB_H */

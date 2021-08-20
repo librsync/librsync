@@ -29,8 +29,8 @@
 
 /** \file librsync.h
  * Public header for librsync. */
-#ifndef _RSYNC_H
-#  define _RSYNC_H
+#ifndef LIBRSYNC_H
+#  define LIBRSYNC_H
 
 #  include <stdio.h>
 #  include <stdint.h>
@@ -611,4 +611,4 @@ LIBRSYNC_EXPORT rs_result rs_patch_file(FILE *basis_file, FILE *delta_file,
 }                               /* extern "C" */
 #  endif
 
-#endif                          /* !_RSYNC_H */
+#endif                          /* !LIBRSYNC_H */

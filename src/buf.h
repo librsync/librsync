@@ -18,6 +18,11 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+#ifndef BUF_H
+#  define BUF_H
+
+#  include <stdio.h>
+#  include "librsync.h"
 
 typedef struct rs_filebuf rs_filebuf_t;
 
@@ -28,3 +33,5 @@ void rs_filebuf_free(rs_filebuf_t *fb);
 rs_result rs_infilebuf_fill(rs_job_t *, rs_buffers_t *buf, void *fb);
 
 rs_result rs_outfilebuf_drain(rs_job_t *, rs_buffers_t *, void *fb);
+
+#endif                          /* !BUF_H */

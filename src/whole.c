@@ -27,9 +27,6 @@
                                |        -- Alan Perlis
                                */
 
-#include "config.h"
-#include <assert.h>
-#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include "librsync.h"
@@ -37,6 +34,7 @@
 #include "sumset.h"
 #include "job.h"
 #include "buf.h"
+#include "librsync_export.h"
 
 /** Whole file IO buffer sizes. */
 LIBRSYNC_EXPORT int rs_inbuflen = 0, rs_outbuflen = 0;

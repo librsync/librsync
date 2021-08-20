@@ -18,8 +18,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-#ifndef _RABINKARP_H_
-#  define _RABINKARP_H_
+#ifndef RABINKARP_H
+#  define RABINKARP_H
 
 #  include <stddef.h>
 #  include <stdint.h>
@@ -91,4 +91,4 @@ static inline uint32_t rabinkarp_digest(rabinkarp_t *sum)
     return sum->hash;
 }
 
-#endif                          /* _RABINKARP_H_ */
+#endif                          /* !RABINKARP_H */

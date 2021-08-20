@@ -19,8 +19,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-#ifndef _ROLLSUM_H_
-#  define _ROLLSUM_H_
+#ifndef ROLLSUM_H
+#  define ROLLSUM_H
 
 #  include <stddef.h>
 #  include <stdint.h>
@@ -71,4 +71,4 @@ static inline uint32_t RollsumDigest(Rollsum *sum)
     return ((uint32_t)sum->s2 << 16) | ((uint32_t)sum->s1 & 0xffff);
 }
 
-#endif                          /* _ROLLSUM_H_ */
+#endif                          /* !ROLLSUM_H */

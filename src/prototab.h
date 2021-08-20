@@ -30,6 +30,10 @@
 
 /** \file prototab.h
  * Delta file commands. */
+#ifndef PROTOTAB_H
+#  define PROTOTAB_H
+
+#  include "command.h"
 
 typedef struct rs_prototab_ent {
     enum rs_op_kind kind;
@@ -297,3 +301,5 @@ enum {
     RS_OP_RESERVED_254 = 0xfe,
     RS_OP_RESERVED_255 = 0xff
 };
+
+#endif                          /* !PROTOTAB_H */

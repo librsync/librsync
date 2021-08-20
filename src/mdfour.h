@@ -19,15 +19,21 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+#ifndef MDFOUR_H
+#  define MDFOUR_H
+
+#  include <stdint.h>
 
 /** \private Internal state while computing an MD4 hash. */
 struct rs_mdfour {
     unsigned int A, B, C, D;
-#ifdef UINT64_MAX
+#  ifdef UINT64_MAX
     uint64_t totalN;
-#else
+#  else
     uint32_t totalN_hi, totalN_lo;
-#endif
+#  endif
     int tail_len;
     unsigned char tail[64];
 };
+
+#endif                          /* !MDFOUR_H */

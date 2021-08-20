@@ -32,11 +32,9 @@
  * \todo Have a bit set in the log level that says not to include the function
  * name. */
 
-#include "config.h"
-#include <assert.h>
-#include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include "config.h"
 #include "librsync.h"
 #include "trace.h"
 #include "util.h"

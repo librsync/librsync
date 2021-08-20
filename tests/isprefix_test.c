@@ -20,11 +20,7 @@
 
 /* Force DEBUG on so that tests can use assert(). */
 #undef NDEBUG
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <assert.h>
-
 #include "isprefix.h"
 
 /* Test driver for isprefix. */

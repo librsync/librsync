@@ -25,14 +25,11 @@
  * \todo Pluggable encoding formats: gdiff-style, rsync 24, ed (text), Delta
  * HTTP. */
 
-#include "config.h"
 #include <assert.h>
-#include <stdlib.h>
 #include "librsync.h"
 #include "emit.h"
 #include "job.h"
 #include "netint.h"
-#include "command.h"
 #include "prototab.h"
 #include "trace.h"
 

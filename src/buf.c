@@ -36,7 +36,6 @@
  *
  * \todo Perhaps expose a routine for shuffling the buffers. */
 
-#include "config.h"
 #include <assert.h>
 #include <stdlib.h>
 #include <errno.h>

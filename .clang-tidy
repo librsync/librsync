@@ -1,0 +1,2 @@
+# clang-analyzer-valist.Uninitialized has a bug https://bugs.llvm.org/show_bug.cgi?id=41311.
+Checks: "-clang-analyzer-valist.Uninitialized"

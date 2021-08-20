@@ -368,7 +368,7 @@ add_dependencies(check ${LAST_TARGET}
 enable_testing()
 
 # Create conf files
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/src/config.h)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/src/config.h)
 
 # We need to be able to #include "file" from a few places,
 # * The original source dir

@@ -44,7 +44,7 @@ jobs:
       run: |
         if [ "$RUNNER_OS" == "Linux" ]; then
           sudo apt-get update -y
-          sudo apt-get install -y libpopt-dev libb2-dev doxygen ninja-build
+          sudo apt-get install -y libpopt-dev libb2-dev doxygen graphviz ninja-build
         elif [ "$RUNNER_OS" == "macOS" ]; then
           brew update
           brew install popt

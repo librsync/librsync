@@ -69,7 +69,7 @@ code or make use of some other virtual filesystem layer.
 ## More information
 
 * \ref page_downloads
-* \ref versioning
+* \ref page_versioning
 * \ref page_install
 * \ref page_rdiff
 * \ref page_librsync

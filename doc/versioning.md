@@ -1,4 +1,4 @@
-# Versioning {#versioning}
+# Versioning {#page_versioning}
 
 librsync uses the [SemVer] approach to versioning: the major version number
 changes when the API changes in an incompatible way, the minor version

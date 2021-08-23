@@ -43,7 +43,7 @@ extern "C" {
 
 /** Library version string.
  *
- * \sa \ref versioning */
+ * \sa \ref page_versioning */
 LIBRSYNC_EXPORT extern char const rs_librsync_version[];
 
 typedef uint8_t rs_byte_t;

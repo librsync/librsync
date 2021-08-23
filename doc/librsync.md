@@ -1,4 +1,4 @@
-# API Overview {#page_api}
+# librsync library {#page_librsync}
 
 The library supports four basic operations:
 

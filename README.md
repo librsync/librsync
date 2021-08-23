@@ -72,7 +72,7 @@ code or make use of some other virtual filesystem layer.
 * \ref versioning
 * \ref page_install
 * \ref page_rdiff
-* \ref page_api
+* \ref page_librsync
 * \ref page_formats
 * \ref page_support
 * [CONTRIBUTING](CONTRIBUTING.md)

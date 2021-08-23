@@ -482,6 +482,9 @@ LIBRSYNC_EXPORT rs_result rs_build_hash_table(rs_signature_t *sums);
 
 /** Callback used to retrieve parts of the basis file.
  *
+ * \param opaque The opaque object to execute the callback with. Often the file
+ * to read from.
+ *
  * \param pos Position where copying should begin.
  *
  * \param len On input, the amount of data that should be retrieved. Updated to

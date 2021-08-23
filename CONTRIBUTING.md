@@ -1,4 +1,4 @@
-# Contributing to librsync {#page_contributing}
+# Contributing to librsync
 
 Instructions and conventions for people wanting to work on librsync.  Please
 consider these guidelines even if you're doing your own fork.

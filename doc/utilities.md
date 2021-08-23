@@ -1,4 +1,4 @@
-# Utility functions {#api_utility}
+# Utility functions {#api_utilities}
 
 Some additional functions are used internally and also exposed in the
 API:

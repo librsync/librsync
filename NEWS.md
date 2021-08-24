@@ -1,4 +1,4 @@
-# librsync NEWS
+# NEWS
 
 ## librsync 2.3.3
 

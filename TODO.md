@@ -1,4 +1,4 @@
-# librsync TODO
+# TODO
 
 * We have a few functions to do with reading a netint, stashing
   it somewhere, then moving into a different state.  Is it worth

@@ -1,4 +1,4 @@
-# librsync
+# README
 
 http://librsync.sourcefrog.net/
 

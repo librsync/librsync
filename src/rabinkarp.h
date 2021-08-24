@@ -18,6 +18,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+
+/** \file rabinkarp.h
+ * The rabinkarp class implementation of the RabinKarp rollsum. */
 #ifndef RABINKARP_H
 #  define RABINKARP_H
 
@@ -50,7 +53,7 @@
 #  define RABINKARP_ADJ 0x08104224U
 
 /** The rabinkarp_t state type. */
-typedef struct _rabinkarp {
+typedef struct rabinkarp {
     size_t count;               /**< Count of bytes included in sum. */
     uint32_t hash;              /**< The accumulated hash value. */
     uint32_t mult;              /**< The value of RABINKARP_MULT^count. */

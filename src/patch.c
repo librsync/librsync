@@ -23,6 +23,9 @@
                                | This is Tranquility Base.
                                */
 
+/** \file patch.c
+ * Apply a delta to an old file to generate a new file. */
+
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>

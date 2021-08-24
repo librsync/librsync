@@ -18,6 +18,19 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+
+/** \file buf.h
+ * Buffers that map between stdio file streams and librsync streams.
+ *
+ * As the stream consumes input and produces output, it is refilled from
+ * appropriate input and output FILEs. A dynamically allocated buffer of
+ * configurable size is used as an intermediary.
+ *
+ * \todo Perhaps be more efficient by filling the buffer on every call even if
+ * not yet completely empty. Check that it's really our buffer, and shuffle
+ * remaining data down to the front.
+ *
+ * \todo Perhaps expose a routine for shuffling the buffers. */
 #ifndef BUF_H
 #  define BUF_H
 

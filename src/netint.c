@@ -27,17 +27,6 @@
                              |        -- Sun Microsystems
                              */
 
-/** \file netint.c
- * Network-byte-order output to the tube.
- *
- * All the `suck' routines return a result code. The most common values are
- * RS_DONE if they have enough data, or RS_BLOCKED if there is not enough input
- * to proceed.
- *
- * The `squirt` routines also return a result code which in theory could be
- * RS_BLOCKED if there is not enough output space to proceed, but in practice
- * is always RS_DONE. */
-
 #include <assert.h>
 #include "librsync.h"
 #include "netint.h"
@@ -45,20 +34,12 @@
 
 #define RS_MAX_INT_BYTES 8
 
-/** Write a single byte to a stream output. */
 rs_result rs_squirt_byte(rs_job_t *job, rs_byte_t val)
 {
     rs_tube_write(job, &val, 1);
     return RS_DONE;
 }
 
-/** Write a variable-length integer to a stream.
- *
- * \param job - Job of data.
- *
- * \param val - Value to write out.
- *
- * \param len - Length of integer, in bytes. */
 rs_result rs_squirt_netint(rs_job_t *job, rs_long_t val, int len)
 {
     rs_byte_t buf[RS_MAX_INT_BYTES];

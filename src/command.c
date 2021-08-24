@@ -19,10 +19,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "config.h"
-#include <assert.h>
-#include <stdlib.h>
-#include "librsync.h"
+#include <stddef.h>
 #include "command.h"
 
 /* For debugging purposes, here are some human-readable forms. */

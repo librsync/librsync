@@ -1,4 +1,4 @@
-# API Overview {#page_api}
+# librsync library {#page_librsync}
 
 The library supports four basic operations:
 
@@ -24,8 +24,8 @@ Other documentation pages:
 - \ref api_trace - aid debugging by showing messages about librsync's state.
 - \ref api_callbacks
 - \ref api_stats
-- \ref api_utility
-- \ref versioning
+- \ref api_utilities
+- \ref page_versioning
 
 The public interface to librsync is librsync.h, and other headers are internal.
 

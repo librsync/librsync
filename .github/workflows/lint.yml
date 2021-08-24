@@ -1,0 +1,27 @@
+name: Lint
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Dependencies
+      # Unfortunately available Marketplace Actions for this are in a mess, so we do it manually.
+      # Also iwyu is missing a dependency on libclang-common-0-dev, See;
+      # https://bugs.launchpad.net/ubuntu/+source/iwyu/+bug/1769334
+      run: |
+        sudo apt-get update -y
+        sudo apt-get install -y libpopt-dev libb2-dev clang-tidy libclang-common-9-dev iwyu
+
+    - name: Configure CMake
+      run: cmake .
+
+    - name: clang-tidy
+      run: cmake --build . --target clang-tidy
+
+    - name: iwyu
+      run: cmake --build . --target iwyu

@@ -23,20 +23,6 @@
                                | Pick a window, Jimmy, you're leaving.
                                */
 
-/** \file buf.c
- * Buffers that map between stdio file streams and librsync streams.
- *
- * As the stream consumes input and produces output, it is refilled from
- * appropriate input and output FILEs. A dynamically allocated buffer of
- * configurable size is used as an intermediary.
- *
- * \todo Perhaps be more efficient by filling the buffer on every call even if
- * not yet completely empty. Check that it's really our buffer, and shuffle
- * remaining data down to the front.
- *
- * \todo Perhaps expose a routine for shuffling the buffers. */
-
-#include "config.h"
 #include <assert.h>
 #include <stdlib.h>
 #include <errno.h>

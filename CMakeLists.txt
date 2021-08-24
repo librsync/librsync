@@ -31,6 +31,9 @@ set(LIBRSYNC_VERSION
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
+# Turn on generating compile_commands.json for clang-tidy and iwyu.
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 if (NOT CMAKE_SYSTEM_PROCESSOR)
 	message(FATAL_ERROR "No target CPU architecture set")
 endif()
@@ -215,7 +218,7 @@ if(DOXYGEN_FOUND)
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/doc/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/doc/Doxyfile @ONLY)
     add_custom_target(doc
         ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/doc/Doxyfile
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMENT "Generating API documentation with Doxygen" VERBATIM
     )
 endif(DOXYGEN_FOUND)
@@ -246,6 +249,28 @@ add_custom_target(tidyc
     COMMENT "Reformatting all code and comments to preferred coding style."
     # Recomended format, reformat linebreaks, reformat comments, 80 columns.
     COMMAND tidyc -R -C -l80 -T FILE -T Rollsum -T rs_result ${tidy_SRCS}
+    VERBATIM
+)
+
+# clang-tidy target to check code for errors.
+add_custom_target(clang-tidy
+    COMMENT "Check code for errors using clang-tidy."
+    COMMAND run-clang-tidy -p ${CMAKE_CURRENT_BINARY_DIR}
+    VERBATIM
+)
+
+# iwyu target to check includes for correctness.
+add_custom_target(iwyu
+    COMMENT "Check #includes for correctness using iwyu_tool."
+    COMMAND iwyu_tool -p ${CMAKE_CURRENT_BINARY_DIR}
+    VERBATIM
+)
+
+# iwyu-fix target to fix includes for correctness.
+# Note fileutil.c gets mangled by this and is excluded.
+add_custom_target(iwyu-fix
+    COMMENT "Fix #includes for correctness using iwyu_tool and fix_include."
+    COMMAND iwyu_tool -p ${CMAKE_CURRENT_BINARY_DIR} | fix_include --noblank_lines --ignore_re=fileutil.c
     VERBATIM
 )
 
@@ -343,7 +368,7 @@ add_dependencies(check ${LAST_TARGET}
 enable_testing()
 
 # Create conf files
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/src/config.h)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/src/config.h)
 
 # We need to be able to #include "file" from a few places,
 # * The original source dir

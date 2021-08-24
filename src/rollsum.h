@@ -19,8 +19,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-#ifndef _ROLLSUM_H_
-#  define _ROLLSUM_H_
+
+/** \file rollsum.h
+ * The Rollsum class implementation of the original rsync rollsum. */
+#ifndef ROLLSUM_H
+#  define ROLLSUM_H
 
 #  include <stddef.h>
 #  include <stdint.h>
@@ -29,11 +32,11 @@
    algorithm: tridge suggests a prime number. */
 #  define ROLLSUM_CHAR_OFFSET 31
 
-/** The Rollsum struct type \private. */
-typedef struct _Rollsum {
-    size_t count;               /* count of bytes included in sum */
-    uint_fast16_t s1;           /* s1 part of sum */
-    uint_fast16_t s2;           /* s2 part of sum */
+/** The Rollsum state type. */
+typedef struct Rollsum {
+    size_t count;               /**< count of bytes included in sum */
+    uint_fast16_t s1;           /**< s1 part of sum */
+    uint_fast16_t s2;           /**< s2 part of sum */
 } Rollsum;
 
 void RollsumUpdate(Rollsum *sum, const unsigned char *buf, size_t len);
@@ -71,4 +74,4 @@ static inline uint32_t RollsumDigest(Rollsum *sum)
     return ((uint32_t)sum->s2 << 16) | ((uint32_t)sum->s1 & 0xffff);
 }
 
-#endif                          /* _ROLLSUM_H_ */
+#endif                          /* !ROLLSUM_H */

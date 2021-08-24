@@ -21,8 +21,24 @@
 
 /** \file emit.h
  * Write commands into a buffer. */
+#ifndef EMIT_H
+#  define EMIT_H
 
+#  include "librsync.h"
+
+/** Write the magic for the start of a delta. */
 int rs_put_delta_header(rs_byte_t *buf);
+
+/** Write a LITERAL command. */
 int rs_put_literal_cmd(int len, rs_byte_t *buf);
+
+/** Write a COPY command for given offset and length.
+ *
+ * There is a choice of variable-length encodings, depending on the size of
+ * representation for the parameters. */
 int rs_put_copy_cmd(rs_long_t pos, rs_long_t len, rs_byte_t *buf);
+
+/** Write an END command. */
 int rs_put_end_cmd(rs_byte_t *buf);
+
+#endif                          /* !EMIT_H */

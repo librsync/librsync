@@ -85,7 +85,6 @@
  * and scoop_pos adjusted. If the generator callbacks block, no more data can
  * be processed in this iteration. */
 
-#include "config.h"
 #include <assert.h>
 #include <stdlib.h>
 #include "librsync.h"

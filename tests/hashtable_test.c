@@ -21,9 +21,8 @@
 
 /* Force DEBUG on so that tests can use assert(). */
 #undef NDEBUG
-#include <stdio.h>
-#include <stdint.h>
 #include <assert.h>
+#include <stddef.h>
 #include "hashtable.h"
 
 /* Key type for the hashtable. */

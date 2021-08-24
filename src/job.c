@@ -25,15 +25,6 @@
                                | sheltering.
                                */
 
-/** \file job.c
- * Generic state-machine interface.
- *
- * The point of this is that we need to be able to suspend and resume
- * processing at any point at which the buffers may block.
- *
- * \sa \ref api_streaming \sa rs_job_iter() \sa ::rs_job */
-
-#include "config.h"
 #include <assert.h>
 #include <stdlib.h>
 #include <time.h>

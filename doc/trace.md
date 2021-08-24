@@ -1,4 +1,4 @@
-# Debugging trace and error logging {#api_trace}
+# Trace output {#api_trace}
  
 librsync can output trace or log messages as it proceeds.
 Error

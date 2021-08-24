@@ -19,30 +19,19 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-/** \file emit.c
- * encoding output routines.
- *
- * \todo Pluggable encoding formats: gdiff-style, rsync 24, ed (text), Delta
- * HTTP. */
-
-#include "config.h"
 #include <assert.h>
-#include <stdlib.h>
 #include "librsync.h"
 #include "emit.h"
 #include "netint.h"
-#include "command.h"
 #include "prototab.h"
 #include "trace.h"
 
-/** Write the magic for the start of a delta. */
 int rs_put_delta_header(rs_byte_t *buf)
 {
     rs_trace("emit DELTA magic");
     return rs_put_netint(RS_DELTA_MAGIC, 4, buf);
 }
 
-/** Write a LITERAL command. */
 int rs_put_literal_cmd(int len, rs_byte_t *buf)
 {
     int cmd;
@@ -68,10 +57,6 @@ int rs_put_literal_cmd(int len, rs_byte_t *buf)
     return 1 + param_len;
 }
 
-/** Write a COPY command for given offset and length.
- *
- * There is a choice of variable-length encodings, depending on the size of
- * representation for the parameters. */
 int rs_put_copy_cmd(rs_long_t pos, rs_long_t len, rs_byte_t *buf)
 {
     int cmd;
@@ -106,7 +91,6 @@ int rs_put_copy_cmd(rs_long_t pos, rs_long_t len, rs_byte_t *buf)
     return 1 + pos_bytes + len_bytes;
 }
 
-/** Write an END command. */
 int rs_put_end_cmd(rs_byte_t *buf)
 {
     int cmd = RS_OP_END;

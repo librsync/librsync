@@ -1,4 +1,4 @@
-# Installing librsync {#page_install}
+# Installing {#page_install}
 
 ## Requirements
 

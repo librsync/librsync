@@ -15,4 +15,4 @@
 #    endif
 #  endif
 
-#endif                          /* LIBRSYNC_EXPORT_H */
+#endif                          /* !LIBRSYNC_EXPORT_H */

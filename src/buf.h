@@ -19,6 +19,24 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+/** \file buf.h
+ * Buffers that map between stdio file streams and librsync streams.
+ *
+ * As the stream consumes input and produces output, it is refilled from
+ * appropriate input and output FILEs. A dynamically allocated buffer of
+ * configurable size is used as an intermediary.
+ *
+ * \todo Perhaps be more efficient by filling the buffer on every call even if
+ * not yet completely empty. Check that it's really our buffer, and shuffle
+ * remaining data down to the front.
+ *
+ * \todo Perhaps expose a routine for shuffling the buffers. */
+#ifndef BUF_H
+#  define BUF_H
+
+#  include <stdio.h>
+#  include "librsync.h"
+
 typedef struct rs_filebuf rs_filebuf_t;
 
 rs_filebuf_t *rs_filebuf_new(FILE *f, size_t buf_len);
@@ -28,3 +46,5 @@ void rs_filebuf_free(rs_filebuf_t *fb);
 rs_result rs_infilebuf_fill(rs_job_t *, rs_buffers_t *buf, void *fb);
 
 rs_result rs_outfilebuf_drain(rs_job_t *, rs_buffers_t *, void *fb);
+
+#endif                          /* !BUF_H */

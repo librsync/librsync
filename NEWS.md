@@ -1,8 +1,43 @@
-# librsync NEWS
+# NEWS
 
 ## librsync 2.3.3
 
 NOT RELEASED YET
+
+ * Add github action and make targets for clang-tidy and iwyu. Added
+   `clang-tidy` and `iwyu` make targets for checking code and includes, and
+   `iwyu-fix` for fixing includes. Added `lint.yml` GitHub action to run these
+   checks. Fixed all `clang-tidy` and `iwyu` warnings except for `fileutil.c`
+   with platform related include complications. Added consistent include
+   guards to all headers. Updated and improved documentation in
+   CONTRIBUTING.md to include these changes. (rizsotto, dbaarda,
+   https://github.com/librsync/librsync/pull/229)
+
+ * Tidy rdiff integration test scripts. Made the filenames and shell arguments
+   for test scripts consistent. (dbaarda,
+   https://github.com/librsync/librsync/pull/227)
+
+ * Add better cmake build type configuration support. Added `BuildType.cmake`
+   with better support for selecting the build type and making it default to
+   Debug. (dbaarda, https://github.com/librsync/librsync/pull/226)
+
+ * Fix #215 Migrate from Travis to GitHub Actions. Added a check.yml GitHub
+   action with updated test/platform matrix including full testing of rdiff on
+   Windows. (rizsotto, dbaarda, https://github.com/librsync/librsync/pull/225)
+
+ * Fix bash test scripts to work on Windows. Tweaked cmake configuration and
+   bash script tests so that full rdiff tests using libpopt from vcpkg work.
+   Running `cmake --target check` with rdiff compiled now works on windows.
+   (dbaarda, https://github.com/librsync/librsync/pull/224)
+
+ * Remove obsolete unused tests. Removed some obsolete mdfour test data files
+   and `check-rdiff` perl script. (dbaarda,
+   https://github.com/librsync/librsync/pull/223)
+
+ * Fix warning for later CMake versions. New CMake versions started
+   complaining about the filename `Findlibb2.cmake` not matching the LIBB2
+   variables being used. (rizsotto,
+   https://github.com/librsync/librsync/pull/221)
 
 ## librsync 2.3.2
 

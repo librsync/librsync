@@ -21,11 +21,11 @@
 
 /* Force DEBUG on so that tests can use assert(). */
 #undef NDEBUG
-#include <stdio.h>
-#include <stdint.h>
 #include <assert.h>
 #include <string.h>
 #include "checksum.h"
+#include "hashtable.h"
+#include "librsync.h"
 
 /* Test driver for rollsum. */
 int main(int argc, char **argv)

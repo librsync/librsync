@@ -73,6 +73,8 @@
  * On each call into a stream iterator, it should begin by trying to flush
  * output. This may well use up all the remaining stream space, in which case
  * nothing else can be done. */
+#ifndef STREAM_H
+#  define STREAM_H
 
 rs_result rs_tube_catchup(rs_job_t *job);
 int rs_tube_is_idle(rs_job_t const *job);
@@ -85,3 +87,5 @@ rs_result rs_scoop_readahead(rs_job_t *job, size_t len, void **ptr);
 rs_result rs_scoop_read(rs_job_t *job, size_t len, void **ptr);
 rs_result rs_scoop_read_rest(rs_job_t *job, size_t *len, void **ptr);
 size_t rs_scoop_total_avail(rs_job_t *job);
+
+#endif                          /* !STREAM_H */

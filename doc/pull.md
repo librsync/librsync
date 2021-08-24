@@ -1,4 +1,4 @@
-# Callback API {#api_pull}
+# Pull API {#api_pull}
 
 As an alternative to \ref api_streaming, librsync provides a "pull-mode"
 callback interface where it will repeatedly call application-provided

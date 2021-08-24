@@ -39,21 +39,6 @@
 /** Whole file IO buffer sizes. */
 LIBRSYNC_EXPORT int rs_inbuflen = 0, rs_outbuflen = 0;
 
-/** Run a job continuously, with input to/from the two specified files.
- *
- * The job should already be set up, and must be freed by the caller after
- * return. If rs_inbuflen or rs_outbuflen are set, they will override the
- * inbuflen and outbuflen arguments.
- *
- * \param in_file - input file, or NULL if there is no input.
- *
- * \param out_file - output file, or NULL if there is no output.
- *
- * \param inbuflen - recommended input buffer size to use.
- *
- * \param outbuflen - recommended output buffer size to use.
- *
- * \return RS_DONE if the job completed, or otherwise an error result. */
 rs_result rs_whole_run(rs_job_t *job, FILE *in_file, FILE *out_file,
                        int inbuflen, int outbuflen)
 {

@@ -43,7 +43,7 @@ extern "C" {
 
 /** Library version string.
  *
- * \sa \ref versioning */
+ * \sa \ref page_versioning */
 LIBRSYNC_EXPORT extern char const rs_librsync_version[];
 
 typedef uint8_t rs_byte_t;
@@ -481,6 +481,9 @@ LIBRSYNC_EXPORT rs_job_t *rs_loadsig_begin(rs_signature_t **);
 LIBRSYNC_EXPORT rs_result rs_build_hash_table(rs_signature_t *sums);
 
 /** Callback used to retrieve parts of the basis file.
+ *
+ * \param opaque The opaque object to execute the callback with. Often the file
+ * to read from.
  *
  * \param pos Position where copying should begin.
  *

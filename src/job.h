@@ -18,6 +18,14 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+
+/** \file job.h
+ * Generic state-machine interface.
+ *
+ * The point of this is that we need to be able to suspend and resume
+ * processing at any point at which the buffers may block.
+ *
+ * \sa \ref api_streaming \sa rs_job_iter() \sa ::rs_job */
 #ifndef JOB_H
 #  define JOB_H
 

@@ -20,15 +20,28 @@
  */
 
 /** \file emit.h
- * How to emit commands to the client. */
+ * encoding output routines.
+ *
+ * \todo Pluggable encoding formats: gdiff-style, rsync 24, ed (text), Delta
+ * HTTP. */
 #ifndef EMIT_H
 #  define EMIT_H
 
 #  include "librsync.h"
 
+/** Write the magic for the start of a delta. */
 void rs_emit_delta_header(rs_job_t *);
+
+/** Write a LITERAL command. */
 void rs_emit_literal_cmd(rs_job_t *, int len);
-void rs_emit_end_cmd(rs_job_t *);
+
+/** Write a COPY command for given offset and length.
+ *
+ * There is a choice of variable-length encodings, depending on the size of
+ * representation for the parameters. */
 void rs_emit_copy_cmd(rs_job_t *job, rs_long_t where, rs_long_t len);
+
+/** Write an END command. */
+void rs_emit_end_cmd(rs_job_t *);
 
 #endif                          /* !EMIT_H */

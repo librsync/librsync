@@ -25,9 +25,9 @@ inputdir=$srcdir/triple.input
 
 for buf in $bufsizes
 do
-    for old in $inputdir/*.in
+    for old in $inputdir/*.input
     do
-        for new in $inputdir/*.in
+        for new in $inputdir/*.input
         do
             for hashopt in -Hmd4 -Hblake2
             do

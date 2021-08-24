@@ -19,6 +19,9 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+
+/** \file util.h
+ * Misc utility functions used by librsync. */
 #ifndef UTIL_H
 #  define UTIL_H
 

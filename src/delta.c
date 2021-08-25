@@ -93,7 +93,6 @@
 #include "sumset.h"
 #include "checksum.h"
 #include "stream.h"
-#include "emit.h"
 #include "trace.h"
 
 static rs_result rs_delta_s_scan(rs_job_t *job);

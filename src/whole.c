@@ -35,6 +35,7 @@
 #include "job.h"
 #include "buf.h"
 #include "librsync_export.h"
+#include "deltagen.h"
 
 /** Whole file IO buffer sizes. */
 LIBRSYNC_EXPORT int rs_inbuflen = 0, rs_outbuflen = 0;

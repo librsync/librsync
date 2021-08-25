@@ -20,6 +20,7 @@
 #ifndef _DELTAGEN_H_
 #  define _DELTAGEN_H_
 
+#  include <stdio.h>
 #  include "librsync.h"
 
 /** Special constants for rs_send_t and rs_genmark_t arguments for flushing. */

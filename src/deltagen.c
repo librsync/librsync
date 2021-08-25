@@ -17,7 +17,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. */
-#include "config.h"
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
@@ -26,9 +25,6 @@
 #include "util.h"
 #include "emit.h"
 #include "job.h"
-#include "stream.h"
-#include "command.h"
-#include "prototab.h"
 #include "trace.h"
 
 rs_deltagen_t *rs_deltagen_new(void *out, rs_send_t *send, rs_stats_t *stats)

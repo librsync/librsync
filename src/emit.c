@@ -87,7 +87,7 @@ int rs_put_copy_cmd(rs_long_t pos, rs_long_t len, rs_byte_t *buf)
              "), cmd_byte=%#04x", pos_bytes, len_bytes, pos, len, cmd);
     *buf++ = (rs_byte_t)cmd;
     buf += rs_put_netint(pos, pos_bytes, buf);
-    buf += rs_put_netint(len, len_bytes, buf);
+    rs_put_netint(len, len_bytes, buf);
     return 1 + pos_bytes + len_bytes;
 }
 

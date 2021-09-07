@@ -41,7 +41,7 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: rdiff ${{ matrix.os }} ${{ matrix.build }}
-        path: build/rdiff*
+        path: build/CMakeFiles/rdiff*
 
     - name: Install Dependencies
       # Unfortunately available Marketplace Actions for this are in a mess, so we do it manually.

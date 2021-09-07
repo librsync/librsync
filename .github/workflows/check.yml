@@ -72,7 +72,7 @@ jobs:
       if: ${{matrix.build_docs}}
       run: cmake --build '${{github.workspace}}/build' --target doc
 
-    - name: Upload results
+    - name: Upload artifacts
       uses: actions/upload-artifact@v2
       with:
         name: build results ${{ matrix.os }} ${{ matrix.build }}

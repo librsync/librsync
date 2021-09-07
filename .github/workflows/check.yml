@@ -38,6 +38,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/upload-artifact@v2
+      with:
+        name: rdiff ${{ matrix.os }} ${{ matrix.build }}
+        path: build/rdiff*
 
     - name: Install Dependencies
       # Unfortunately available Marketplace Actions for this are in a mess, so we do it manually.
@@ -71,3 +75,4 @@ jobs:
     - name: Build docs
       if: ${{matrix.build_docs}}
       run: cmake --build '${{github.workspace}}/build' --target doc
+

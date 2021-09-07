@@ -25,6 +25,7 @@ html
 latex
 Testing
 *.user
+.cmake
 
 # CMake generated Doxygen files
 CMakeDoxyfile.in

@@ -85,6 +85,6 @@ jobs:
         name: rdiff ${{ matrix.os }} ${{ matrix.build }}
         path: |
             ${{github.workspace}}/build/rdiff
-            ${{github.workspace}}/build/rdiff.exe
+            ${{github.workspace}}/build/Release/rdiff.exe
         # TODO: Skip this (to avoid warnings) in cases where rdiff is not expected to
         # be built.

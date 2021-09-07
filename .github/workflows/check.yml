@@ -19,7 +19,6 @@ jobs:
        os: [ubuntu-latest, macos-latest, windows-latest]
        build: [Release]
        options: [""]
-       has_rdiff: true
        include:
          - os: windows-latest
            os_options: "-DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake"
@@ -31,7 +30,7 @@ jobs:
          - os: ubuntu-latest
            build: Release
            options: "-DBUILD_RDIFF=OFF"
-           has_rdiff: false
+           no_rdiff: false
          - os: ubuntu-latest
            build: Release
            options: "-G Ninja -DCMAKE_C_COMPILER=clang"
@@ -83,7 +82,7 @@ jobs:
 
     - name: Upload rdiff
       uses: actions/upload-artifact@v2
-      if: ${{ matrix.has_rdiff }}
+      if: ! ${{ matrix.no_rdiff }}
       with:
         name: rdiff ${{ matrix.os }} ${{ matrix.build }}
         path: |

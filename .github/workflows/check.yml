@@ -86,5 +86,5 @@ jobs:
         path: |
             ${{github.workspace}}/build/rdiff
             ${{github.workspace}}/build/rdiff.exe
-        if-no-files-found: error
-
+        // TODO: Skip this (to avoid warnings) in cases where rdiff is not expected to
+        // be built.

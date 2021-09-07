@@ -40,8 +40,8 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/upload-artifact@v2
       with:
-        name: rdiff ${{ matrix.os }} ${{ matrix.build }}
-        path: build/CMakeFiles/rdiff*
+        name: build results ${{ matrix.os }} ${{ matrix.build }}
+        path: ${{github.workspace}}/build
 
     - name: Install Dependencies
       # Unfortunately available Marketplace Actions for this are in a mess, so we do it manually.

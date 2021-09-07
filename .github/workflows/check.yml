@@ -82,7 +82,7 @@ jobs:
 
     - name: Upload rdiff
       uses: actions/upload-artifact@v2
-      if: ! ${{ matrix.no_rdiff }}
+      if: ${{ ! matrix.no_rdiff }}
       with:
         name: rdiff ${{ matrix.os }} ${{ matrix.build }}
         path: |

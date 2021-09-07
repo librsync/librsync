@@ -30,7 +30,7 @@ jobs:
          - os: ubuntu-latest
            build: Release
            options: "-DBUILD_RDIFF=OFF"
-           no_rdiff: false
+           no_rdiff: true
          - os: ubuntu-latest
            build: Release
            options: "-G Ninja -DCMAKE_C_COMPILER=clang"

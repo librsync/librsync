@@ -77,3 +77,14 @@ jobs:
       with:
         name: build results ${{ matrix.os }} ${{ matrix.build }}
         path: ${{github.workspace}}/build
+        if-no-files-found: error
+
+    - name: Upload rdiff
+      uses: actions/upload-artifact@v2
+      with:
+        name: rdiff ${{ matrix.os }} ${{ matrix.build }}
+        path: |
+            ${{github.workspace}}/build/rdiff
+            ${{github.workspace}}/build/rdiff.exe
+        if-no-files-found: error
+

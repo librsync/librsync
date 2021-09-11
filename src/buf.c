@@ -65,44 +65,32 @@ rs_result rs_infilebuf_fill(rs_job_t *job, rs_buffers_t *buf, void *opaque)
     rs_filebuf_t *fb = (rs_filebuf_t *)opaque;
     FILE *f = fb->f;
 
-    /* This is only allowed if either the buf has no input buffer yet, or that
-       buffer could possibly be BUF. */
-    if (buf->next_in != NULL) {
-        assert(buf->avail_in <= fb->buf_len);
+    /* If buf has data, it must be in the buffer. */
+    if (buf->avail_in) {
         assert(buf->next_in >= fb->buf);
-        assert(buf->next_in <= fb->buf + fb->buf_len);
-    } else {
-        assert(buf->avail_in == 0);
+        assert(buf->next_in + buf->avail_in <= fb->buf + fb->buf_len);
     }
-
-    if (buf->eof_in || (buf->eof_in = feof(f))) {
-        rs_trace("seen end of file on input");
+    if (buf->eof_in) {
         return RS_DONE;
+    } else if (buf->avail_in > fb->buf_len / 2) {
+        /* Buf is already full enough, do nothing. */
+        return RS_DONE;
+    } else if (buf->avail_in) {
+        /* Some leftover tail data, move it to the front of the buffer. */
+        memmove(fb->buf, buf->next_in, buf->avail_in);
     }
-
-    if (buf->avail_in)
-        /* Still some data remaining. Perhaps we should read anyhow? */
-        return RS_DONE;
-
-    len = fread(fb->buf, 1, fb->buf_len, f);
+    buf->next_in = fb->buf;
+    len = fread(fb->buf + buf->avail_in, 1, fb->buf_len - buf->avail_in, f);
     if (len == 0) {
-        /* This will happen if file size is a multiple of input block len */
-        if (feof(f)) {
+        if ((buf->eof_in = feof(f))) {
             rs_trace("seen end of file on input");
-            buf->eof_in = 1;
             return RS_DONE;
-        }
-        if (ferror(f)) {
+        } else {
             rs_error("error filling buf from file: %s", strerror(errno));
             return RS_IO_ERROR;
-        } else {
-            rs_error("no error bit, but got " FMT_SIZE
-                     " return when trying to read", len);
-            return RS_IO_ERROR;
         }
     }
-    buf->avail_in = len;
-    buf->next_in = fb->buf;
+    buf->avail_in += len;
     job->stats.in_bytes += len;
     return RS_DONE;
 }
@@ -114,18 +102,15 @@ rs_result rs_outfilebuf_drain(rs_job_t *job, rs_buffers_t *buf, void *opaque)
     rs_filebuf_t *fb = (rs_filebuf_t *)opaque;
     FILE *f = fb->f;
 
-    /* This is only allowed if either the buf has no output buffer yet, or that
-       buffer could possibly be BUF. */
-    if (buf->next_out == NULL) {
+    /* If next_out is NULL, we haven't pointed it at fb->buf yet. */
+    if (!buf->next_out) {
         assert(buf->avail_out == 0);
         buf->next_out = fb->buf;
         buf->avail_out = fb->buf_len;
-        return RS_DONE;
     }
-
-    assert(buf->avail_out <= fb->buf_len);
+    /* The buf output buffer must be at the end of fb->buf. */
     assert(buf->next_out >= fb->buf);
-    assert(buf->next_out <= fb->buf + fb->buf_len);
+    assert(buf->next_out + buf->avail_out == fb->buf + fb->buf_len);
 
     size_t present = buf->next_out - fb->buf;
     if (present > 0) {

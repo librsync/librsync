@@ -135,11 +135,6 @@ const rs_stats_t *rs_job_statistics(rs_job_t *job)
     return &job->stats;
 }
 
-int rs_job_input_is_ending(rs_job_t *job)
-{
-    return job->stream->eof_in;
-}
-
 rs_result rs_job_drive(rs_job_t *job, rs_buffers_t *buf, rs_driven_cb in_cb,
                        void *in_opaque, rs_driven_cb out_cb, void *out_opaque)
 {

@@ -111,8 +111,6 @@ struct rs_job {
 
 rs_job_t *rs_job_new(const char *, rs_result (*statefn)(rs_job_t *));
 
-int rs_job_input_is_ending(rs_job_t *job);
-
 /** Magic job tag number for checking jobs have been initialized. */
 #  define RS_JOB_TAG 20010225
 

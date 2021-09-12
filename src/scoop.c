@@ -84,7 +84,7 @@ void rs_scoop_input(rs_job_t *job, size_t len)
         rs_trace("resized scoop buffer to " FMT_SIZE " bytes from " FMT_SIZE "",
                  newsize, job->scoop_alloc);
         job->scoop_alloc = newsize;
-    } else if (job->scoop_buf != job->scoop_next) {
+    } else if (job->scoop_buf + job->scoop_alloc < job->scoop_next + len) {
         /* Move existing data to the front of the scoop. */
         rs_trace("moving scoop " FMT_SIZE " bytes to reuse " FMT_SIZE " bytes",
                  job->scoop_avail, (size_t)(job->scoop_next - job->scoop_buf));
@@ -96,7 +96,8 @@ void rs_scoop_input(rs_job_t *job, size_t len)
     tocopy = len - job->scoop_avail;
     if (tocopy > stream->avail_in)
         tocopy = stream->avail_in;
-    assert(tocopy + job->scoop_avail <= job->scoop_alloc);
+    assert(job->scoop_next + tocopy + job->scoop_avail <=
+           job->scoop_buf + job->scoop_alloc);
 
     memcpy(job->scoop_next + job->scoop_avail, stream->next_in, tocopy);
     rs_trace("accepted " FMT_SIZE " bytes from input to scoop", tocopy);
@@ -210,20 +211,11 @@ rs_result rs_scoop_read(rs_job_t *job, size_t len, void **ptr)
  * at EOF, RS_BLOCKED if there was no data and not at EOF. */
 rs_result rs_scoop_read_rest(rs_job_t *job, size_t *len, void **ptr)
 {
-    rs_buffers_t *stream = job->stream;
-
-    *len = job->scoop_avail + stream->avail_in;
+    *len = rs_scoop_avail(job);
     if (*len)
         return rs_scoop_read(job, *len, ptr);
-    else if (stream->eof_in)
+    else if (job->stream->eof_in)
         return RS_INPUT_ENDED;
     else
         return RS_BLOCKED;
-}
-
-/** Return the total number of bytes available including the scoop and input
- * buffer. */
-size_t rs_scoop_total_avail(rs_job_t *job)
-{
-    return job->scoop_avail + job->stream->avail_in;
 }

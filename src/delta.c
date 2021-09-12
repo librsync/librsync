@@ -203,7 +203,7 @@ static inline void rs_getinput(rs_job_t *job)
 {
     size_t len;
 
-    len = rs_scoop_total_avail(job);
+    len = rs_scoop_avail(job);
     if (job->scoop_avail < len) {
         rs_scoop_input(job, len);
     }
@@ -354,15 +354,14 @@ static inline rs_result rs_processmiss(rs_job_t *job)
  * recreate the input. */
 static rs_result rs_delta_s_slack(rs_job_t *job)
 {
-    rs_buffers_t *const stream = job->stream;
-    size_t avail = stream->avail_in;
+    size_t avail = rs_scoop_avail(job);
 
     if (avail) {
         rs_trace("emit slack delta for " FMT_SIZE " available bytes", avail);
         rs_emit_literal_cmd(job, (int)avail);
         rs_tube_copy(job, avail);
         return RS_RUNNING;
-    } else if (rs_job_input_is_ending(job)) {
+    } else if (rs_scoop_eof(job)) {
         job->statefn = rs_delta_s_end;
         return RS_RUNNING;
     }

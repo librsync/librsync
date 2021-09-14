@@ -312,11 +312,17 @@ LIBRSYNC_EXPORT void rs_sumset_dump(rs_signature_t const *);
  * entry, and suitable to be passed in on a second call, but they don't
  * directly tell you how much output data was produced.
  *
- * Note also that if *#avail_in is nonzero on return, then not all of the input
- * data has been consumed. The caller should either provide more output buffer
- * space and call ::rs_job_iter() again passing the same #next_in and
- * #avail_in, or put the remaining input data into some persistent buffer and
- * call rs_job_iter() with it again when there is more output space.
+ * If the input buffer was large enough, it will be processed directly,
+ * otherwise the data can be copied and accumulated into an internal buffer for
+ * processing. This means using larger buffers can be much more efficient.
+ *
+ * Note also that if #avail_in is nonzero on return, then not all of the input
+ * data has been consumed. This can happen either because it ran out of output
+ * buffer space, or because it processed as much data as possible directly from
+ * the input buffer and needs more input to proceed without copying into
+ * internal buffers. The caller should provide more output buffer space and/or
+ * pack the remaining input data into another buffer with more input before
+ * calling rs_job_iter() again.
  *
  * \sa rs_job_iter() */
 struct rs_buffers_s {

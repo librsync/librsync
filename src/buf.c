@@ -77,6 +77,8 @@ rs_result rs_infilebuf_fill(rs_job_t *job, rs_buffers_t *buf, void *opaque)
         return RS_DONE;
     } else if (buf->avail_in) {
         /* Some leftover tail data, move it to the front of the buffer. */
+        rs_trace("moving buffer " FMT_SIZE " bytes to reuse " FMT_SIZE " bytes",
+                 buf->avail_in, (size_t)(buf->next_in - fb->buf));
         memmove(fb->buf, buf->next_in, buf->avail_in);
     }
     buf->next_in = fb->buf;

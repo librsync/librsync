@@ -99,7 +99,7 @@
 #include "trace.h"
 
 /** Max length of a miss is 64K including 3 command bytes. */
-#define MAX_MISS_LEN ((1<<16)-3)
+#define MAX_MISS_LEN (MAX_DELTA_CMD - 3)
 
 static rs_result rs_delta_s_scan(rs_job_t *job);
 static rs_result rs_delta_s_flush(rs_job_t *job);
@@ -208,7 +208,7 @@ static rs_result rs_delta_s_end(rs_job_t *job)
 
 static inline rs_result rs_getinput(rs_job_t *job, size_t block_len)
 {
-    size_t min_len = block_len + MAX_MISS_LEN + 1;
+    size_t min_len = block_len + MAX_DELTA_CMD;
 
     job->scan_len = rs_scoop_avail(job);
     if (job->scan_len < min_len && !job->stream->eof_in)

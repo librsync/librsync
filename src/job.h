@@ -35,6 +35,14 @@
 #  include "checksum.h"
 #  include "librsync.h"
 
+/** Magic job tag number for checking jobs have been initialized. */
+#  define RS_JOB_TAG 20010225
+
+/** Max length of a singled delta command is including command bytes.
+ *
+ * This is used to constrain and set the internal buffer sizes. */
+#  define MAX_DELTA_CMD (1<<16)
+
 /** The contents of this structure are private. */
 struct rs_job {
     int dogtag;
@@ -114,9 +122,6 @@ struct rs_job {
 };
 
 rs_job_t *rs_job_new(const char *, rs_result (*statefn)(rs_job_t *));
-
-/** Magic job tag number for checking jobs have been initialized. */
-#  define RS_JOB_TAG 20010225
 
 /** Assert that a job is valid.
  *

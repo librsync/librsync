@@ -111,9 +111,9 @@ rs_result rs_delta_file(rs_signature_t *sig, FILE *new_file, FILE *delta_file,
     rs_result r;
 
     job = rs_delta_begin(sig);
-    /* Size inbuf for 4*(64K + 1 block), outbuf for 4*(64K). */
+    /* Size inbuf for 4*(CMD + 1 block), outbuf for 4*CMD. */
     r = rs_whole_run(job, new_file, delta_file,
-                     4 * ((1 << 16) + sig->block_len), 4 * (1 << 16));
+                     4 * (MAX_DELTA_CMD + sig->block_len), 4 * MAX_DELTA_CMD);
     if (stats)
         memcpy(stats, &job->stats, sizeof *stats);
     rs_job_free(job);
@@ -127,8 +127,9 @@ rs_result rs_patch_file(FILE *basis_file, FILE *delta_file, FILE *new_file,
     rs_result r;
 
     job = rs_patch_begin(rs_file_copy_cb, basis_file);
-    /* Default size inbuf and outbuf 64K. */
-    r = rs_whole_run(job, delta_file, new_file, 64 * 1024, 64 * 1024);
+    /* Default size inbuf 1*CMD and outbuf 4*CMD. */
+    r = rs_whole_run(job, delta_file, new_file, MAX_DELTA_CMD,
+                     4 * MAX_DELTA_CMD);
     if (stats)
         memcpy(stats, &job->stats, sizeof *stats);
     rs_job_free(job);

@@ -111,9 +111,9 @@ rs_result rs_delta_file(rs_signature_t *sig, FILE *new_file, FILE *delta_file,
     rs_result r;
 
     job = rs_delta_begin(sig);
-    /* Size inbuf for 1 block, outbuf for literal cmd + 4 blocks. */
-    r = rs_whole_run(job, new_file, delta_file, sig->block_len,
-                     10 + 4 * sig->block_len);
+    /* Size inbuf for 4*(64K + 1 block), outbuf for 4*(64K). */
+    r = rs_whole_run(job, new_file, delta_file,
+                     4 * ((1 << 16) + sig->block_len), 4 * (1 << 16));
     if (stats)
         memcpy(stats, &job->stats, sizeof *stats);
     rs_job_free(job);

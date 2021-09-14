@@ -85,13 +85,17 @@ struct rs_job {
     rs_stats_t stats;
 
     /** Buffer of data in the scoop. Allocation is scoop_buf[0..scoop_alloc],
-     * and scoop_next[0..scoop_avail] contains data yet to be processed.
-     * scoop_next[scoop_pos..scoop_avail] is the data yet to be scanned. */
-    rs_byte_t *scoop_buf;       /* the allocation pointer */
-    rs_byte_t *scoop_next;      /* the data pointer */
-    size_t scoop_alloc;         /* the allocation size */
-    size_t scoop_avail;         /* the data size */
-    size_t scoop_pos;           /* the scan position */
+     * and scoop_next[0..scoop_avail] contains data yet to be processed. */
+    rs_byte_t *scoop_buf;       /**< The buffer allocation pointer. */
+    rs_byte_t *scoop_next;      /**< The next data pointer. */
+    size_t scoop_alloc;         /**< The buffer allocation size. */
+    size_t scoop_avail;         /**< The amount of data available. */
+
+    /** The delta scan buffer, where scan_buf[scan_pos..scan_len] is the data
+     * yet to be scanned. */
+    rs_byte_t *scan_buf;        /**< The delta scan buffer pointer. */
+    size_t scan_len;            /**< The delta scan buffer length. */
+    size_t scan_pos;            /**< The delta scan position. */
 
     /** If USED is >0, then buf contains that much write data to be sent out. */
     rs_byte_t write_buf[36];

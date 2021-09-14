@@ -28,23 +28,22 @@
 /** \file scoop.c
  * This file deals with readahead from caller-supplied buffers.
  *
- * Many functions require a certain minimum amount of input to do their
- * processing. For example, to calculate a strong checksum of a block we need
- * at least a block of input.
+ * Many functions require a certain minimum amount of contiguous input data to
+ * do their processing. For example, to calculate a strong checksum of a block
+ * we need at least a block of input.
  *
  * Since we put the buffers completely under the control of the caller, we
  * can't count on ever getting this much data all in one go. We can't simply
  * wait, because the caller might have a smaller buffer than we require and so
- * we'll never get it. For the same reason we must always accept all the data
- * we're given.
+ * we'll never get it.
  *
- * So, stream input data that's required for readahead is put into a special
- * buffer, from which the caller can then read. It's essentially like an
- * internal pipe, which on any given read request may or may not be able to
- * actually supply the data.
- *
- * As a future optimization, we might try to take data directly from the input
- * buffer if there's already enough there.
+ * Stream input data is used directly if there is sufficient data to satisfy
+ * the readhead requests, otherwise it is copied and accumulated into an
+ * internal buffer until there is enough. This means for large input buffers we
+ * can leave a "tail" of unprocessed data in the input buffer, and only consume
+ * all the data if it was too small and start accumulating into the internal
+ * buffer. Provided the input buffers always have enough data we avoid copying
+ * into the internal buffer at all.
  *
  * \todo We probably know a maximum amount of data that can be scooped up, so
  * we could just avoid dynamic allocation. However that can't be fixed at

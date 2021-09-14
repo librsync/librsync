@@ -83,7 +83,6 @@ int rs_tube_is_idle(rs_job_t const *job);
 void rs_tube_write(rs_job_t *job, void const *buf, size_t len);
 void rs_tube_copy(rs_job_t *job, size_t len);
 
-void rs_scoop_input(rs_job_t *job, size_t len);
 void rs_scoop_advance(rs_job_t *job, size_t len);
 rs_result rs_scoop_readahead(rs_job_t *job, size_t len, void **ptr);
 rs_result rs_scoop_read(rs_job_t *job, size_t len, void **ptr);

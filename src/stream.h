@@ -135,7 +135,7 @@ static inline void *rs_scoop_getbuf(rs_job_t *job, size_t *len)
  *
  * Example: \code
  *   size_t len=rs_scoop_avail(job);
- *   ssize_t ilen;
+ *   size_t ilen;
  *
  *   for (buf = rs_scoop_iterbuf(job, &len, &ilen); ilen > 0;
  *        buf = rs_scoop_nextbuf(job, &len, &ilen))
@@ -145,36 +145,34 @@ static inline void *rs_scoop_getbuf(rs_job_t *job, size_t *len)
  * At each iteration buf and ilen are the data and its length for the current
  * iteration. During an iteration you can change ilen to indicate only part of
  * the buffer was processed and the next iteration will take this into account.
- * Setting ilen <= 0 to indicate blocking or errors will terminate iteration.
+ * Setting ilen = 0 to indicate blocking or errors will terminate iteration.
  * The pos and len are updated to the remaining data to iterate through,
  * including the current iteration.
  *
  * At the end of iteration buf and pos will point at the next location in the
  * scoop after the iterated data, len and ilen will be zero, or the remaining
- * data and last ilen if iteration was terminated by setting ilen <= 0.
+ * data and last ilen if iteration was terminated by setting ilen = 0.
  *
  * \param *job - the job instance to use.
  *
  * \param *len - the size_t amount of data to iterate over.
  *
- * \param *ilen - the ssize_t amount of data in the current iteration.
+ * \param *ilen - the size_t amount of data in the current iteration.
  *
  * \return A pointer to data in the current iteration. */
-static inline void *rs_scoop_iterbuf(rs_job_t *job, size_t *len,
-                                     ssize_t *ilen)
+static inline void *rs_scoop_iterbuf(rs_job_t *job, size_t *len, size_t *ilen)
 {
     *ilen = *len;
-    return rs_scoop_getbuf(job, (size_t *)ilen);
+    return rs_scoop_getbuf(job, ilen);
 }
 
 /** Get the next iteration of contiguous data buffers from the scoop.
  *
  * This advances the scoop for the previous iteration, and gets the next
  * iteration. \sa rs_scoop_iterbuf */
-static inline void *rs_scoop_nextbuf(rs_job_t *job, size_t *len,
-                                     ssize_t *ilen)
+static inline void *rs_scoop_nextbuf(rs_job_t *job, size_t *len, size_t *ilen)
 {
-    if (*ilen <= 0)
+    if (*ilen == 0)
         return rs_scoop_buf(job);
     rs_scoop_advance(job, *ilen);
     *len -= *ilen;

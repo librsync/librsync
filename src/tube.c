@@ -92,8 +92,7 @@ static void rs_tube_catchup_copy(rs_job_t *job)
     size_t copy_len = job->copy_len;
     size_t avail_in = rs_scoop_avail(job);
     size_t avail_out = stream->avail_out;
-    size_t len;
-    ssize_t ilen;
+    size_t len, ilen;
     void *next;
 
     if (copy_len > avail_in)

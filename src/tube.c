@@ -80,75 +80,37 @@ static void rs_tube_catchup_write(rs_job_t *job)
              len, job->write_len);
 }
 
-/** Execute a copy command, taking data from the scoop.
- *
- * \sa rs_tube_catchup_copy() */
-static void rs_tube_copy_from_scoop(rs_job_t *job)
-{
-    rs_buffers_t *stream = job->stream;
-    size_t len = job->copy_len;
-
-    assert(len > 0);
-    if (len > job->scoop_avail)
-        len = job->scoop_avail;
-    if (len > stream->avail_out)
-        len = stream->avail_out;
-    if (len) {
-        memcpy(stream->next_out, job->scoop_next, len);
-        stream->next_out += len;
-        stream->avail_out -= len;
-        job->scoop_avail -= len;
-        job->scoop_next += len;
-        job->copy_len -= len;
-    }
-    rs_trace("copied " FMT_SIZE " bytes from scoop, " FMT_SIZE
-             " left in scoop, " FMT_SIZE " left to copy", len, job->scoop_avail,
-             job->copy_len);
-}
-
-/** Execute a copy command, taking data from the stream.
- *
- * \sa rs_tube_catchup_copy() */
-static void rs_tube_copy_from_stream(rs_job_t *job)
-{
-    rs_buffers_t *stream = job->stream;
-    size_t len = job->copy_len;
-
-    assert(len > 0);
-    if (len > stream->avail_in)
-        len = stream->avail_in;
-    if (len > stream->avail_out)
-        len = stream->avail_out;
-    if (len) {
-        memcpy(stream->next_out, stream->next_in, len);
-        stream->next_out += len;
-        stream->avail_out -= len;
-        stream->next_in += len;
-        stream->avail_in -= len;
-        job->copy_len -= len;
-    }
-    rs_trace("copied " FMT_SIZE " bytes from stream, " FMT_SIZE
-             "left in stream, " FMT_SIZE " left to copy", len, stream->avail_in,
-             job->copy_len);
-}
-
 /** Catch up on an outstanding copy command.
  *
- * Takes data from the scoop, and the input (in that order), and writes as much
- * as will fit to the output, up to the limit of the outstanding copy. */
+ * Takes data from the scoop and writes as much as will fit to the output, up
+ * to the limit of the outstanding copy. */
 static void rs_tube_catchup_copy(rs_job_t *job)
 {
     assert(job->write_len == 0);
     assert(job->copy_len > 0);
+    rs_buffers_t *stream = job->stream;
+    size_t copy_len = job->copy_len;
+    size_t avail_in = rs_scoop_avail(job);
+    size_t avail_out = stream->avail_out;
+    size_t len;
+    ssize_t ilen;
+    void *next;
 
-    /* If there's data in the scoop, send that first. */
-    if (job->scoop_avail && job->copy_len) {
-        rs_tube_copy_from_scoop(job);
+    if (copy_len > avail_in)
+        copy_len = avail_in;
+    if (copy_len > avail_out)
+        copy_len = avail_out;
+    len = copy_len;
+    for (next = rs_scoop_iterbuf(job, &len, &ilen); ilen > 0;
+         next = rs_scoop_nextbuf(job, &len, &ilen)) {
+        memcpy(stream->next_out, next, ilen);
+        stream->next_out += ilen;
+        stream->avail_out -= ilen;
+        job->copy_len -= ilen;
     }
-    /* If there's more to copy and we emptied the scoop, send input. */
-    if (job->copy_len && !job->scoop_avail) {
-        rs_tube_copy_from_stream(job);
-    }
+    rs_trace("copied " FMT_SIZE " bytes from scoop, " FMT_SIZE
+             " left in scoop, " FMT_SIZE " left to copy", copy_len,
+             rs_scoop_avail(job), job->copy_len);
 }
 
 /** Put whatever will fit from the tube into the output of the stream.
@@ -166,8 +128,7 @@ rs_result rs_tube_catchup(rs_job_t *job)
     if (job->copy_len) {
         rs_tube_catchup_copy(job);
         if (job->copy_len) {
-            if (job->stream->eof_in && !job->stream->avail_in
-                && !job->scoop_avail) {
+            if (rs_scoop_eof(job)) {
                 rs_error("reached end of file while copying data");
                 return RS_INPUT_ENDED;
             }

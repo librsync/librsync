@@ -56,7 +56,7 @@
 #include <string.h>
 #include "librsync.h"
 #include "job.h"
-#include "stream.h"
+#include "scoop.h"
 #include "trace.h"
 
 static void rs_tube_catchup_write(rs_job_t *job)

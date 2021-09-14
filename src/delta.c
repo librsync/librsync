@@ -94,7 +94,7 @@
 #include "job.h"
 #include "sumset.h"
 #include "checksum.h"
-#include "stream.h"
+#include "scoop.h"
 #include "emit.h"
 #include "trace.h"
 

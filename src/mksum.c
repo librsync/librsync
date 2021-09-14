@@ -31,7 +31,7 @@
 #include "librsync.h"
 #include "job.h"
 #include "sumset.h"
-#include "stream.h"
+#include "scoop.h"
 #include "netint.h"
 #include "trace.h"
 #include "util.h"

@@ -27,7 +27,7 @@
                  | And sons who died on the Burma Railway.
                  */
 
-/** \file stream.h
+/** \file scoop.h
  * Manage librsync streams of IO.
  *
  * See \sa scoop.c and \sa tube.c for related code for input and output

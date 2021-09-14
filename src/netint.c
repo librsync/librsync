@@ -30,7 +30,7 @@
 #include <assert.h>
 #include "librsync.h"
 #include "netint.h"
-#include "stream.h"
+#include "scoop.h"
 
 #define RS_MAX_INT_BYTES 8
 

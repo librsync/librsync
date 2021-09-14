@@ -33,7 +33,7 @@
 #include "librsync.h"
 #include "job.h"
 #include "netint.h"
-#include "stream.h"
+#include "scoop.h"
 #include "command.h"
 #include "prototab.h"
 #include "trace.h"

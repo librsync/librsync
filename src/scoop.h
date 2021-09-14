@@ -73,10 +73,12 @@
  * On each call into a stream iterator, it should begin by trying to flush
  * output. This may well use up all the remaining stream space, in which case
  * nothing else can be done. */
-#ifndef STREAM_H
-#  define STREAM_H
+#ifndef SCOOP_H
+#  define SCOOP_H
+#  include <stdbool.h>
+#  include <stddef.h>
 #  include "job.h"
-#  include <sys/types.h>
+#  include "librsync.h"
 
 rs_result rs_tube_catchup(rs_job_t *job);
 int rs_tube_is_idle(rs_job_t const *job);
@@ -178,4 +180,4 @@ static inline void *rs_scoop_nextbuf(rs_job_t *job, size_t *len, size_t *ilen)
     return rs_scoop_iterbuf(job, len, ilen);
 }
 
-#endif                          /* !STREAM_H */
+#endif                          /* !SCOOP_H */

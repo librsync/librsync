@@ -4,6 +4,19 @@
 
 NOT RELEASED YET
 
+ * Make delta directly process the input stream if it has enough data. Delta
+   operations will only accumulate data into the internal scoop buffer if the
+   input buffer is too small, otherwise it will process the input directly.
+   This makes delta calculations 5%~15% faster by avoiding extra data copying.
+   (dbaarda, https://github.com/librsync/librsync/pull/234)
+
+ * Add .gitignore for `.cmake` created by LSP on Windows. (sourcefrog,
+   https://github.com/librsync/librsync/pull/232)
+
+ * Improve documentation so that Doxygen generates more complete documentation
+   with diagrams, renders better, and is more navigable as markdown docs on
+   GitHub. (dbaarda, https://github.com/librsync/librsync/pull/230)
+
  * Add github action and make targets for clang-tidy and iwyu. Added
    `clang-tidy` and `iwyu` make targets for checking code and includes, and
    `iwyu-fix` for fixing includes. Added `lint.yml` GitHub action to run these

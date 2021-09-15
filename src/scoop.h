@@ -52,12 +52,13 @@
  *
  * In buf.c you will find functions that then map buffers onto stdio files.
  *
- * So on return from an encoding function, either the input or the output or
- * possibly both will have no more bytes available.
+ * On return from an encoding function, some input will have been consumed
+ * and/or some output produced, but either the input or the output or possibly
+ * both could have some remaining bytes available.
  *
- * librsync never does IO or memory allocation, but relies on the caller. This
- * is very nice for integration, but means that we have to be fairly flexible
- * as to when we can `read' or `write' stuff internally.
+ * librsync never does IO or memory allocation for stream input, but relies on
+ * the caller. This is very nice for integration, but means that we have to be
+ * fairly flexible as to when we can `read' or `write' stuff internally.
  *
  * librsync basically does two types of IO. It reads network integers of
  * various lengths which encode command and control information such as
@@ -144,15 +145,15 @@ static inline void *rs_scoop_getbuf(rs_job_t *job, size_t *len)
  * \endcode
  *
  * At each iteration buf and ilen are the data and its length for the current
- * iteration. During an iteration you can change ilen to indicate only part of
- * the buffer was processed and the next iteration will take this into account.
- * Setting ilen = 0 to indicate blocking or errors will terminate iteration.
- * The pos and len are updated to the remaining data to iterate through,
- * including the current iteration.
+ * iteration, and len is the remaining data to iterate through including the
+ * current iteration. During an iteration you can change ilen to indicate only
+ * part of the buffer was processed and the next iteration will take this into
+ * account. Setting ilen = 0 to indicate blocking or errors will terminate
+ * iteration.
  *
- * At the end of iteration buf and pos will point at the next location in the
- * scoop after the iterated data, len and ilen will be zero, or the remaining
- * data and last ilen if iteration was terminated by setting ilen = 0.
+ * At the end of iteration buf will point at the next location in the scoop
+ * after the iterated data, len and ilen will be zero, or the remaining data
+ * and last ilen if iteration was terminated by setting ilen = 0.
  *
  * \param *job - the job instance to use.
  *

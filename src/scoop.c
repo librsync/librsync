@@ -28,23 +28,22 @@
 /** \file scoop.c
  * This file deals with readahead from caller-supplied buffers.
  *
- * Many functions require a certain minimum amount of input to do their
- * processing. For example, to calculate a strong checksum of a block we need
- * at least a block of input.
+ * Many functions require a certain minimum amount of contiguous input data to
+ * do their processing. For example, to calculate a strong checksum of a block
+ * we need at least a block of input.
  *
  * Since we put the buffers completely under the control of the caller, we
  * can't count on ever getting this much data all in one go. We can't simply
  * wait, because the caller might have a smaller buffer than we require and so
- * we'll never get it. For the same reason we must always accept all the data
- * we're given.
+ * we'll never get it.
  *
- * So, stream input data that's required for readahead is put into a special
- * buffer, from which the caller can then read. It's essentially like an
- * internal pipe, which on any given read request may or may not be able to
- * actually supply the data.
- *
- * As a future optimization, we might try to take data directly from the input
- * buffer if there's already enough there.
+ * Stream input data is used directly if there is sufficient data to satisfy
+ * the readhead requests, otherwise it is copied and accumulated into an
+ * internal buffer until there is enough. This means for large input buffers we
+ * can leave a "tail" of unprocessed data in the input buffer, and only consume
+ * all the data if it was too small and start accumulating into the internal
+ * buffer. Provided the input buffers always have enough data we avoid copying
+ * into the internal buffer at all.
  *
  * \todo We probably know a maximum amount of data that can be scooped up, so
  * we could just avoid dynamic allocation. However that can't be fixed at
@@ -58,12 +57,12 @@
 #include <string.h>
 #include "librsync.h"
 #include "job.h"
-#include "stream.h"
+#include "scoop.h"
 #include "trace.h"
 #include "util.h"
 
 /** Try to accept a from the input buffer to get LEN bytes in the scoop. */
-void rs_scoop_input(rs_job_t *job, size_t len)
+static inline void rs_scoop_input(rs_job_t *job, size_t len)
 {
     rs_buffers_t *stream = job->stream;
     size_t tocopy;
@@ -84,7 +83,7 @@ void rs_scoop_input(rs_job_t *job, size_t len)
         rs_trace("resized scoop buffer to " FMT_SIZE " bytes from " FMT_SIZE "",
                  newsize, job->scoop_alloc);
         job->scoop_alloc = newsize;
-    } else if (job->scoop_buf != job->scoop_next) {
+    } else if (job->scoop_buf + job->scoop_alloc < job->scoop_next + len) {
         /* Move existing data to the front of the scoop. */
         rs_trace("moving scoop " FMT_SIZE " bytes to reuse " FMT_SIZE " bytes",
                  job->scoop_avail, (size_t)(job->scoop_next - job->scoop_buf));
@@ -96,7 +95,8 @@ void rs_scoop_input(rs_job_t *job, size_t len)
     tocopy = len - job->scoop_avail;
     if (tocopy > stream->avail_in)
         tocopy = stream->avail_in;
-    assert(tocopy + job->scoop_avail <= job->scoop_alloc);
+    assert(job->scoop_next + tocopy + job->scoop_avail <=
+           job->scoop_buf + job->scoop_alloc);
 
     memcpy(job->scoop_next + job->scoop_avail, stream->next_in, tocopy);
     rs_trace("accepted " FMT_SIZE " bytes from input to scoop", tocopy);
@@ -210,20 +210,11 @@ rs_result rs_scoop_read(rs_job_t *job, size_t len, void **ptr)
  * at EOF, RS_BLOCKED if there was no data and not at EOF. */
 rs_result rs_scoop_read_rest(rs_job_t *job, size_t *len, void **ptr)
 {
-    rs_buffers_t *stream = job->stream;
-
-    *len = job->scoop_avail + stream->avail_in;
+    *len = rs_scoop_avail(job);
     if (*len)
         return rs_scoop_read(job, *len, ptr);
-    else if (stream->eof_in)
+    else if (job->stream->eof_in)
         return RS_INPUT_ENDED;
     else
         return RS_BLOCKED;
-}
-
-/** Return the total number of bytes available including the scoop and input
- * buffer. */
-size_t rs_scoop_total_avail(rs_job_t *job)
-{
-    return job->scoop_avail + job->stream->avail_in;
 }

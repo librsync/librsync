@@ -27,7 +27,7 @@
                  | And sons who died on the Burma Railway.
                  */
 
-/** \file stream.h
+/** \file scoop.h
  * Manage librsync streams of IO.
  *
  * See \sa scoop.c and \sa tube.c for related code for input and output
@@ -52,12 +52,13 @@
  *
  * In buf.c you will find functions that then map buffers onto stdio files.
  *
- * So on return from an encoding function, either the input or the output or
- * possibly both will have no more bytes available.
+ * On return from an encoding function, some input will have been consumed
+ * and/or some output produced, but either the input or the output or possibly
+ * both could have some remaining bytes available.
  *
- * librsync never does IO or memory allocation, but relies on the caller. This
- * is very nice for integration, but means that we have to be fairly flexible
- * as to when we can `read' or `write' stuff internally.
+ * librsync never does IO or memory allocation for stream input, but relies on
+ * the caller. This is very nice for integration, but means that we have to be
+ * fairly flexible as to when we can `read' or `write' stuff internally.
  *
  * librsync basically does two types of IO. It reads network integers of
  * various lengths which encode command and control information such as
@@ -73,21 +74,111 @@
  * On each call into a stream iterator, it should begin by trying to flush
  * output. This may well use up all the remaining stream space, in which case
  * nothing else can be done. */
-#ifndef STREAM_H
-#  define STREAM_H
-
-size_t rs_buffers_copy(rs_buffers_t *stream, size_t len);
+#ifndef SCOOP_H
+#  define SCOOP_H
+#  include <stdbool.h>
+#  include <stddef.h>
+#  include "job.h"
+#  include "librsync.h"
 
 rs_result rs_tube_catchup(rs_job_t *job);
 int rs_tube_is_idle(rs_job_t const *job);
 void rs_tube_write(rs_job_t *job, void const *buf, size_t len);
 void rs_tube_copy(rs_job_t *job, size_t len);
 
-void rs_scoop_input(rs_job_t *job, size_t len);
 void rs_scoop_advance(rs_job_t *job, size_t len);
 rs_result rs_scoop_readahead(rs_job_t *job, size_t len, void **ptr);
 rs_result rs_scoop_read(rs_job_t *job, size_t len, void **ptr);
 rs_result rs_scoop_read_rest(rs_job_t *job, size_t *len, void **ptr);
-size_t rs_scoop_total_avail(rs_job_t *job);
 
-#endif                          /* !STREAM_H */
+static inline size_t rs_scoop_avail(rs_job_t *job)
+{
+    return job->scoop_avail + job->stream->avail_in;
+}
+
+/** Test if the scoop has reached eof. */
+static inline bool rs_scoop_eof(rs_job_t *job)
+{
+    return !rs_scoop_avail(job) && job->stream->eof_in;
+}
+
+/** Get a pointer to the next input in the scoop. */
+static inline void *rs_scoop_buf(rs_job_t *job)
+{
+    return job->scoop_avail ? (void *)job->scoop_next : (void *)job->
+        stream->next_in;
+}
+
+/** Get the contiguous length of the next input in the scoop. */
+static inline size_t rs_scoop_len(rs_job_t *job)
+{
+    return job->scoop_avail ? job->scoop_avail : job->stream->avail_in;
+}
+
+/** Get the next contiguous buffer of data available in the scoop.
+ *
+ * This will return a pointer to the data and reduce len to the amount of
+ * contiguous data available at that position.
+ *
+ * \param *job - the job instance to use.
+ *
+ * \param *len - the amount of data desired, updated to the amount available.
+ *
+ * \return A pointer to the data. */
+static inline void *rs_scoop_getbuf(rs_job_t *job, size_t *len)
+{
+    size_t max_len = rs_scoop_len(job);
+    if (*len > max_len)
+        *len = max_len;
+    return rs_scoop_buf(job);
+}
+
+/** Iterate through and consume contiguous data buffers in the scoop.
+ *
+ * Example: \code
+ *   size_t len=rs_scoop_avail(job);
+ *   size_t ilen;
+ *
+ *   for (buf = rs_scoop_iterbuf(job, &len, &ilen); ilen > 0;
+ *        buf = rs_scoop_nextbuf(job, &len, &ilen))
+ *     ilen = fwrite(buf, ilen, 1, f);
+ * \endcode
+ *
+ * At each iteration buf and ilen are the data and its length for the current
+ * iteration, and len is the remaining data to iterate through including the
+ * current iteration. During an iteration you can change ilen to indicate only
+ * part of the buffer was processed and the next iteration will take this into
+ * account. Setting ilen = 0 to indicate blocking or errors will terminate
+ * iteration.
+ *
+ * At the end of iteration buf will point at the next location in the scoop
+ * after the iterated data, len and ilen will be zero, or the remaining data
+ * and last ilen if iteration was terminated by setting ilen = 0.
+ *
+ * \param *job - the job instance to use.
+ *
+ * \param *len - the size_t amount of data to iterate over.
+ *
+ * \param *ilen - the size_t amount of data in the current iteration.
+ *
+ * \return A pointer to data in the current iteration. */
+static inline void *rs_scoop_iterbuf(rs_job_t *job, size_t *len, size_t *ilen)
+{
+    *ilen = *len;
+    return rs_scoop_getbuf(job, ilen);
+}
+
+/** Get the next iteration of contiguous data buffers from the scoop.
+ *
+ * This advances the scoop for the previous iteration, and gets the next
+ * iteration. \sa rs_scoop_iterbuf */
+static inline void *rs_scoop_nextbuf(rs_job_t *job, size_t *len, size_t *ilen)
+{
+    if (*ilen == 0)
+        return rs_scoop_buf(job);
+    rs_scoop_advance(job, *ilen);
+    *len -= *ilen;
+    return rs_scoop_iterbuf(job, len, ilen);
+}
+
+#endif                          /* !SCOOP_H */

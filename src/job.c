@@ -30,7 +30,7 @@
 #include <time.h>
 #include "librsync.h"
 #include "job.h"
-#include "stream.h"
+#include "scoop.h"
 #include "trace.h"
 #include "util.h"
 
@@ -164,11 +164,6 @@ int rs_job_send(rs_job_t *job, int len, const void *buf)
 const rs_stats_t *rs_job_statistics(rs_job_t *job)
 {
     return &job->stats;
-}
-
-int rs_job_input_is_ending(rs_job_t *job)
-{
-    return job->stream->eof_in;
 }
 
 rs_result rs_job_drive(rs_job_t *job, rs_buffers_t *buf, rs_driven_cb in_cb,

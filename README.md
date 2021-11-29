@@ -29,7 +29,7 @@ with efficient calculation of the differences between two files. The rsync
 algorithm is different from most differencing algorithms because it does not
 require the presence of the two files to calculate the delta.  Instead, it
 requires a set of checksums of each block of one file, which together form a
-signature for that file.  Blocks at any in the other file which have the same
+signature for that file.  Blocks at any position in the other file which have the same
 checksum are likely to be identical, and whatever remains is the difference.
 
 This algorithm transfers the differences between two files without needing

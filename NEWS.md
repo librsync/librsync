@@ -4,7 +4,8 @@
 
 NOT RELEASED YET
 
- * Update github actions for checkout and upload-artifact to v3. (dbaarda
+ * Update github actions for checkout and upload-artifact to v3. Update
+   lint.yml action installed packages. (dbaarda
    https://github.com/librsync/librsync/pull/243)
 
  * Make delta directly process the input stream if it has enough data. Delta

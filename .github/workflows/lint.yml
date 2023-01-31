@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Install Dependencies
       # Unfortunately available Marketplace Actions for this are in a mess, so we do it manually.

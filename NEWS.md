@@ -4,6 +4,9 @@
 
 NOT RELEASED YET
 
+ * Update github actions for checkout and upload-artifact to v3. (dbaarda
+   https://github.com/librsync/librsync/pull/243)
+
  * Make delta directly process the input stream if it has enough data. Delta
    operations will only accumulate data into the internal scoop buffer if the
    input buffer is too small, otherwise it will process the input directly.

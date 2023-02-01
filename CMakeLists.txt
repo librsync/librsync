@@ -262,7 +262,7 @@ add_custom_target(clang-tidy
 # iwyu target to check includes for correctness.
 add_custom_target(iwyu
     COMMENT "Check #includes for correctness using iwyu_tool."
-    COMMAND iwyu_tool -p ${CMAKE_CURRENT_BINARY_DIR}
+    COMMAND iwyu_tool -p ${CMAKE_CURRENT_BINARY_DIR} -o clang
     VERBATIM
 )
 

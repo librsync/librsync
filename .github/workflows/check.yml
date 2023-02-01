@@ -37,7 +37,7 @@ jobs:
            build: Debug
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Install Dependencies
       # Unfortunately available Marketplace Actions for this are in a mess, so we do it manually.
@@ -67,7 +67,7 @@ jobs:
       # Execute tests defined by the CMake configuration.
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest -C ${{matrix.build}} --output-on-failure
-      
+
     - name: Build install
       # Build your program with the given configuration.
       run: cmake --install 'build' --config ${{matrix.build}} --prefix 'install'
@@ -77,14 +77,14 @@ jobs:
       run: cmake --build '${{github.workspace}}/build' --target doc
 
     - name: Upload build
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: build results ${{matrix.os}} ${{matrix.build}} ${{matrix.options}}
         path: ${{github.workspace}}/build
         if-no-files-found: error
 
     - name: Upload install
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: install results ${{matrix.os}} ${{matrix.build}} ${{matrix.options}}
         path: ${{github.workspace}}/install

@@ -4,6 +4,13 @@
 
 NOT RELEASED YET
 
+ * Update github actions and fix `iwyu` build target. Update `checkout` and
+   `upload-artifact` to v3. Update `lint.yml` installed packages for fixed
+   iwyu deps. Fix `iwyu` build target to ignore `fileutil.c` and use neater
+   clang output with noisy "note:" output removed.  Run `make iwyu-fix` to fix
+   includes for `tests/rabinkarp_perf.c`. (dbaarda
+   https://github.com/librsync/librsync/pull/243)
+
  * Make delta directly process the input stream if it has enough data. Delta
    operations will only accumulate data into the internal scoop buffer if the
    input buffer is too small, otherwise it will process the input directly.

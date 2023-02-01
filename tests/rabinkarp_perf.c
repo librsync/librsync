@@ -20,7 +20,6 @@
  */
 
 #include <stdio.h>
-#include <stdint.h>
 #include <inttypes.h>
 #include "rabinkarp.h"
 

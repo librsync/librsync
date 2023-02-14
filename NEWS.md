@@ -4,9 +4,9 @@
 
 NOT RELEASED YET
 
- * Add windows build to stable release. Updated CONTRIBUTING.md release
-   instructions to be clearer and include instructions on how to upload the
-   win64 install artifact from the github "Check" action. (dbaarda,
+ * Fix #244 Add windows build to stable release. Updated CONTRIBUTING.md
+   release instructions to be clearer and include instructions on how to
+   upload the win64 install artifact from the github "Check" action. (dbaarda,
    https://github.com/librsync/librsync/pull/245)
 
  * Update github actions and fix `iwyu` build target. Update `checkout` and

@@ -266,19 +266,27 @@ Fixes or improvements in pull requests are welcome.  Please:
 
 If you are making a new tarball release of librsync, follow this checklist:
 
-* NEWS.md - make sure the top "Changes in X.Y.Z" is correct, and the date is
-  correct. Make sure the changes since the last release are documented.
+* Make a "Release vx.x.x" pull request containing updates ready for the
+  release including;
 
-* TODO.md - check if anything needs to be removed or updated.
+   * Review the changes included and decide if the release should be a major
+     (non-backwards compatible change), minor (backwards compatible change),
+     or micro (bugfix only change) version number change to get the new
+     "X.Y.Z" version number.
 
-* `CMakeLists.txt` - version is correct.
+   * NEWS.md - make sure the top "Changes in X.Y.Z" is correct, and the date
+     is correct. Make sure the changes since the last release are documented.
 
-* `librsync.spec` - make sure version and URL are right.
+   * TODO.md - check if anything needs to be removed or updated.
 
-* Run `make all doc check` in a clean checkout of the release tag. Also check
-  the GitHub Actions [check and lint
+   * `CMakeLists.txt` - version is correct.
+
+   * `librsync.spec` - make sure version and URL are right.
+
+* Run `make all doc check` in a clean checkout of the release pull request
+  branch. Also check the GitHub Actions [check and lint
   status](https://github.com/librsync/librsync/actions) of the last commit on
-  github.
+  github. If it all looks good merge the release pull request on github.
 
 * Draft a new release on github, typing in the release details including an
   overview, included changes, and known issues. The overview should give an
@@ -287,6 +295,25 @@ If you are making a new tarball release of librsync, follow this checklist:
   NEWS.md for the release. It's probably easiest to copy and edit the previous
   release.
 
-* After creating the release, download the tar.gz version, edit the release,
-  and re-upload it. This ensures that the release includes a stable tarball
-  (See https://github.com/librsync/librsync/issues/146 for details).
+* After creating the release, download the `Source code (tar.gz)` release
+  asset. Go to "Actions", find the workflow run for the "Check" corresponding
+  to the merge of the release pull request, and download the `install results
+  windows-latest Release` artifact renamed to 'librsync-win64-x.x.x.zip`. Edit
+  the release, and upload the source code and windows artifacts. This ensures
+  that the release includes a stable tarball (See
+  https://github.com/librsync/librsync/issues/146 for details) and win64
+  install.
+
+* Run `make doc` on a clean checkout of the new release tag and `cp -av doc/*`
+  into a `rm -Rf *` emptied checkout of librsync.github.io and check it in.
+  This ensures it includes deletes of obsolete files as well as new and
+  updated files. Push this to update the online docs.
+
+* Create and merge a "Prepare vX.Y.Z+1." pull request containing updates to
+  prepare for the changes in the next release including;
+
+   * Bump the minor version in `CMakeLists.txt`.
+
+   * Add a `NOT RELEASED YET` version entry in `NEWS.md`
+
+   * Bump the minor version and add a `%changelog` entry in `librsync.spec`.

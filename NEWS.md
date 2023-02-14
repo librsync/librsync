@@ -7,7 +7,7 @@ NOT RELEASED YET
  * Add windows build to stable release. Updated CONTRIBUTING.md release
    instructions to be clearer and include instructions on how to upload the
    win64 install artifact from the github "Check" action. (dbaarda,
-   https://github.com/librsync/librsync/pull/???)
+   https://github.com/librsync/librsync/pull/245)
 
  * Update github actions and fix `iwyu` build target. Update `checkout` and
    `upload-artifact` to v3. Update `lint.yml` installed packages for fixed

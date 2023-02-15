@@ -298,7 +298,7 @@ If you are making a new tarball release of librsync, follow this checklist:
 * After creating the release, download the `Source code (tar.gz)` release
   asset. Go to "Actions", find the workflow run for the "Check" corresponding
   to the merge of the release pull request, and download the `install results
-  windows-latest Release` artifact renamed to 'librsync-win64-x.x.x.zip`. Edit
+  windows-latest Release` artifact renamed to `librsync-win64-X.Y.Z.zip`. Edit
   the release, and upload the source code and windows artifacts. This ensures
   that the release includes a stable tarball (See
   https://github.com/librsync/librsync/issues/146 for details) and win64

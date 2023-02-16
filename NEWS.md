@@ -1,5 +1,9 @@
 # NEWS
 
+## librsync 2.3.4
+
+NOT RELEASED YET
+
 ## librsync 2.3.3
 
 Released 2023-02-16

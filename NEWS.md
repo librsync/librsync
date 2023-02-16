@@ -2,7 +2,7 @@
 
 ## librsync 2.3.3
 
-NOT RELEASED YET
+Released 2023-02-16
 
  * Fix #244 Add windows build to stable release. Updated CONTRIBUTING.md
    release instructions to be clearer and include instructions on how to

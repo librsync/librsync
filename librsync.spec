@@ -1,7 +1,7 @@
-# This RPM supposes that you download the release zip file from github to SOURCES directory as v2.3.3.zip
+# This RPM supposes that you download the release zip file from github to SOURCES directory as v2.3.4.zip
 
 %define name librsync
-%define version 2.3.3
+%define version 2.3.4
 %define gitsource https://github.com/librsync/%{name}/archive/v%{version}.zip
 
 Summary:  	Rsync libraries
@@ -72,7 +72,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_includedir}/%{name}*
 
 %changelog
-* Wed Thu 16 2023 Donovan Baarda <abo@minkirri.apana.org.au>
+* Thu Feb 16 2023 Donovan Baarda <abo@minkirri.apana.org.au>
+- Prepare SPEC file for librsync 2.3.4
+* Thu Feb 16 2023 Donovan Baarda <abo@minkirri.apana.org.au>
 - Updated SPEC file for librsync 2.3.3
 * Sat Apr 10 2021 Donovan Baarda <abo@minkirri.apana.org.au>
 - Updated SPEC file for librsync 2.3.2

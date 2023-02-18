@@ -27,6 +27,7 @@
                                |        -- Alan Perlis
                                */
 
+#include "config.h"             /* IWYU pragma: keep */
 #include <stdio.h>
 #include <string.h>
 #include "librsync.h"

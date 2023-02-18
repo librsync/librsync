@@ -20,28 +20,31 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "config.h"
+/* This provides a compatiblity layer for file operations on different
+   platforms. We need to tell IWYU to keep some headers because they are
+   required on some platforms but not others. */
+#include "config.h"             /* IWYU pragma: keep */
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
 #ifdef HAVE_UNISTD_H
-#  include <unistd.h>
+#  include <unistd.h>           /* IWYU pragma: keep */
 #endif
 #ifdef HAVE_FCNTL_H
-#  include <fcntl.h>
+#  include <fcntl.h>            /* IWYU pragma: keep */
 #endif
 #ifdef HAVE_SYS_TYPES_H
-#  include <sys/types.h>
+#  include <sys/types.h>        /* IWYU pragma: keep */
 #endif
 #ifdef HAVE_SYS_FILE_H
-#  include <sys/file.h>
+#  include <sys/file.h>         /* IWYU pragma: keep */
 #endif
 #ifdef HAVE_SYS_STAT_H
-#  include <sys/stat.h>
+#  include <sys/stat.h>         /* IWYU pragma: keep */
 #endif
 #ifdef HAVE_IO_H
-#  include <io.h>
+#  include <io.h>               /* IWYU pragma: keep */
 #endif
 #include "librsync.h"
 #include "trace.h"

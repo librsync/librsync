@@ -26,6 +26,7 @@
 /** \file patch.c
  * Apply a delta to an old file to generate a new file. */
 
+#include "config.h"             /* IWYU pragma: keep */
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>

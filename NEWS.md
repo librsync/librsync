@@ -4,12 +4,13 @@
 
 NOT RELEASED YET
 
- * Fix #248 by putting `#include "config.h"` in most `src/*.c` files. Add `/*
-   IWYU pragma: keep */` to includes in `src/fileutil.c` that are needed on
-   some platforms but not others so we can remove the special exemptions to
-   skip this file for the iwyu and iwyu-fix targets in `CMakeLists.txt`. Also
-   add some typecasts to `rollsum.[ch]` and `patch.c` to silence warnings on
-   Windows. (dbaarda, https://github.com/librsync/librsync/pull/249)
+ * Fix #248 by putting `#include "config.h"` with `/* IWYU pragma: keep */` in
+   most `src/*.c` files. Add `/* IWYU pragma: keep */` to includes in
+   `src/fileutil.c` that are needed on some platforms but not others so we can
+   remove the special exemptions to skip this file for the iwyu and iwyu-fix
+   targets in `CMakeLists.txt`. Also add some typecasts to `rollsum.[ch]` and
+   `patch.c` to silence warnings on Windows. (dbaarda,
+   https://github.com/librsync/librsync/pull/249)
 
 ## librsync 2.3.3
 

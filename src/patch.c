@@ -167,7 +167,7 @@ static rs_result rs_patch_s_copying(rs_job_t *job)
     if (!len)
         return RS_BLOCKED;
     /* Adjust request to min of amount requested and space available. */
-    if (len < req)
+    if ((rs_long_t)len < req)
         req = (rs_long_t)len;
     rs_trace("copy " FMT_LONG " bytes from basis at offset " FMT_LONG "", req,
              job->basis_pos);
@@ -181,7 +181,7 @@ static rs_result rs_patch_s_copying(rs_job_t *job)
     /* Actual copied length cannot be greater than requested length. */
     assert(len <= req);
     /* Backwards-compatible defensively handle this for NDEBUG builds. */
-    if (len > req) {
+    if ((rs_long_t)len > req) {
         rs_warn("copy_cb() returned more than the requested length");
         len = (size_t)req;
     }

@@ -47,8 +47,8 @@ void RollsumUpdate(Rollsum *sum, const unsigned char *buf, size_t len)
         n--;
     }
     /* Increment s1 and s2 by the amounts added by the char offset. */
-    s1 += len * ROLLSUM_CHAR_OFFSET;
-    s2 += ((len * (len + 1)) / 2) * ROLLSUM_CHAR_OFFSET;
+    s1 += (uint_fast16_t)len * ROLLSUM_CHAR_OFFSET;
+    s2 += (uint_fast16_t)((len * (len + 1)) / 2) * ROLLSUM_CHAR_OFFSET;
     sum->count += len;          /* Increment sum count. */
     sum->s1 = s1;
     sum->s2 = s2;

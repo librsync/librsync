@@ -304,7 +304,7 @@ If you are making a new tarball release of librsync, follow this checklist:
   https://github.com/librsync/librsync/issues/146 for details) and win64
   install.
 
-* Run `make doc` on a clean checkout of the new release tag and `cp -av doc/*`
+* Run `make doc` on a clean checkout of the new release tag and `cp -av html/*`
   into a `rm -Rf *` emptied checkout of librsync.github.io and check it in.
   This ensures it includes deletes of obsolete files as well as new and
   updated files. Push this to update the online docs.

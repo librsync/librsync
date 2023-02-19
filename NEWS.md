@@ -2,7 +2,7 @@
 
 ## librsync 2.3.4
 
-NOT RELEASED YET
+Released 2023-02-19
 
  * Fix #248 by putting `#include "config.h"` with `/* IWYU pragma: keep */` in
    most `src/*.c` files. Add `/* IWYU pragma: keep */` to includes in

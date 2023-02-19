@@ -4,6 +4,14 @@
 
 NOT RELEASED YET
 
+ * Fix #248 by putting `#include "config.h"` with `/* IWYU pragma: keep */` in
+   most `src/*.c` files. Add `/* IWYU pragma: keep */` to includes in
+   `src/fileutil.c` that are needed on some platforms but not others so we can
+   remove the special exemptions to skip this file for the iwyu and iwyu-fix
+   targets in `CMakeLists.txt`. Also add some typecasts to `rollsum.[ch]` and
+   `patch.c` to silence warnings on Windows. (dbaarda,
+   https://github.com/librsync/librsync/pull/249)
+
 ## librsync 2.3.3
 
 Released 2023-02-16
@@ -17,7 +25,7 @@ Released 2023-02-16
    `upload-artifact` to v3. Update `lint.yml` installed packages for fixed
    iwyu deps. Fix `iwyu` build target to ignore `fileutil.c` and use neater
    clang output with noisy "note:" output removed.  Run `make iwyu-fix` to fix
-   includes for `tests/rabinkarp_perf.c`. (dbaarda
+   includes for `tests/rabinkarp_perf.c`. (dbaarda,
    https://github.com/librsync/librsync/pull/243)
 
  * Add missing word to README.md. (AvdN,

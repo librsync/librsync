@@ -52,7 +52,7 @@ static inline void RollsumRotate(Rollsum *sum, unsigned char out,
                                  unsigned char in)
 {
     sum->s1 += in - out;
-    sum->s2 += sum->s1 - sum->count * (out + ROLLSUM_CHAR_OFFSET);
+    sum->s2 += sum->s1 - (uint_fast16_t)sum->count * (out + ROLLSUM_CHAR_OFFSET);
 }
 
 static inline void RollsumRollin(Rollsum *sum, unsigned char in)
@@ -65,7 +65,7 @@ static inline void RollsumRollin(Rollsum *sum, unsigned char in)
 static inline void RollsumRollout(Rollsum *sum, unsigned char out)
 {
     sum->s1 -= out + ROLLSUM_CHAR_OFFSET;
-    sum->s2 -= sum->count * (out + ROLLSUM_CHAR_OFFSET);
+    sum->s2 -= (uint_fast16_t)sum->count * (out + ROLLSUM_CHAR_OFFSET);
     sum->count--;
 }
 

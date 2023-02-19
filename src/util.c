@@ -23,6 +23,7 @@
                                  | On heroin, I have all the answers.
                                  */
 
+#include "config.h"             /* IWYU pragma: keep */
 #include <stdlib.h>
 #include <string.h>
 #include "librsync.h"

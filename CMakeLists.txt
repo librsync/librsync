@@ -260,18 +260,17 @@ add_custom_target(clang-tidy
 )
 
 # iwyu target to check includes for correctness.
-# Note we ignore noisy "note:" output and exclude fileutil.c output.
+# Note we ignore noisy "note:" output.
 add_custom_target(iwyu
     COMMENT "Check #includes for correctness using iwyu_tool."
-    COMMAND ! iwyu_tool -p ${CMAKE_CURRENT_BINARY_DIR} -o clang | egrep -v "fileutil.c:|note:"
+    COMMAND ! iwyu_tool -p ${CMAKE_CURRENT_BINARY_DIR} -o clang | egrep -v "note:"
     VERBATIM
 )
 
 # iwyu-fix target to fix includes for correctness.
-# Note fileutil.c gets mangled by this and is excluded.
 add_custom_target(iwyu-fix
     COMMENT "Fix #includes for correctness using iwyu_tool and fix_include."
-    COMMAND iwyu_tool -p ${CMAKE_CURRENT_BINARY_DIR} | fix_include --noblank_lines --ignore_re=fileutil.c
+    COMMAND iwyu_tool -p ${CMAKE_CURRENT_BINARY_DIR} | fix_include --noblank_lines
     VERBATIM
 )
 

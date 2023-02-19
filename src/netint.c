@@ -27,6 +27,7 @@
                              |        -- Sun Microsystems
                              */
 
+#include "config.h"             /* IWYU pragma: keep */
 #include <assert.h>
 #include "librsync.h"
 #include "netint.h"

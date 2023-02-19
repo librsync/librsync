@@ -26,9 +26,9 @@
                                       | There are lumps in it.
                                       */
 
+#include "config.h"             /* IWYU pragma: keep */
 #include <stdio.h>
 #include <stdarg.h>
-#include "config.h"
 #include "librsync.h"
 #include "trace.h"
 #include "util.h"

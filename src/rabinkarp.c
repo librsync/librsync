@@ -18,6 +18,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+#include "config.h"             /* IWYU pragma: keep */
 #include "rabinkarp.h"
 
 /* Constant for RABINKARP_MULT^2. */

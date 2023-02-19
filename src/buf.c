@@ -23,6 +23,7 @@
                                | Pick a window, Jimmy, you're leaving.
                                */
 
+#include "config.h"             /* IWYU pragma: keep */
 #include <assert.h>
 #include <stdlib.h>
 #include <errno.h>

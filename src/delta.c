@@ -88,6 +88,7 @@
  * and scan_pos adjusted. Everything gets complicated because the tube can
  * block. When the tube is blocked, no data can be processed. */
 
+#include "config.h"             /* IWYU pragma: keep */
 #include <assert.h>
 #include <stdlib.h>
 #include "librsync.h"

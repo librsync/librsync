@@ -389,6 +389,7 @@ set(rsync_LIB_SRCS
     src/checksum.c
     src/command.c
     src/delta.c
+    src/deltagen.c
     src/emit.c
     src/fileutil.c
     src/hashtable.c

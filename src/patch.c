@@ -148,7 +148,7 @@ static rs_result rs_patch_s_copy(rs_job_t *job)
     stats->copy_bytes += len;
     stats->copy_cmdbytes += 1 + job->cmd->len_1 + job->cmd->len_2;
     job->basis_pos = pos;
-    job->basis_len = len;
+    job->basis_len = (int)len;
     job->statefn = rs_patch_s_copying;
     return RS_RUNNING;
 }

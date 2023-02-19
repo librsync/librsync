@@ -17,6 +17,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include "config.h"             /* IWYU pragma: keep */
 #include "librsync.h"
 
 void rs_hexify(char *to_buf, void const *from, int from_len)

@@ -25,6 +25,7 @@
                                | sheltering.
                                */
 
+#include "config.h"             /* IWYU pragma: keep */
 #include <assert.h>
 #include <stdlib.h>
 #include <time.h>

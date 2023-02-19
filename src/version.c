@@ -19,7 +19,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "config.h"
+#include "config.h"             /* IWYU pragma: keep */
 #include "librsync_export.h"
 
 LIBRSYNC_EXPORT char const rs_librsync_version[] = PACKAGE " " VERSION;

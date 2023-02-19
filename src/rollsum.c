@@ -19,6 +19,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+#include "config.h"             /* IWYU pragma: keep */
 #include "rollsum.h"
 
 #define DO1(buf,i)  {s1 += buf[i]; s2 += s1;}
@@ -46,8 +47,8 @@ void RollsumUpdate(Rollsum *sum, const unsigned char *buf, size_t len)
         n--;
     }
     /* Increment s1 and s2 by the amounts added by the char offset. */
-    s1 += len * ROLLSUM_CHAR_OFFSET;
-    s2 += ((len * (len + 1)) / 2) * ROLLSUM_CHAR_OFFSET;
+    s1 += (uint_fast16_t)len * ROLLSUM_CHAR_OFFSET;
+    s2 += (uint_fast16_t)((len * (len + 1)) / 2) * ROLLSUM_CHAR_OFFSET;
     sum->count += len;          /* Increment sum count. */
     sum->s1 = s1;
     sum->s2 = s2;

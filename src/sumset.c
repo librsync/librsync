@@ -20,6 +20,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include "config.h"             /* IWYU pragma: keep */
 #include <stdlib.h>
 #include <string.h>
 #include "librsync.h"

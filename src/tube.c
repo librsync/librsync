@@ -51,6 +51,7 @@
  * in that case we might need to copy into some temporary buffer space, and
  * then back out again later. */
 
+#include "config.h"             /* IWYU pragma: keep */
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>

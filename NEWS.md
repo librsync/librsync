@@ -1,15 +1,39 @@
 # NEWS
 
-## librsync 2.3.3
+## librsync 2.3.5
 
 NOT RELEASED YET
+
+## librsync 2.3.4
+
+Released 2023-02-19
+
+ * Fix #248 by putting `#include "config.h"` with `/* IWYU pragma: keep */` in
+   most `src/*.c` files. Add `/* IWYU pragma: keep */` to includes in
+   `src/fileutil.c` that are needed on some platforms but not others so we can
+   remove the special exemptions to skip this file for the iwyu and iwyu-fix
+   targets in `CMakeLists.txt`. Also add some typecasts to `rollsum.[ch]` and
+   `patch.c` to silence warnings on Windows. (dbaarda,
+   https://github.com/librsync/librsync/pull/249)
+
+## librsync 2.3.3
+
+Released 2023-02-16
+
+ * Fix #244 Add windows build to stable release. Updated CONTRIBUTING.md
+   release instructions to be clearer and include instructions on how to
+   upload the win64 install artifact from the github "Check" action. (dbaarda,
+   https://github.com/librsync/librsync/pull/245)
 
  * Update github actions and fix `iwyu` build target. Update `checkout` and
    `upload-artifact` to v3. Update `lint.yml` installed packages for fixed
    iwyu deps. Fix `iwyu` build target to ignore `fileutil.c` and use neater
    clang output with noisy "note:" output removed.  Run `make iwyu-fix` to fix
-   includes for `tests/rabinkarp_perf.c`. (dbaarda
+   includes for `tests/rabinkarp_perf.c`. (dbaarda,
    https://github.com/librsync/librsync/pull/243)
+
+ * Add missing word to README.md. (AvdN,
+   https://github.com/librsync/librsync/pull/237)
 
  * Make delta directly process the input stream if it has enough data. Delta
    operations will only accumulate data into the internal scoop buffer if the
@@ -19,6 +43,10 @@ NOT RELEASED YET
 
  * Add .gitignore for `.cmake` created by LSP on Windows. (sourcefrog,
    https://github.com/librsync/librsync/pull/232)
+
+ * Upload build and install artifacts from Github actions. This means we get
+   downloadable build and install artifacts for all platforms from the "Check"
+   action. (sourcefrog, https://github.com/librsync/librsync/pull/231)
 
  * Improve documentation so that Doxygen generates more complete documentation
    with diagrams, renders better, and is more navigable as markdown docs on

@@ -52,6 +52,7 @@
  * would be kind of nice to not do any memory allocation after startup, as
  * bzlib does this. */
 
+#include "config.h"             /* IWYU pragma: keep */
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>

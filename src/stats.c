@@ -23,6 +23,7 @@
  * \todo Other things to show in statistics: number of input and output bytes,
  * number of times we blocked waiting for input or output, number of blocks. */
 
+#include "config.h"             /* IWYU pragma: keep */
 #include <stdio.h>
 #include "librsync.h"
 #include "trace.h"

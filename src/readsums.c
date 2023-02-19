@@ -23,6 +23,7 @@
 /** \file readsums.c
  * Load signatures from a file. */
 
+#include "config.h"             /* IWYU pragma: keep */
 #include "librsync.h"
 #include "job.h"
 #include "sumset.h"

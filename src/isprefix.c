@@ -18,6 +18,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
+#include "config.h"             /* IWYU pragma: keep */
 #include "isprefix.h"
 
 int isprefix(char const *tip, char const *iceberg)

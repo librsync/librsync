@@ -85,6 +85,7 @@
  * and scan_pos adjusted. If the generator callbacks block, no more data can be
  * processed in this iteration. */
 
+#include "config.h"             /* IWYU pragma: keep */
 #include <assert.h>
 #include <stdlib.h>
 #include "librsync.h"

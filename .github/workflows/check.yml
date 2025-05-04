@@ -77,14 +77,14 @@ jobs:
       run: cmake --build '${{github.workspace}}/build' --target doc
 
     - name: Upload build
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: build results ${{matrix.os}} ${{matrix.build}} ${{matrix.options}}
         path: ${{github.workspace}}/build
         if-no-files-found: error
 
     - name: Upload install
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: install results ${{matrix.os}} ${{matrix.build}} ${{matrix.options}}
         path: ${{github.workspace}}/install

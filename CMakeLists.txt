@@ -261,6 +261,10 @@ add_custom_target(clang-tidy
 
 # iwyu target to check includes for correctness.
 # Note we ignore noisy "note:" output.
+#
+# Note that iwyu is oriented to codebases with no recursive includes,
+# but librsync does currently have recursive includes; this may give warnings
+# for some files that are not practical problems.
 add_custom_target(iwyu
     COMMENT "Check #includes for correctness using iwyu_tool."
     COMMAND ! iwyu_tool -p ${CMAKE_CURRENT_BINARY_DIR} -o clang | egrep -v "note:"

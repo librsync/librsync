@@ -21,5 +21,7 @@ jobs:
     - name: clang-tidy
       run: cmake --build . --target clang-tidy
 
-    - name: iwyu
-      run: cmake --build . --target iwyu
+    # We don't run IWYU from CI because it's oriented to codebases with no recursive includes,
+    # but librsync does have recursive includes.
+    # - name: iwyu
+    #   run: cmake --build . --target iwyu

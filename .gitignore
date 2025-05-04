@@ -73,3 +73,7 @@ rules.ninja
 *.sln
 *.vcxproj
 *.vcxproj.filters
+
+# Example project executables
+examples/stream/client
+examples/stream/server

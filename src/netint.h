@@ -35,6 +35,8 @@
 
 #  include "librsync.h"
 
+int rs_put_netint(rs_long_t val, int len, rs_byte_t *buf);
+
 /** Write a single byte to a stream output. */
 rs_result rs_squirt_byte(rs_job_t *job, rs_byte_t val);
 

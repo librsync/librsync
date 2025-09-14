@@ -23,24 +23,23 @@
 #include <assert.h>
 #include "librsync.h"
 #include "emit.h"
-#include "job.h"
 #include "netint.h"
 #include "prototab.h"
 #include "trace.h"
 
-void rs_emit_delta_header(rs_job_t *job)
+int rs_put_delta_header(rs_byte_t *buf)
 {
     rs_trace("emit DELTA magic");
-    rs_squirt_n4(job, RS_DELTA_MAGIC);
+    return rs_put_netint(RS_DELTA_MAGIC, 4, buf);
 }
 
-void rs_emit_literal_cmd(rs_job_t *job, int len)
+int rs_put_literal_cmd(int len, rs_byte_t *buf)
 {
     int cmd;
     int param_len = len <= 64 ? 0 : rs_int_len(len);
 
     if (param_len == 0) {
-        cmd = len;
+        cmd = (int)len;
         rs_trace("emit LITERAL_%d, cmd_byte=%#04x", len, cmd);
     } else if (param_len == 1) {
         cmd = RS_OP_LITERAL_N1;
@@ -53,32 +52,27 @@ void rs_emit_literal_cmd(rs_job_t *job, int len)
         cmd = RS_OP_LITERAL_N4;
         rs_trace("emit LITERAL_N4(len=%d), cmd_byte=%#04x", len, cmd);
     }
-
-    rs_squirt_byte(job, (rs_byte_t)cmd);
+    *buf++ = (rs_byte_t)cmd;
     if (param_len)
-        rs_squirt_netint(job, len, param_len);
-
-    job->stats.lit_cmds++;
-    job->stats.lit_bytes += len;
-    job->stats.lit_cmdbytes += 1 + param_len;
+        rs_put_netint(len, param_len, buf);
+    return 1 + param_len;
 }
 
-void rs_emit_copy_cmd(rs_job_t *job, rs_long_t where, rs_long_t len)
+int rs_put_copy_cmd(rs_long_t pos, rs_long_t len, rs_byte_t *buf)
 {
     int cmd;
-    rs_stats_t *stats = &job->stats;
-    const int where_bytes = rs_int_len(where);
+    const int pos_bytes = rs_int_len(pos);
     const int len_bytes = rs_int_len(len);
 
     /* Commands ascend (1,1), (1,2), ... (8, 8) */
-    if (where_bytes == 8)
+    if (pos_bytes == 8)
         cmd = RS_OP_COPY_N8_N1;
-    else if (where_bytes == 4)
+    else if (pos_bytes == 4)
         cmd = RS_OP_COPY_N4_N1;
-    else if (where_bytes == 2)
+    else if (pos_bytes == 2)
         cmd = RS_OP_COPY_N2_N1;
     else {
-        assert(where_bytes == 1);
+        assert(pos_bytes == 1);
         cmd = RS_OP_COPY_N1_N1;
     }
     if (len_bytes == 1) ;
@@ -90,22 +84,19 @@ void rs_emit_copy_cmd(rs_job_t *job, rs_long_t where, rs_long_t len)
         assert(len_bytes == 8);
         cmd += 3;
     }
-
-    rs_trace("emit COPY_N%d_N%d(where=" FMT_LONG ", len=" FMT_LONG
-             "), cmd_byte=%#04x", where_bytes, len_bytes, where, len, cmd);
-    rs_squirt_byte(job, (rs_byte_t)cmd);
-    rs_squirt_netint(job, where, where_bytes);
-    rs_squirt_netint(job, len, len_bytes);
-
-    stats->copy_cmds++;
-    stats->copy_bytes += len;
-    stats->copy_cmdbytes += 1 + where_bytes + len_bytes;
+    rs_trace("emit COPY_N%d_N%d(pos=" FMT_LONG ", len=" FMT_LONG
+             "), cmd_byte=%#04x", pos_bytes, len_bytes, pos, len, cmd);
+    *buf++ = (rs_byte_t)cmd;
+    buf += rs_put_netint(pos, pos_bytes, buf);
+    rs_put_netint(len, len_bytes, buf);
+    return 1 + pos_bytes + len_bytes;
 }
 
-void rs_emit_end_cmd(rs_job_t *job)
+int rs_put_end_cmd(rs_byte_t *buf)
 {
     int cmd = RS_OP_END;
 
     rs_trace("emit END, cmd_byte=%#04x", cmd);
-    rs_squirt_byte(job, (rs_byte_t)cmd);
+    *buf = (rs_byte_t)cmd;
+    return 1;
 }

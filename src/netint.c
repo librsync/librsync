@@ -35,6 +35,17 @@
 
 #define RS_MAX_INT_BYTES 8
 
+int rs_put_netint(rs_long_t val, int len, rs_byte_t *buf)
+{
+    assert(len <= RS_MAX_INT_BYTES);
+    /* Fill buf with a bigendian representation of the number. */
+    for (int i = len - 1; i >= 0; i--) {
+        buf[i] = (rs_byte_t)val;       /* truncated */
+        val >>= 8;
+    }
+    return len;
+}
+
 rs_result rs_squirt_byte(rs_job_t *job, rs_byte_t val)
 {
     rs_tube_write(job, &val, 1);
@@ -44,15 +55,8 @@ rs_result rs_squirt_byte(rs_job_t *job, rs_byte_t val)
 rs_result rs_squirt_netint(rs_job_t *job, rs_long_t val, int len)
 {
     rs_byte_t buf[RS_MAX_INT_BYTES];
-    int i;
 
-    assert(len <= RS_MAX_INT_BYTES);
-    /* Fill the output buffer with a bigendian representation of the number. */
-    for (i = len - 1; i >= 0; i--) {
-        buf[i] = (rs_byte_t)val;       /* truncated */
-        val >>= 8;
-    }
-    rs_tube_write(job, buf, len);
+    rs_tube_write(job, buf, rs_put_netint(val, len, buf));
     return RS_DONE;
 }
 
